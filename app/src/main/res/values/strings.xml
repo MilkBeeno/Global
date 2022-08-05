@@ -3,4 +3,7 @@
     <string name="launch_tip"><![CDATA[FREE & FAST]]></string>
     <string name="launch_start">Start</string>
     <string name="launch_privacy">you should agree with privacy policy</string>
+    <string name="main_not_connect">Connect</string>
+    <string name="main_connected">Connected</string>
+    <string name="main_connecting">Connecting</string>
 </resources>

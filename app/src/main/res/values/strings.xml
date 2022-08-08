@@ -12,4 +12,6 @@
     <string name="main_not_connect">Connect</string>
     <string name="main_connected">Connected</string>
     <string name="main_connecting">Connecting</string>
+    <!--关于我们页面翻译-->
+    <string name="about_us_title">About Us</string>
 </resources>

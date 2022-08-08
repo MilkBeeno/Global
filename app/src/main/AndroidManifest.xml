@@ -11,7 +11,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartVpn">
-
         <activity
             android:name=".ui.act.LaunchActivity"
             android:exported="true"
@@ -41,6 +40,11 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ui.act.BackStackActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.act.AboutActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />

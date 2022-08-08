@@ -1,8 +1,12 @@
 <resources>
     <string name="app_name">Smart Vpn</string>
+    <!--启动页面翻译-->
     <string name="launch_tip"><![CDATA[FREE & FAST]]></string>
     <string name="launch_start">Start</string>
-    <string name="launch_privacy">you should agree with privacy policy</string>
+    <string name="launch_privacy">privacy policy</string>
+    <string name="launch_privacy_content">you should agree with \"privacy policy\"</string>
+    <string name="launch_privacy_agreement">Please read the Privacy Policy first and tick it!</string>
+    <!--主页面翻译-->
     <string name="main_not_connect">Connect</string>
     <string name="main_connected">Connected</string>
     <string name="main_connecting">Connecting</string>

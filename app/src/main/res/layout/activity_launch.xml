@@ -108,7 +108,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="60dp"
-            android:text="@string/launch_privacy"
+            android:text="@string/launch_privacy_content"
             android:textColor="@color/white"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"

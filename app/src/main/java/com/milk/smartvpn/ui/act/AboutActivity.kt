@@ -26,8 +26,10 @@ class AboutActivity : AbstractActivity() {
         super.onMultipleClick(view)
         when (view) {
             binding.ivBack -> finish()
-            binding.llPrivacy ->
-                WebActivity.create(this, "https://justfuncall.com/terms.html")
+            binding.llPrivacy -> {
+                val url = "https://justfuncall.com/terms.html"
+                WebActivity.create(this, url)
+            }
         }
     }
 

@@ -34,8 +34,12 @@ class BackStackActivity : AbstractActivity() {
     override fun onInterceptKeyDownEvent(): Boolean = true
 
     companion object {
-        fun create(context: Context) =
-            context.startActivity(Intent(context, BackStackActivity::class.java)
-                .apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK })
+        private const val IS_APP_LAUNCH_AD = "IS_APP_LAUNCH_AD"
+        fun create(context: Context, isAppLaunchAd: Boolean = false) {
+            val intent = Intent(context, BackStackActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            intent.putExtra(IS_APP_LAUNCH_AD, isAppLaunchAd)
+            context.startActivity(intent)
+        }
     }
 }

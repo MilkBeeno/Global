@@ -3,7 +3,9 @@ package com.milk.smartvpn.ui.act
 import android.os.Bundle
 import android.view.View
 import com.milk.simple.ktx.*
+import com.milk.simple.mdr.KvManger
 import com.milk.smartvpn.R
+import com.milk.smartvpn.constant.KvKey
 import com.milk.smartvpn.databinding.ActivityLaunchBinding
 
 class LaunchActivity : AbstractActivity() {
@@ -12,7 +14,16 @@ class LaunchActivity : AbstractActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        initializeView()
+        val isFirst = KvManger.getBoolean(KvKey.FIRST_ENTER, true)
+        if (isFirst) {
+            binding.root.visible()
+            KvManger.put(KvKey.FIRST_ENTER, false)
+            initializeView()
+        } else {
+            binding.root.gone()
+            BackStackActivity.create(context = this, isAppLaunchAd = true)
+            finish()
+        }
     }
 
     private fun initializeView() {
@@ -24,9 +35,8 @@ class LaunchActivity : AbstractActivity() {
             Pair(
                 string(R.string.launch_privacy),
                 colorClickableSpan(color(R.color.FF0DC2FF)) {
-                    WebActivity.create(
-                        this, "https://justfuncall.com/terms.html"
-                    )
+                    val url = "https://justfuncall.com/terms.html"
+                    WebActivity.create(this, url)
                 })
         )
     }

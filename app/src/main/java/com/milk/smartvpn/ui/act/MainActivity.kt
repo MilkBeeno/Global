@@ -5,11 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.milk.simple.ktx.immersiveStatusBar
-import com.milk.simple.ktx.statusBarPadding
 import com.milk.smartvpn.databinding.ActivityMainBinding
+import com.milk.smartvpn.ui.dialog.WaitDialog
 
 class MainActivity : AbstractActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val dialog by lazy { WaitDialog(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +31,6 @@ class MainActivity : AbstractActivity() {
         when (view) {
             binding.llHeaderToolbar -> AboutActivity.create(this)
             binding.ivShare -> toShareAppStoreAddress()
-            binding.llNetwork -> {}
         }
     }
 

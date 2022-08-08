@@ -6,6 +6,8 @@
     <string name="launch_privacy">privacy policy</string>
     <string name="launch_privacy_content">you should agree with \"privacy policy\"</string>
     <string name="launch_privacy_agreement">Please read the Privacy Policy first and tick it!</string>
+    <!--后天回到前台页面翻译-->
+    <string name="back_stack_content">connected and fetch server list …</string>
     <!--主页面翻译-->
     <string name="main_not_connect">Connect</string>
     <string name="main_connected">Connected</string>

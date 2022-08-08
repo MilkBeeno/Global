@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/home_background"
-    tools:context=".ui.LaunchActivity">
+    tools:context=".ui.act.LaunchActivity">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivTopBackground"
@@ -18,27 +18,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <FrameLayout
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivTopContent"
         android:layout_width="116dp"
         android:layout_height="116dp"
+        android:src="@drawable/launch_top_content"
         app:layout_constraintBottom_toBottomOf="@+id/ivTopBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/ivTopBackground">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivTopContent"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/launch_top_content" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottieView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:lottie_autoPlay="true"
-            app:lottie_repeatCount="-1" />
-    </FrameLayout>
+        app:layout_constraintTop_toTopOf="@+id/ivTopBackground" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvLaunchTitle"

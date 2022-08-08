@@ -1,4 +1,4 @@
-package com.milk.smartvpn.ui
+package com.milk.smartvpn.ui.act
 
 import android.content.Context
 import android.content.Intent

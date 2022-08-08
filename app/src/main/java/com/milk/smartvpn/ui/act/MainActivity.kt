@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import com.milk.simple.ktx.immersiveStatusBar
+import com.milk.simple.ktx.statusBarPadding
 import com.milk.smartvpn.databinding.ActivityMainBinding
 
 class MainActivity : AbstractActivity() {
@@ -16,6 +18,8 @@ class MainActivity : AbstractActivity() {
     }
 
     private fun initializeView() {
+        immersiveStatusBar(false)
+        binding.llHeaderToolbar.statusBarPadding()
         binding.llHeaderToolbar.setOnClickListener(this)
         binding.llNetwork.setOnClickListener(this)
     }

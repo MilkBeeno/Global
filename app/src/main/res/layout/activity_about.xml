@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@drawable/about_us_background"
     android:orientation="vertical"
     tools:context=".ui.act.AboutActivity">
 
     <FrameLayout
+        android:id="@+id/flHeaderToolbar"
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:gravity="center_vertical">

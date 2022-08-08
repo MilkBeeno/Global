@@ -1,0 +1,23 @@
+<resources>
+    <string name="vpn_state_connecting">Connecting&#8230;</string>
+    <string name="vpn_state_connected">Connected</string>
+    <string name="vpn_state_disconnecting">Disconnecting&#8230;</string>
+    <string name="vpn_state_disabled">Ready</string>
+    <!--    <string name="state_error">Error</string>-->
+    <plurals name="vpn_retry_in">
+        <item quantity="one">Retry in %1$d second</item>
+        <item quantity="other">Retry in %1$d seconds</item>
+    </plurals>
+    <!--    <string name="error_format">Failed to establish VPN: %1$s.</string>-->
+    <string name="err_lookup_failed">Address lookup failed</string>
+    <string name="err_unreachable">Server is unreachable</string>
+    <string name="err_peer_auth_failed">Authentication failed</string>
+    <!--    <string name="err_auth_failed">User authentication failed</string>-->
+    <string name="err_auth_failed">Authentication failed</string>
+    <string name="err_assem_failed">Security assessment failed</string>-->
+    <string name="err_generic">Unspecified failure while connecting</string>
+    <string name="err_password_missing">Authentication failed</string>
+    <string name="err_certificate_unavailable">Authentication failed</string>
+    <!--    <string name="err_password_missing">Password unavailable</string>-->
+    <!--    <string name="err_certificate_unavailable">Client certificate unavailable</string>-->
+</resources>

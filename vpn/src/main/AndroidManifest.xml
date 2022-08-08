@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.freetech.vpn">
+
+    <application>
+        <service
+            android:name="com.freetech.vpn.logic.VpnStateService"
+            android:exported="false" />
+        <service
+            android:name="com.freetech.vpn.logic.CharonVpnService"
+            android:permission="android.permission.BIND_VPN_SERVICE" />
+    </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+</manifest>

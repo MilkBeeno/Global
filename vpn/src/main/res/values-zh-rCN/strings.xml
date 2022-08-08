@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    <string name="vpn_state_connecting">连接中&#8230;</string>-->
+<!--    <string name="vpn_state_connected">已连接</string>-->
+<!--    <string name="vpn_state_disconnecting">断开连接中&#8230;</string>-->
+<!--    <string name="vpn_state_disabled">未连接</string>-->
+<!--    &lt;!&ndash;    <string name="state_error">错误</string>&ndash;&gt;-->
+
+<!--    <plurals name="vpn_retry_in">-->
+<!--        <item quantity="one">%1$d秒后重试</item>-->
+<!--        <item quantity="other">%1$d秒后重试</item>-->
+<!--    </plurals>-->
+
+<!--    &lt;!&ndash;    <string name="error_format">无法建立VPN：%1$s。</string>&ndash;&gt;-->
+<!--    <string name="err_lookup_failed">无法连接服务器</string>-->
+<!--    <string name="err_unreachable">无法连接服务器</string>-->
+<!--    <string name="err_peer_auth_failed">鉴权失败</string>-->
+<!--    <string name="err_auth_failed">用户鉴权失败</string>-->
+<!--    <string name="err_assem_failed">可靠性评估失败</string>-->
+<!--    <string name="err_generic">连接中遭遇未知失败</string>l-->
+<!--    <string name="err_password_missing">Password unavailable</string>-->
+<!--    <string name="err_certificate_unavailable">Client certificate unavailable</string>-->
+</resources>

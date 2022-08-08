@@ -15,4 +15,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "SmartVpn"
+include ':vpn'
 include ':app'

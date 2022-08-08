@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vpn_state_connecting">連線中&#8230;</string>
+    <string name="vpn_state_connected">已連線</string>
+    <string name="vpn_state_disconnecting">結束連線中&#8230;</string>
+    <string name="vpn_state_disabled">未連線</string>
+    <!--    <string name="state_error">錯誤</string>-->
+
+    <plurals name="vpn_retry_in">
+        <item quantity="one">%1$d秒後重試</item>
+        <item quantity="other">%1$d秒後重試</item>
+    </plurals>
+
+    <!--    <string name="error_format">無法建立VPN：%1$s。</string>-->
+    <string name="err_lookup_failed">無法連線伺服器</string>
+    <string name="err_unreachable">無法連線伺服器</string>
+    <string name="err_peer_auth_failed">授權失敗</string>
+    <string name="err_auth_failed">用戶授權失敗</string>
+    <string name="err_assem_failed">穩定性評估失敗</string>
+    <string name="err_generic">連線中遇到不明錯誤</string>
+    <string name="err_password_missing">授權失敗</string>
+    <string name="err_certificate_unavailable">授權失敗</string>
+</resources>

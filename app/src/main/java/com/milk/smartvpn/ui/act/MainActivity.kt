@@ -21,6 +21,7 @@ class MainActivity : AbstractActivity() {
         immersiveStatusBar(false)
         binding.llHeaderToolbar.statusBarPadding()
         binding.llHeaderToolbar.setOnClickListener(this)
+        binding.ivShare.setOnClickListener(this)
         binding.llNetwork.setOnClickListener(this)
     }
 
@@ -28,8 +29,17 @@ class MainActivity : AbstractActivity() {
         super.onMultipleClick(view)
         when (view) {
             binding.llHeaderToolbar -> AboutActivity.create(this)
+            binding.ivShare -> toShareAppStoreAddress()
             binding.llNetwork -> {}
         }
+    }
+
+    private fun toShareAppStoreAddress() {
+        val intent = Intent()
+        intent.action = Intent.ACTION_SEND
+        intent.putExtra(Intent.EXTRA_TEXT, "文本内容")
+        intent.type = "text/plain"
+        startActivity(intent)
     }
 
     override fun onInterceptKeyDownEvent() = true

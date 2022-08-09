@@ -2,6 +2,7 @@ package com.milk.smartvpn
 
 import android.app.Application
 import com.milk.simple.ktx.ioScope
+import com.milk.simple.log.Logger
 import com.milk.simple.mdr.KvManger
 import com.milk.smartvpn.ui.act.BackStackActivity
 import com.milk.smartvpn.ui.act.LaunchActivity
@@ -25,6 +26,7 @@ class BaseApplication : Application() {
                     BackStackActivity.create(current)
             }
             KvManger.initialize(current)
+            Logger.initialize(BuildConfig.DEBUG)
         }
     }
 }

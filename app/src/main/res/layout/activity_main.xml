@@ -94,15 +94,37 @@
         android:background="@drawable/main_connect_background"
         app:layout_constraintTop_toBottomOf="@+id/llNetwork">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivConnect"
+        <FrameLayout
+            android:id="@+id/flConnect"
             android:layout_width="216dp"
             android:layout_height="202dp"
             android:layout_marginTop="64dp"
-            android:src="@drawable/main_connected"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivConnect"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:src="@drawable/main_connected" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieViewConnecting"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:lottie_autoPlay="true"
+                app:lottie_repeatCount="-1" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieViewConnected"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:lottie_autoPlay="true"
+                app:lottie_repeatCount="0" />
+        </FrameLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvConnectTime"
@@ -112,7 +134,7 @@
             android:textColor="@color/white"
             android:textSize="15sp"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/ivConnect"
+            app:layout_constraintBottom_toBottomOf="@+id/flConnect"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="00:25:59"

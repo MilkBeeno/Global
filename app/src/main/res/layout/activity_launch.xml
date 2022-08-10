@@ -89,7 +89,7 @@
             android:layout_height="24dp"
             android:layout_marginStart="60dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/selector_launch_privacy" />
+            android:src="@drawable/selector_select" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvPrivacy"

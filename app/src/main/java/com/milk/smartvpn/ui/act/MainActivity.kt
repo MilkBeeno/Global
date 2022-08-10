@@ -35,6 +35,7 @@ class MainActivity : AbstractActivity() {
         binding.ivShare.setOnClickListener(this)
         binding.llNetwork.setOnClickListener(this)
         binding.tvConnect.setOnClickListener(this)
+        binding.llNetwork.setOnClickListener(this)
         binding.lottieViewConnecting.setAnimation("main_vpn_connecting.json")
         binding.lottieViewConnected.setAnimation("main_vpn_connected.json")
         binding.lottieViewConnected
@@ -111,6 +112,7 @@ class MainActivity : AbstractActivity() {
         when (view) {
             binding.llHeaderToolbar -> AboutActivity.create(this)
             binding.ivShare -> toShareAppStoreAddress()
+            binding.llNetwork -> SwitchNodeActivity.create(this)
             binding.tvConnect -> {
                 when (vpnViewModel.connectionState.value) {
                     VpnStatus.NotConnect -> vpnProxy.openVpn()

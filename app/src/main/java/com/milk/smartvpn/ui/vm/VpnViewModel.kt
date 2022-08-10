@@ -26,22 +26,20 @@ class VpnViewModel : ViewModel() {
     internal val vpnStartConnect = MutableLiveData<Boolean>()
     internal val connectionState = MutableStateFlow(VpnStatus.NotConnect)
 
-    var vpnListModels = MutableStateFlow(mutableListOf<VpnListModel>())
-
     internal fun getVpnInfo(nodeId: Long = -1) {
         ioScope {
             if (connectionState.value == VpnStatus.Connecting) return@ioScope
             connectionState.emit(VpnStatus.Connecting)
-            var finalVpnId = nodeId
-            if (finalVpnId < 0) {
-                finalVpnId = KvManger.getLong(KvKey.SAVE_VPN_ID)
+            var finalNodeId = nodeId
+            if (finalNodeId < 0) {
+                finalNodeId = KvManger.getLong(KvKey.SAVE_VPN_ID)
                 val profile = KvManger.getString(KvKey.SAVE_VPN_PROFILE)
                 if (profile.isNotEmpty()) {
                     vpnModel = Gson().fromJson(profile, VpnModel::class.java)
                 }
             }
             // get new data from service every time.
-            val response = vpnRepository.getVpnInfo(finalVpnId)
+            val response = vpnRepository.getVpnInfo(finalNodeId)
             val result = response.data
             if (response.code == 2000 && result != null) {
                 vpnModel = result
@@ -103,44 +101,5 @@ class VpnViewModel : ViewModel() {
         timer = null
     }
 
-    fun getVpnListInfo() {
-        ioScope {
-            val response = vpnRepository.getVpnListInfo()
-            val result = response.data
-            if (response.code == 2000 && result != null) {
-                vpnListModels.value.clear()
-                vpnListModels.value.add(VpnListModel(nodeId = 0))
-                vpnListModels.value.addAll(result)
-                try {
-                    vpnListModels.value.onEach {
-                        if (it.nodeId > 0) ioScope {
-                            it.ping = ping(it.nodeDns)
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-    }
 
-    fun switchVpn(index: Int) {
-        if (vpnListModels.value.size <= index) return
-        val vpnListModel = vpnListModels.value[index]
-        if (KvManger.getLong(KvKey.SAVE_VPN_ID) != vpnListModel.nodeId) {
-            getVpnInfo(vpnListModel.nodeId)
-        }
-    }
-
-    private fun ping(ip: String = "54.67.15.250"): Int {
-        val r = Runtime.getRuntime().exec("ping -c 1 $ip")
-        val bufferedReader = BufferedReader(InputStreamReader(r.inputStream))
-        while (true) {
-            val line: String = bufferedReader.readLine() ?: break
-            if (!line.startsWith("rtt")) continue
-            val speed = line.split("=")[1].split("/")[1]
-            return speed.toFloat().toInt()
-        }
-        return 0
-    }
 }

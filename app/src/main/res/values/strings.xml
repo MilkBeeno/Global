@@ -15,4 +15,5 @@
     <!--关于我们页面翻译-->
     <string name="about_us_title">About Us</string>
     <string name="dialog_wait">Please Wait</string>
+    <string name="switch_node_title">Change Sever</string>
 </resources>

@@ -19,7 +19,6 @@ import java.io.InputStreamReader
 class VpnViewModel : ViewModel() {
     private val vpnRepository by lazy { VpnRepository() }
     private var vpnModel = VpnModel()
-    private var isRequesting = false
 
     /** VPN 网络信息请求成功、准备开始连接 */
     val vpnStartConnect = MutableLiveData<Boolean>()
@@ -30,8 +29,7 @@ class VpnViewModel : ViewModel() {
 
     fun getVpnInfo(nodeId: Long = -1) {
         ioScope {
-            if (isRequesting) return@ioScope
-            isRequesting = true
+            if (connectionState.value == VpnStatus.Connecting) return@ioScope
             connectionState.emit(VpnStatus.Connecting)
             var finalVpnId = nodeId
             if (finalVpnId < 0) {
@@ -47,16 +45,28 @@ class VpnViewModel : ViewModel() {
             if (response.code == 2000 && result != null) {
                 vpnModel = result
                 vpnStartConnect.postValue(nodeId >= 0)
-            } else {
-                isRequesting = false
-                connectionState.emit(VpnStatus.Failure)
-            }
+            } else connectionState.emit(VpnStatus.Failure)
         }
     }
 
+    fun getVpnProfile(): VpnProfile {
+        val vpnProfile = VpnProfile()
+        vpnProfile.id = vpnModel.nodeId
+        vpnProfile.name = vpnModel.nodeName
+        vpnProfile.gateway = vpnModel.dns
+        vpnProfile.username = vpnModel.userName
+        vpnProfile.password = vpnModel.password
+        vpnProfile.mtu = 1400
+        vpnProfile.vpnType = VpnType.fromIdentifier("ikev2-eap")
+        return vpnProfile
+    }
+
+    fun saveProfile() {
+        KvManger.put(KvKey.SAVE_VPN_ID, vpnModel.nodeId)
+        KvManger.put(KvKey.SAVE_VPN_PROFILE, vpnModel)
+    }
+
     fun getVpnListInfo() {
-        if (isRequesting) return
-        isRequesting = true
         ioScope {
             val response = vpnRepository.getVpnListInfo()
             val result = response.data
@@ -74,36 +84,15 @@ class VpnViewModel : ViewModel() {
                     e.printStackTrace()
                 }
             }
-            isRequesting = false
         }
     }
 
     fun switchVpn(index: Int) {
-        if (vpnListModels.value.size <= index || isRequesting) return
-        isRequesting = true
+        if (vpnListModels.value.size <= index) return
         val vpnListModel = vpnListModels.value[index]
         if (KvManger.getLong(KvKey.SAVE_VPN_ID) != vpnListModel.nodeId) {
             getVpnInfo(vpnListModel.nodeId)
         }
-    }
-
-    fun getVpnProfile(): VpnProfile {
-        val vpnProfile = VpnProfile()
-        vpnProfile.id = vpnModel.nodeId
-        vpnProfile.name = vpnModel.nodeName
-        vpnProfile.gateway = vpnModel.dns
-        vpnProfile.username = vpnModel.userName
-        vpnProfile.password = vpnModel.password
-        vpnProfile.mtu = 1400
-        vpnProfile.vpnType = VpnType.fromIdentifier("ikev2-eap")
-        return vpnProfile
-    }
-
-    fun saveProfile(isSuccess: Boolean) {
-        if (isSuccess) {
-            KvManger.put(KvKey.SAVE_VPN_ID, vpnModel.nodeId)
-            KvManger.put(KvKey.SAVE_VPN_PROFILE, vpnModel)
-        } else isRequesting = false
     }
 
     private fun ping(ip: String = "54.67.15.250"): Int {

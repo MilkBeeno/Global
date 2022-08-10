@@ -37,20 +37,24 @@ class MainActivity : AbstractActivity() {
         binding.tvConnect.setOnClickListener(this)
         binding.lottieViewConnecting.setAnimation("main_vpn_connecting.json")
         binding.lottieViewConnected.setAnimation("main_vpn_connected.json")
-        binding.lottieViewConnected.addAnimatorListener(object : Animator.AnimatorListener {
-            override fun onAnimationStart(animation: Animator?) = Unit
-            override fun onAnimationCancel(animation: Animator?) = Unit
-            override fun onAnimationRepeat(animation: Animator?) = Unit
-            override fun onAnimationEnd(animation: Animator?) {
-                binding.ivConnect
-                    .setBackgroundResource(R.drawable.main_connected)
-                binding.tvConnectTime.visible()
-                binding.tvConnect.text = string(R.string.main_connected)
-                binding.tvConnect
-                    .setBackgroundResource(R.drawable.shape_main_connected)
-                binding.tvConnect.setTextColor(color(R.color.FF121250))
-            }
-        })
+        binding.lottieViewConnected
+            .addAnimatorListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator?) = Unit
+                override fun onAnimationCancel(animation: Animator?) = Unit
+                override fun onAnimationRepeat(animation: Animator?) = Unit
+                override fun onAnimationEnd(animation: Animator?) {
+                    binding.ivBackground.visible()
+                    binding.ivConnect.visible()
+                    binding.ivConnect
+                        .setBackgroundResource(R.drawable.main_connected)
+                    binding.lottieViewConnected.gone()
+                    binding.tvConnectTime.visible()
+                    binding.tvConnect.text = string(R.string.main_connected)
+                    binding.tvConnect
+                        .setBackgroundResource(R.drawable.shape_main_connected)
+                    binding.tvConnect.setTextColor(color(R.color.FF121250))
+                }
+            })
     }
 
     private fun initializeObserver() {
@@ -65,11 +69,14 @@ class MainActivity : AbstractActivity() {
     }
 
     private fun vpnNotConnect() {
+        binding.ivBackground.visible()
         binding.ivConnect.visible()
         binding.ivConnect
             .setBackgroundResource(R.drawable.main_not_connect)
         binding.lottieViewConnecting.gone()
+        binding.lottieViewConnecting.pauseAnimation()
         binding.lottieViewConnected.gone()
+        binding.lottieViewConnected.pauseAnimation()
         binding.tvConnectTime.gone()
         binding.tvConnect.text = string(R.string.main_not_connect)
         binding.tvConnect
@@ -78,11 +85,12 @@ class MainActivity : AbstractActivity() {
     }
 
     private fun vpnConnecting() {
+        binding.ivBackground.gone()
+        binding.ivConnect.gone()
         binding.lottieViewConnecting.visible()
         binding.lottieViewConnecting.playAnimation()
         binding.lottieViewConnected.gone()
         binding.lottieViewConnected.pauseAnimation()
-        binding.ivConnect.gone()
         binding.tvConnectTime.gone()
         binding.tvConnect.text = string(R.string.main_connecting)
         binding.tvConnect
@@ -103,10 +111,11 @@ class MainActivity : AbstractActivity() {
             binding.llHeaderToolbar -> AboutActivity.create(this)
             binding.ivShare -> toShareAppStoreAddress()
             binding.tvConnect -> {
-                if (vpnViewModel.connectionState.value == VpnStatus.Connected)
-                    vpnProxy.closeVpn()
-                else
-                    vpnProxy.openVpn()
+                when (vpnViewModel.connectionState.value) {
+                    VpnStatus.NotConnect -> vpnProxy.openVpn()
+                    VpnStatus.Connected -> vpnProxy.closeVpn()
+                    else -> Unit
+                }
             }
         }
     }

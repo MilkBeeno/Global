@@ -23,14 +23,14 @@ class VpnProxy(private val activity: MainActivity) {
         ViewModelProvider(activity)[VpnViewModel::class.java]
     }
 
-    // vpn permission is available and start connect
+    /** vpn permission is available and start connect */
     private val activityResult = activity.registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == Activity.RESULT_OK) openVpn()
     }
 
-    // vpn state changed
+    /** vpn state changed */
     private val vpnStateListener = VpnStateService.VpnStateListener {
         ioScope {
             when (vpnService?.errorState) {
@@ -50,13 +50,13 @@ class VpnProxy(private val activity: MainActivity) {
             }
         }
         // update vpn profile of kv
-        vpnVm.saveProfile(
-            vpnService?.errorState == VpnStateService.ErrorState.NO_ERROR &&
-                    vpnService?.state == VpnStateService.State.CONNECTED
+        if (vpnService?.errorState == VpnStateService.ErrorState.NO_ERROR &&
+            vpnService?.state == VpnStateService.State.CONNECTED
         )
+            vpnVm.saveProfile()
     }
 
-    // vpn service connection
+    /** vpn service connection */
     private val vpnServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
             vpnService = (service as VpnStateService.LocalBinder).service

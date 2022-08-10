@@ -19,7 +19,7 @@ import com.milk.smartvpn.ui.vm.VpnViewModel
 
 class VpnProxy(private val activity: MainActivity) {
     private var vpnService: VpnStateService? = null
-    private val vpnVm: VpnViewModel by lazy {
+    private val vpnViewModel: VpnViewModel by lazy {
         ViewModelProvider(activity)[VpnViewModel::class.java]
     }
 
@@ -37,23 +37,23 @@ class VpnProxy(private val activity: MainActivity) {
                 VpnStateService.ErrorState.NO_ERROR ->
                     when (vpnService?.state) {
                         VpnStateService.State.CONNECTING ->
-                            vpnVm.connectionState.emit(VpnStatus.Connecting)
+                            vpnViewModel.connectionState.emit(VpnStatus.Connecting)
                         VpnStateService.State.CONNECTED ->
-                            vpnVm.connectionState.emit(VpnStatus.Connected)
+                            vpnViewModel.connectionState.emit(VpnStatus.Connected)
                         VpnStateService.State.DISCONNECTING ->
-                            vpnVm.connectionState.emit(VpnStatus.NotConnect)
+                            vpnViewModel.connectionState.emit(VpnStatus.NotConnect)
                         VpnStateService.State.DISABLED ->
-                            vpnVm.connectionState.emit(VpnStatus.NotConnect)
-                        else -> vpnVm.connectionState.emit(VpnStatus.NotConnect)
+                            vpnViewModel.connectionState.emit(VpnStatus.NotConnect)
+                        else -> vpnViewModel.connectionState.emit(VpnStatus.NotConnect)
                     }
-                else -> vpnVm.connectionState.emit(VpnStatus.Failure)
+                else -> vpnViewModel.connectionState.emit(VpnStatus.Failure)
             }
         }
         // update vpn profile of kv
         if (vpnService?.errorState == VpnStateService.ErrorState.NO_ERROR &&
             vpnService?.state == VpnStateService.State.CONNECTED
         )
-            vpnVm.saveProfile()
+            vpnViewModel.saveProfile()
     }
 
     /** vpn service connection */
@@ -90,7 +90,7 @@ class VpnProxy(private val activity: MainActivity) {
                 activity.unbindService(vpnServiceConnection)
             }
         })
-        vpnVm.vpnStartConnect.observe(activity) {
+        vpnViewModel.vpnStartConnect.observe(activity) {
             if (it == true) vpnService?.disconnect()
             connecting()
         }
@@ -99,17 +99,18 @@ class VpnProxy(private val activity: MainActivity) {
     fun openVpn() {
         val prepare = VpnService.prepare(activity)
         if (prepare == null)
-            vpnVm.getVpnInfo()
+            vpnViewModel.getVpnInfo()
         else
             activityResult.launch(prepare)
     }
 
     fun closeVpn() {
+        vpnViewModel.endTiming()
         vpnService?.disconnect()
     }
 
     private fun connecting() {
-        val vpnProfile = vpnVm.getVpnProfile()
+        val vpnProfile = vpnViewModel.getVpnProfile()
         val profileInfo = Bundle().apply {
             putSerializable(PROFILE, vpnProfile)
             putInt(G_ID, vpnProfile.id.toInt())

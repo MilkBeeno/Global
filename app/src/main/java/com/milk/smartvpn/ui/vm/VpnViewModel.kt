@@ -6,6 +6,7 @@ import com.freetech.vpn.data.VpnProfile
 import com.freetech.vpn.data.VpnType
 import com.google.gson.Gson
 import com.milk.simple.ktx.ioScope
+import com.milk.simple.ktx.mainScope
 import com.milk.simple.mdr.KvManger
 import com.milk.smartvpn.constant.KvKey
 import com.milk.smartvpn.data.VpnListModel
@@ -15,19 +16,19 @@ import com.milk.smartvpn.ui.type.VpnStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.util.*
 
 class VpnViewModel : ViewModel() {
     private val vpnRepository by lazy { VpnRepository() }
     private var vpnModel = VpnModel()
+    private var timer: Timer? = null
+    private var vpnConnectDuration = 0L
+    internal val vpnStartConnect = MutableLiveData<Boolean>()
+    internal val connectionState = MutableStateFlow(VpnStatus.NotConnect)
 
-    /** VPN 网络信息请求成功、准备开始连接 */
-    val vpnStartConnect = MutableLiveData<Boolean>()
-
-    /** VPN 连接的状态 */
-    val connectionState = MutableStateFlow(VpnStatus.NotConnect)
     var vpnListModels = MutableStateFlow(mutableListOf<VpnListModel>())
 
-    fun getVpnInfo(nodeId: Long = -1) {
+    internal fun getVpnInfo(nodeId: Long = -1) {
         ioScope {
             if (connectionState.value == VpnStatus.Connecting) return@ioScope
             connectionState.emit(VpnStatus.Connecting)
@@ -49,7 +50,7 @@ class VpnViewModel : ViewModel() {
         }
     }
 
-    fun getVpnProfile(): VpnProfile {
+    internal fun getVpnProfile(): VpnProfile {
         val vpnProfile = VpnProfile()
         vpnProfile.id = vpnModel.nodeId
         vpnProfile.name = vpnModel.nodeName
@@ -61,9 +62,45 @@ class VpnViewModel : ViewModel() {
         return vpnProfile
     }
 
-    fun saveProfile() {
+    internal fun saveProfile() {
         KvManger.put(KvKey.SAVE_VPN_ID, vpnModel.nodeId)
         KvManger.put(KvKey.SAVE_VPN_PROFILE, vpnModel)
+    }
+
+    internal fun startTiming(request: (String) -> Unit) {
+        vpnConnectDuration = 0L
+        val timerTask = object : TimerTask() {
+            override fun run() {
+                vpnConnectDuration += 1
+                // Hour
+                val hour = vpnConnectDuration / (60 * 60)
+                val hourString = if (hour > 10)
+                    hour.toString().plus(":")
+                else
+                    "0".plus(hour).plus(":")
+                val timeLeftMinute = vpnConnectDuration - hour * (60 * 60)
+                // Minute
+                val minute = timeLeftMinute / 60
+                val minuteString = if (minute > 10)
+                    minute.toString().plus(":")
+                else
+                    "0".plus(minute).plus(":")
+                val timeLeftSecond = vpnConnectDuration - hour * (60 * 60) - minute * 60
+                // Second
+                val secondString = if (timeLeftSecond > 10)
+                    timeLeftSecond.toString()
+                else
+                    "0".plus(timeLeftSecond)
+                mainScope { request(hourString.plus(minuteString).plus(secondString)) }
+            }
+        }
+        if (timer == null) timer = Timer()
+        timer?.schedule(timerTask, 0, 1000)
+    }
+
+    internal fun endTiming() {
+        timer?.cancel()
+        timer = null
     }
 
     fun getVpnListInfo() {

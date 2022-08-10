@@ -50,6 +50,7 @@ class MainActivity : AbstractActivity() {
                     binding.lottieViewConnected.gone()
                     binding.tvConnectTime.visible()
                     binding.tvConnect.text = string(R.string.main_connected)
+                    vpnViewModel.startTiming { binding.tvConnectTime.text = it }
                     binding.tvConnect
                         .setBackgroundResource(R.drawable.shape_main_connected)
                     binding.tvConnect.setTextColor(color(R.color.FF121250))

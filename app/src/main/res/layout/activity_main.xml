@@ -114,7 +114,7 @@
             android:id="@+id/tvConnectTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="84dp"
+            android:layout_marginBottom="86dp"
             android:includeFontPadding="false"
             android:textColor="@color/white"
             android:textSize="15sp"

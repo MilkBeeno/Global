@@ -22,13 +22,13 @@ class ApiLogInterceptor : Interceptor {
         val time = System.currentTimeMillis()
         val logCall = StringBuilder("${HTTP_REQUEST}\n").apply {
             append("${HTTP_REQUEST_BEGIN}\n")
-            append("  URL: ${request.url()}\n")
-            append("  Method: ${request.method()}\n")
+            append("  URL: ${request.url}\n")
+            append("  Method: ${request.method}\n")
             append("  Headers:\n")
-            for (i in 0 until request.headers().size()) {
-                append("   - ${request.headers().name(i)}:${request.headers().value(i)}\n")
+            for (i in 0 until request.headers.size) {
+                append("   - ${request.headers.name(i)}:${request.headers.value(i)}\n")
             }
-            if (request.body() != null) {
+            if (request.body != null) {
                 append("  RequestBody: ${bodyToString(request)}\n")
             }
             append(HTTP_REQUEST_END)
@@ -39,15 +39,15 @@ class ApiLogInterceptor : Interceptor {
         val duration = System.currentTimeMillis() - time
         val logResult = StringBuilder("${HTTP_RESPONSE}\n").apply {
             append("${HTTP_RESPONSE_BEGIN}\n")
-            append("  URL: ${request.url()}\n")
+            append("  URL: ${request.url}\n")
             append("  is success : ${response.isSuccessful} - Received in: ${duration}ms\n")
-            append("  Status Code: ${response.code()}\n")
+            append("  Status Code: ${response.code}\n")
             if (!response.isSuccessful) {
-                append("  error:${getStringBody(response.body())}\n")
+                append("  error:${getStringBody(response.body)}\n")
             } else {
                 append("  Body:\n")
-                if (subtypeIsNotFile(response.body()?.contentType()?.subtype())) {
-                    val stringBody = getStringBody(response.body())
+                if (subtypeIsNotFile(response.body?.contentType()?.subtype)) {
+                    val stringBody = getStringBody(response.body)
                     val jsonString = getJsonString(stringBody)
                     jsonString.split(separator.toRegex()).forEach {
                         append("  ${it}\n")
@@ -73,9 +73,9 @@ class ApiLogInterceptor : Interceptor {
         try {
             val copy = request.newBuilder().build()
             val buffer = Buffer()
-            if (copy.body() == null) return ""
+            if (copy.body == null) return ""
 
-            copy.body()?.writeTo(buffer)
+            copy.body?.writeTo(buffer)
             return getJsonString(buffer.readUtf8())
         } catch (e: IOException) {
             return "{\"err\": \"" + e.message + "\"}"

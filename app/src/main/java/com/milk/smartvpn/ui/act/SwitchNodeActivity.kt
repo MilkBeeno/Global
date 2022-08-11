@@ -9,7 +9,8 @@ import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.milk.simple.ktx.collectLatest
 import com.milk.smartvpn.R
-import com.milk.smartvpn.data.VpnListModel
+import com.milk.smartvpn.data.VpnGroup
+import com.milk.smartvpn.data.VpnNode
 import com.milk.smartvpn.databinding.ActivitySwitchNodeBinding
 import com.milk.smartvpn.ui.vm.SwitchNodeViewModel
 
@@ -29,13 +30,10 @@ class SwitchNodeActivity : AbstractActivity() {
         binding.ivRefresh.setOnClickListener(this)
         switchNodeViewModel.vpnGroups.collectLatest(this) {
             binding.rvNode.linear().setup {
-                addType<VpnListModel>(R.layout.item_switch_group)
-                addType<VpnListModel>(R.layout.item_switch_node)
-                onBind {
-                    when(itemViewType){
-
-                    }
-                   // val binding = ItemSwitchGroupBinding.bind(itemView)
+                addType<VpnGroup>(R.layout.item_switch_group)
+                addType<VpnNode>(R.layout.item_switch_node)
+                R.id.ivGroupExpand.onClick {
+                    expandOrCollapse()
                 }
             }.models = it
         }

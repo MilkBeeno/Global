@@ -5,6 +5,9 @@ import com.drake.brv.item.ItemBind
 import com.drake.brv.item.ItemExpand
 import com.drake.brv.item.ItemHover
 import com.drake.brv.item.ItemPosition
+import com.milk.simple.ktx.gone
+import com.milk.simple.ktx.visible
+import com.milk.smartvpn.R
 import com.milk.smartvpn.databinding.ItemSwitchGroupBinding
 import com.milk.smartvpn.media.ImageLoader
 
@@ -20,19 +23,27 @@ class VpnGroup : ItemExpand, ItemHover, ItemPosition, ItemBind {
 
     override fun onBind(holder: BindingAdapter.BindingViewHolder) {
         val binding = ItemSwitchGroupBinding.bind(holder.itemView)
-        val item = itemSublist?.get(holder.layoutPosition)
-        if (item != null) {
-            try {
-                val vpnGroup = item as VpnGroup
-                ImageLoader.Builder()
-                    .request(vpnGroup.areaImage)
-                    .target(binding.ivGroupImage)
-                    .build()
-                binding.tvGroupName.text = vpnGroup.areaName
-                binding.ivGroupExpand
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+        binding.root.setBackgroundResource(
+            if (itemExpand)
+                R.drawable.shape_switch_group_expand
+            else
+                R.drawable.shape_switch_group_not_expand
+        )
+        ImageLoader.Builder()
+            .request(areaImage)
+            .target(binding.ivGroupImage)
+            .build()
+        binding.tvGroupName.text = areaName
+            .plus("(")
+            .plus(itemSublist?.size.toString())
+            .plus(")")
+        binding.ivGroupSelect.isSelected = isSelect
+        binding.ivGroupExpand.setImageResource(
+            if (itemExpand)
+                R.drawable.switch_node_packup
+            else
+                R.drawable.switch_node_expand
+        )
+        if (itemExpand) binding.vLine.visible() else binding.vLine.gone()
     }
 }

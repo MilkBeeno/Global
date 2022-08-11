@@ -1,47 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="58dp"
-    android:gravity="center_vertical">
+    android:layout_marginStart="14dp"
+    android:layout_marginEnd="14dp">
 
-    <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/ivNodeImage"
-        android:layout_width="33dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="14dp"
-        app:shapeAppearanceOverlay="@style/circleStyle" />
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tvNodeName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
-        android:textColor="@color/FFC5C8E4"
-        android:textSize="14sp"
-        tools:text="US New York 001" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivNodeImage"
+            android:layout_width="33dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="14dp"
+            app:shapeAppearanceOverlay="@style/circleStyle" />
 
-    <Space
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvNodeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:textColor="@color/FFC5C8E4"
+            android:textSize="14sp"
+            tools:text="US New York 001" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/ivNodeExpand"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:src="@drawable/switch_node_expand"
-        android:textColor="@color/FF0DC2FF"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        tools:text="375ms" />
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/ivNodeSelect"
-        android:layout_width="24sp"
-        android:layout_height="24dp"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvPing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/switch_node_expand"
+            android:textColor="@color/FF0DC2FF"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:text="375ms" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivNodeSelect"
+            android:layout_width="24sp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="14dp"
+            android:src="@drawable/selector_select" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:id="@+id/vLine"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="60dp"
         android:layout_marginEnd="14dp"
-        android:src="@drawable/selector_select" />
-</androidx.appcompat.widget.LinearLayoutCompat>
+        android:background="@color/FF4A4A8D"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</FrameLayout>

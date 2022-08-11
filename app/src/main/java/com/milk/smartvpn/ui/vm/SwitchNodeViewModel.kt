@@ -34,6 +34,7 @@ class SwitchNodeViewModel : ViewModel() {
                             node.areaName = vpnListModel.areaName
                             ioScope { node.ping = ping(vpnListModel.nodeDns) }
                             node.isSelect = vpnListModel.nodeId == currentNodeId
+                            node.itemSize = vpnListModels.size
                             if (vpnListModel.nodeId == currentNodeId)
                                 group.isSelect = true
                             nodes.add(node)

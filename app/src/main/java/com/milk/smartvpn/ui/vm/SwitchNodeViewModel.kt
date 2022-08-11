@@ -20,6 +20,7 @@ class SwitchNodeViewModel : ViewModel() {
             val result = response.data
             if (response.code == 2000 && result != null) {
                 val groups = arrayListOf<VpnGroup>()
+                groups.add(VpnGroup().apply { isAutoSelect = true })
                 val map = result.groupBy { it.areaCode }
                 map.forEach {
                     val vpnListModels = it.value
@@ -28,13 +29,14 @@ class SwitchNodeViewModel : ViewModel() {
                         group.areaImage = vpnListModels[0].areaImage
                         group.areaName = vpnListModels[0].areaName
                         val nodes = arrayListOf<VpnNode>()
-                        vpnListModels.forEach { vpnListModel ->
+                        vpnListModels.forEachIndexed { index, vpnListModel ->
                             val node = VpnNode()
                             node.areaImage = vpnListModel.areaImage
                             node.areaName = vpnListModel.areaName
                             ioScope { node.ping = ping(vpnListModel.nodeDns) }
                             node.isSelect = vpnListModel.nodeId == currentNodeId
                             node.itemSize = vpnListModels.size
+                            node.position = index
                             if (vpnListModel.nodeId == currentNodeId)
                                 group.isSelect = true
                             nodes.add(node)

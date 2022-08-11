@@ -16,4 +16,5 @@
     <string name="about_us_title">About Us</string>
     <string name="dialog_wait">Please Wait</string>
     <string name="switch_node_title">Change Sever</string>
+    <string name="common_auto_select">Auto Select</string>
 </resources>

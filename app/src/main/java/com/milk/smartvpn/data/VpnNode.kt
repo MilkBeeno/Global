@@ -15,18 +15,15 @@ class VpnNode : ItemBind {
     var ping: Int = 0
     var isSelect: Boolean = false
     var itemSize: Int = 0
+    var position: Int = 0
     override fun onBind(holder: BindingAdapter.BindingViewHolder) {
         val binding = ItemSwitchNodeBinding.bind(holder.itemView)
         binding.root.setBackgroundResource(
-            if (holder.layoutPosition == itemSize)
+            if (position == itemSize - 1)
                 R.drawable.shape_switch_node_footer
             else
                 R.drawable.shape_switch_node
         )
-        if (holder.layoutPosition == itemSize)
-            binding.vLine.gone()
-        else
-            binding.vLine.visible()
         ImageLoader.Builder()
             .request(areaImage)
             .target(binding.ivNodeImage)
@@ -34,5 +31,6 @@ class VpnNode : ItemBind {
         binding.ivNodeSelect.isSelected = isSelect
         binding.tvNodeName.text = areaName
         binding.tvPing.text = ping.toString().plus("ms")
+        if (position == itemSize - 1) binding.vLine.gone() else binding.vLine.visible()
     }
 }

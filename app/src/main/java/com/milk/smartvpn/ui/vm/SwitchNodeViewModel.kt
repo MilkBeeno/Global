@@ -12,7 +12,10 @@ import java.io.InputStreamReader
 class SwitchNodeViewModel : ViewModel() {
     private val vpnRepository by lazy { VpnRepository() }
     var vpnGroups = MutableStateFlow(arrayListOf<VpnGroup>())
+
+    /** 是否连接 VPN 的状态和连接 VPN 的状态 */
     var currentNodeId: Long = 0L
+    var currentConnected: Boolean = false
 
     fun getVpnListInfo() {
         ioScope {
@@ -20,7 +23,11 @@ class SwitchNodeViewModel : ViewModel() {
             val result = response.data
             if (response.code == 2000 && result != null) {
                 val groups = arrayListOf<VpnGroup>()
-                groups.add(VpnGroup().apply { isAutoSelect = true })
+                groups.add(VpnGroup().apply {
+                    if (currentNodeId <= 0)
+                        isSelect = currentConnected
+                    isAutoSelectItem = true
+                })
                 val map = result.groupBy { it.areaCode }
                 map.forEach {
                     val vpnListModels = it.value
@@ -31,12 +38,14 @@ class SwitchNodeViewModel : ViewModel() {
                         val nodes = arrayListOf<VpnNode>()
                         vpnListModels.forEachIndexed { index, vpnListModel ->
                             val node = VpnNode()
+                            node.nodeId = vpnListModel.nodeId
                             node.areaImage = vpnListModel.areaImage
                             node.areaName = vpnListModel.areaName
                             ioScope { node.ping = ping(vpnListModel.nodeDns) }
                             node.isSelect = vpnListModel.nodeId == currentNodeId
                             node.itemSize = vpnListModels.size
                             node.position = index
+                            // 有一个匹配上表示已经连接过
                             if (vpnListModel.nodeId == currentNodeId)
                                 group.isSelect = true
                             nodes.add(node)
@@ -48,14 +57,6 @@ class SwitchNodeViewModel : ViewModel() {
                 vpnGroups.emit(groups)
             }
         }
-    }
-
-    fun switchVpn(index: Int) {
-        if (vpnGroups.value.size <= index) return
-        val vpnListModel = vpnGroups.value[index]
-        //if (KvManger.getLong(KvKey.SAVE_VPN_ID) != vpnListModel.nodeId) {
-        // getVpnInfo(vpnListModel.nodeId)
-        // }
     }
 
     private fun ping(ip: String = "54.67.15.250"): Int {

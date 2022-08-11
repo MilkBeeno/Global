@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import com.milk.simple.ktx.*
 import com.milk.smartvpn.R
 import com.milk.smartvpn.databinding.ActivityMainBinding
+import com.milk.smartvpn.media.ImageLoader
 import com.milk.smartvpn.proxy.VpnProxy
 import com.milk.smartvpn.ui.dialog.WaitDialog
 import com.milk.smartvpn.ui.type.VpnStatus
@@ -71,6 +72,7 @@ class MainActivity : AbstractActivity() {
     }
 
     private fun vpnNotConnect() {
+        updateConnectInfo()
         binding.ivBackground.visible()
         binding.ivConnect.visible()
         binding.ivConnect
@@ -101,10 +103,24 @@ class MainActivity : AbstractActivity() {
     }
 
     private fun vpnConnected() {
+        updateConnectInfo()
         binding.lottieViewConnecting.gone()
         binding.lottieViewConnecting.pauseAnimation()
         binding.lottieViewConnected.visible()
         binding.lottieViewConnected.playAnimation()
+    }
+
+    private fun updateConnectInfo() {
+        if (vpnViewModel.currentNodeId > 0) {
+            ImageLoader.Builder()
+                .request(vpnViewModel.currentImageUrl)
+                .target(binding.ivNetwork)
+                .build()
+            binding.tvNetwork.text = vpnViewModel.currentName
+        } else {
+            binding.ivNetwork.setImageResource(R.drawable.main_network)
+            binding.tvNetwork.text = string(R.string.common_auto_select)
+        }
     }
 
     override fun onMultipleClick(view: View) {
@@ -112,7 +128,11 @@ class MainActivity : AbstractActivity() {
         when (view) {
             binding.llHeaderToolbar -> AboutActivity.create(this)
             binding.ivShare -> toShareAppStoreAddress()
-            binding.llNetwork -> SwitchNodeActivity.create(this)
+            binding.llNetwork -> SwitchNodeActivity.create(
+                this,
+                vpnViewModel.currentNodeId,
+                vpnViewModel.currentConnected
+            )
             binding.tvConnect -> {
                 when (vpnViewModel.connectionState.value) {
                     VpnStatus.NotConnect -> vpnProxy.openVpn()

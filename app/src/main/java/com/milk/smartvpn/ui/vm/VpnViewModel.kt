@@ -4,46 +4,45 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.freetech.vpn.data.VpnProfile
 import com.freetech.vpn.data.VpnType
-import com.google.gson.Gson
 import com.milk.simple.ktx.ioScope
 import com.milk.simple.ktx.mainScope
-import com.milk.simple.mdr.KvManger
-import com.milk.smartvpn.constant.KvKey
-import com.milk.smartvpn.data.VpnListModel
 import com.milk.smartvpn.data.VpnModel
 import com.milk.smartvpn.repository.VpnRepository
 import com.milk.smartvpn.ui.type.VpnStatus
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.util.*
 
 class VpnViewModel : ViewModel() {
     private val vpnRepository by lazy { VpnRepository() }
     private var vpnModel = VpnModel()
+
+    /** 连接 VPN 后的计时器、以及连接 VPN 的时长 */
     private var timer: Timer? = null
     private var vpnConnectDuration = 0L
+
+    /** 是否连接 VPN 的状态和连接 VPN 的状态 */
     internal val vpnStartConnect = MutableLiveData<Boolean>()
     internal val connectionState = MutableStateFlow(VpnStatus.NotConnect)
 
-    internal fun getVpnInfo(nodeId: Long = -1) {
+    /** 当前连接的节点 ID 和是否是连接成功 */
+    internal var currentNodeId: Long = 0
+    internal var currentConnected: Boolean = false
+    internal var currentImageUrl: String = ""
+    internal var currentName: String = ""
+
+    internal fun getVpnInfo(nodeId: Long = 0, switchNode: Boolean = false) {
         ioScope {
             if (connectionState.value == VpnStatus.Connecting) return@ioScope
             connectionState.emit(VpnStatus.Connecting)
-            var finalNodeId = nodeId
-            if (finalNodeId < 0) {
-                finalNodeId = KvManger.getLong(KvKey.SAVE_VPN_ID)
-                val profile = KvManger.getString(KvKey.SAVE_VPN_PROFILE)
-                if (profile.isNotEmpty()) {
-                    vpnModel = Gson().fromJson(profile, VpnModel::class.java)
-                }
-            }
+            if (nodeId <= 0) {
+                if (currentNodeId <= 0 || switchNode) currentNodeId = 0
+            } else currentNodeId = nodeId
             // get new data from service every time.
-            val response = vpnRepository.getVpnInfo(finalNodeId)
+            val response = vpnRepository.getVpnInfo(currentNodeId)
             val result = response.data
             if (response.code == 2000 && result != null) {
                 vpnModel = result
-                vpnStartConnect.postValue(nodeId >= 0)
+                vpnStartConnect.postValue(currentConnected)
             } else connectionState.emit(VpnStatus.Failure)
         }
     }
@@ -58,11 +57,6 @@ class VpnViewModel : ViewModel() {
         vpnProfile.mtu = 1400
         vpnProfile.vpnType = VpnType.fromIdentifier("ikev2-eap")
         return vpnProfile
-    }
-
-    internal fun saveProfile() {
-        KvManger.put(KvKey.SAVE_VPN_ID, vpnModel.nodeId)
-        KvManger.put(KvKey.SAVE_VPN_PROFILE, vpnModel)
     }
 
     internal fun startTiming(request: (String) -> Unit) {
@@ -100,6 +94,4 @@ class VpnViewModel : ViewModel() {
         timer?.cancel()
         timer = null
     }
-
-
 }

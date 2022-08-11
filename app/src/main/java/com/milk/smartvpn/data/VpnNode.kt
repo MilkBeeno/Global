@@ -9,7 +9,7 @@ import com.milk.smartvpn.databinding.ItemSwitchNodeBinding
 import com.milk.smartvpn.media.ImageLoader
 
 class VpnNode : ItemBind {
-    var nodeId: Int = 0
+    var nodeId: Long = 0
     var areaImage: String = ""
     var areaName: String = ""
     var ping: Int = 0

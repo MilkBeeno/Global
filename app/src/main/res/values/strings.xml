@@ -17,4 +17,5 @@
     <string name="dialog_wait">Please Wait</string>
     <string name="switch_node_title">Change Sever</string>
     <string name="common_auto_select">Auto Select</string>
+    <string name="common_loading">Loading…</string>
 </resources>

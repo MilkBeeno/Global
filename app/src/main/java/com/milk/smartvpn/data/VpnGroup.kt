@@ -13,10 +13,11 @@ import com.milk.smartvpn.databinding.ItemSwitchGroupBinding
 import com.milk.smartvpn.media.ImageLoader
 
 class VpnGroup : ItemExpand, ItemHover, ItemPosition, ItemBind {
-    var isAutoSelect: Boolean = false
     var areaImage: String = ""
     var areaName: String = ""
     var isSelect: Boolean = false
+    var nativeAd: Any? = null
+    var isAutoSelectItem: Boolean = false
     override var itemExpand: Boolean = false
     override var itemGroupPosition: Int = 0
     override var itemSublist: List<Any?>? = null
@@ -31,28 +32,37 @@ class VpnGroup : ItemExpand, ItemHover, ItemPosition, ItemBind {
             else
                 R.drawable.shape_switch_group_not_expand
         )
-        if (isAutoSelect) {
-            binding.tvGroupName.text =
-                binding.root.context.string(R.string.common_auto_select)
-            binding.ivGroupImage.setImageResource(R.drawable.main_network)
-            binding.ivGroupExpand.gone()
-        } else {
-            ImageLoader.Builder()
-                .request(areaImage)
-                .target(binding.ivGroupImage)
-                .build()
-            binding.tvGroupName.text = areaName
-                .plus("(")
-                .plus(itemSublist?.size.toString())
-                .plus(")")
-            binding.ivGroupSelect.isSelected = isSelect
-            binding.ivGroupExpand.setImageResource(
-                if (itemExpand)
-                    R.drawable.switch_node_packup
-                else
-                    R.drawable.switch_node_expand
-            )
-            if (itemExpand) binding.vLine.visible() else binding.vLine.gone()
+        when {
+            // 显示原生广告
+            nativeAd != null -> {
+
+            }
+            // 显示 VPN 列表节点
+            itemSublist != null -> {
+                ImageLoader.Builder()
+                    .request(areaImage)
+                    .target(binding.ivGroupImage)
+                    .build()
+                binding.tvGroupName.text = areaName
+                    .plus("(")
+                    .plus(itemSublist?.size.toString())
+                    .plus(")")
+                binding.ivGroupExpand.setImageResource(
+                    if (itemExpand)
+                        R.drawable.switch_node_packup
+                    else
+                        R.drawable.switch_node_expand
+                )
+                if (itemExpand) binding.vLine.visible() else binding.vLine.gone()
+            }
+            // 显示 VPN 自动连接选项
+            else -> {
+                binding.tvGroupName.text =
+                    binding.root.context.string(R.string.common_auto_select)
+                binding.ivGroupImage.setImageResource(R.drawable.main_network)
+                binding.ivGroupExpand.gone()
+            }
         }
+        binding.ivGroupSelect.isSelected = isSelect
     }
 }

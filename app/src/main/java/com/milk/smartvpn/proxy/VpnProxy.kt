@@ -12,7 +12,9 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import com.freetech.vpn.logic.VpnStateService
+import com.jeremyliao.liveeventbus.LiveEventBus
 import com.milk.simple.ktx.ioScope
+import com.milk.smartvpn.constant.KvKey
 import com.milk.smartvpn.ui.act.MainActivity
 import com.milk.smartvpn.ui.type.VpnStatus
 import com.milk.smartvpn.ui.vm.VpnViewModel
@@ -42,18 +44,15 @@ class VpnProxy(private val activity: MainActivity) {
                             vpnViewModel.connectionState.emit(VpnStatus.Connected)
                         VpnStateService.State.DISCONNECTING ->
                             vpnViewModel.connectionState.emit(VpnStatus.NotConnect)
-                        VpnStateService.State.DISABLED ->
-                            vpnViewModel.connectionState.emit(VpnStatus.NotConnect)
-                        else -> vpnViewModel.connectionState.emit(VpnStatus.NotConnect)
+                        else -> Unit
                     }
                 else -> vpnViewModel.connectionState.emit(VpnStatus.Failure)
             }
+            // 连接结果回调
+            vpnViewModel.currentConnected =
+                vpnService?.errorState == VpnStateService.ErrorState.NO_ERROR &&
+                        vpnService?.state == VpnStateService.State.CONNECTED
         }
-        // update vpn profile of kv
-        if (vpnService?.errorState == VpnStateService.ErrorState.NO_ERROR &&
-            vpnService?.state == VpnStateService.State.CONNECTED
-        )
-            vpnViewModel.saveProfile()
     }
 
     /** vpn service connection */
@@ -91,9 +90,15 @@ class VpnProxy(private val activity: MainActivity) {
             }
         })
         vpnViewModel.vpnStartConnect.observe(activity) {
-            if (it == true) vpnService?.disconnect()
+            vpnService?.disconnect()
             connecting()
         }
+        LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE)
+            .observe(activity) {
+                vpnViewModel.currentImageUrl = it[1]
+                vpnViewModel.currentName = it[2]
+                vpnViewModel.getVpnInfo(it[0].toLong(), true)
+            }
     }
 
     fun openVpn() {

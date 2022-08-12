@@ -98,6 +98,7 @@ class VpnProxy(private val activity: MainActivity) {
                 vpnViewModel.endTiming()
                 vpnViewModel.currentImageUrl = it[1]
                 vpnViewModel.currentName = it[2]
+                vpnViewModel.currentPing = it[3].toLong()
                 vpnViewModel.getVpnInfo(it[0].toLong(), true)
             }
     }

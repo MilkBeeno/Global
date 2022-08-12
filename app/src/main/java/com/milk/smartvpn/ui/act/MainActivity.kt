@@ -56,6 +56,7 @@ class MainActivity : AbstractActivity() {
                     binding.tvConnect
                         .setBackgroundResource(R.drawable.shape_main_connected)
                     binding.tvConnect.setTextColor(color(R.color.FF121250))
+                    vpnConnectResult(true)
                 }
             })
     }
@@ -66,7 +67,10 @@ class MainActivity : AbstractActivity() {
                 VpnStatus.NotConnect -> vpnNotConnect()
                 VpnStatus.Connecting -> vpnConnecting()
                 VpnStatus.Connected -> vpnConnected()
-                VpnStatus.Failure -> vpnNotConnect()
+                VpnStatus.Failure -> {
+                    vpnNotConnect()
+                    vpnConnectResult(false)
+                }
             }
         }
     }
@@ -110,6 +114,24 @@ class MainActivity : AbstractActivity() {
         binding.lottieViewConnected.playAnimation()
     }
 
+    /** 连接结果就是 1.加载广告 2.显示结果页面 */
+    private fun vpnConnectResult(isSuccess: Boolean) {
+        dialog.show()
+        vpnViewModel.loadMainAd(
+            activity = this,
+            finishRequest = {
+                dialog.dismiss()
+                ResultActivity.create(
+                    this,
+                    isSuccess,
+                    vpnViewModel.currentImageUrl,
+                    vpnViewModel.currentName,
+                    vpnViewModel.currentPing
+                )
+            }
+        )
+    }
+
     private fun updateConnectInfo() {
         if (vpnViewModel.currentNodeId > 0) {
             ImageLoader.Builder()
@@ -135,9 +157,8 @@ class MainActivity : AbstractActivity() {
             )
             binding.tvConnect -> {
                 when (vpnViewModel.connectionState.value) {
-                    VpnStatus.NotConnect -> vpnProxy.openVpn()
                     VpnStatus.Connected -> vpnProxy.closeVpn()
-                    else -> Unit
+                    else -> vpnProxy.openVpn()
                 }
             }
         }

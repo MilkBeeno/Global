@@ -1,5 +1,6 @@
 package com.milk.smartvpn.ui.vm
 
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.freetech.vpn.data.VpnProfile
@@ -9,6 +10,7 @@ import com.milk.simple.ktx.mainScope
 import com.milk.smartvpn.data.VpnModel
 import com.milk.smartvpn.repository.VpnRepository
 import com.milk.smartvpn.ui.type.VpnStatus
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
 
@@ -29,6 +31,7 @@ class VpnViewModel : ViewModel() {
     internal var currentConnected: Boolean = false
     internal var currentImageUrl: String = ""
     internal var currentName: String = ""
+    internal var currentPing: Long = 0
 
     internal fun getVpnInfo(nodeId: Long = 0, switchNode: Boolean = false) {
         ioScope {
@@ -93,5 +96,15 @@ class VpnViewModel : ViewModel() {
     internal fun endTiming() {
         timer?.cancel()
         timer = null
+    }
+
+    fun loadMainAd(
+        activity: FragmentActivity,
+        finishRequest: () -> Unit
+    ) {
+        ioScope {
+            delay(2000)
+            finishRequest()
+        }
     }
 }

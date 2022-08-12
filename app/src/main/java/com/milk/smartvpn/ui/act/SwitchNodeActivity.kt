@@ -59,12 +59,13 @@ class SwitchNodeActivity : AbstractActivity() {
                                     arrayListOf(
                                         node.nodeId.toString(),
                                         node.areaImage,
-                                        node.areaName
+                                        node.areaName,
+                                        node.ping.toString()
                                     )
                                 )
                         }
                         else -> LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE)
-                            .post(arrayListOf("0", "", ""))
+                            .post(arrayListOf("0", "", "", "-1"))
                     }
                     finish()
                 }
@@ -76,7 +77,8 @@ class SwitchNodeActivity : AbstractActivity() {
                             arrayListOf(
                                 node.nodeId.toString(),
                                 node.areaImage,
-                                node.areaName
+                                node.areaName,
+                                node.ping.toString()
                             )
                         )
                     finish()

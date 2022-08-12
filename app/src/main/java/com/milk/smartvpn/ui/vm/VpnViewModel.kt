@@ -66,20 +66,20 @@ class VpnViewModel : ViewModel() {
                 vpnConnectDuration += 1
                 // Hour
                 val hour = vpnConnectDuration / (60 * 60)
-                val hourString = if (hour > 10)
+                val hourString = if (hour >= 10)
                     hour.toString().plus(":")
                 else
                     "0".plus(hour).plus(":")
                 val timeLeftMinute = vpnConnectDuration - hour * (60 * 60)
                 // Minute
                 val minute = timeLeftMinute / 60
-                val minuteString = if (minute > 10)
+                val minuteString = if (minute >= 10)
                     minute.toString().plus(":")
                 else
                     "0".plus(minute).plus(":")
                 val timeLeftSecond = vpnConnectDuration - hour * (60 * 60) - minute * 60
                 // Second
-                val secondString = if (timeLeftSecond > 10)
+                val secondString = if (timeLeftSecond >= 10)
                     timeLeftSecond.toString()
                 else
                     "0".plus(timeLeftSecond)

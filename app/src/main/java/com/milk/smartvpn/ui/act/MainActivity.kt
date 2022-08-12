@@ -11,6 +11,7 @@ import com.milk.smartvpn.R
 import com.milk.smartvpn.databinding.ActivityMainBinding
 import com.milk.smartvpn.media.ImageLoader
 import com.milk.smartvpn.proxy.VpnProxy
+import com.milk.smartvpn.ui.dialog.FailureDialog
 import com.milk.smartvpn.ui.dialog.WaitDialog
 import com.milk.smartvpn.ui.type.VpnStatus
 import com.milk.smartvpn.ui.vm.VpnViewModel
@@ -19,7 +20,8 @@ class MainActivity : AbstractActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val vpnViewModel by viewModels<VpnViewModel>()
     private lateinit var vpnProxy: VpnProxy
-    private val dialog by lazy { WaitDialog(this) }
+    private val loadAdDialog by lazy { WaitDialog(this) }
+    private val failureDialog by lazy { FailureDialog(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +70,7 @@ class MainActivity : AbstractActivity() {
                 VpnStatus.Connecting -> vpnConnecting()
                 VpnStatus.Connected -> vpnConnected()
                 VpnStatus.Failure -> {
+                    failureDialog.show()
                     vpnNotConnect()
                 }
             }
@@ -90,7 +93,7 @@ class MainActivity : AbstractActivity() {
             .setBackgroundResource(R.drawable.shape_main_not_connect)
         binding.tvConnect.setTextColor(color(R.color.white))
         if (vpnViewModel.showResultPage) {
-            dialog.show()
+            loadAdDialog.show()
             vpnConnectResult(false)
             vpnViewModel.showResultPage = false
         }
@@ -120,11 +123,11 @@ class MainActivity : AbstractActivity() {
 
     /** 连接结果就是 1.加载广告 2.显示结果页面 */
     private fun vpnConnectResult(isConnected: Boolean) {
-        dialog.show()
+        loadAdDialog.show()
         vpnViewModel.loadMainAd(
             activity = this,
             finishRequest = {
-                dialog.dismiss()
+                loadAdDialog.dismiss()
                 ResultActivity.create(
                     this,
                     isConnected,

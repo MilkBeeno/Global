@@ -30,11 +30,11 @@ class ResultActivity : AbstractActivity() {
     private fun initializeView() {
         binding.ivBack.setOnClickListener { finish() }
         if (isConnected) {
-            binding.ivResult.setBackgroundResource(R.drawable.result_success)
+            binding.ivResult.setBackgroundResource(R.drawable.result_connected)
             binding.tvResult.text = string(R.string.result_connected)
             binding.tvResult.setTextColor(color(R.color.FF0DC2FF))
         } else {
-            binding.ivResult.setBackgroundResource(R.drawable.result_failure)
+            binding.ivResult.setBackgroundResource(R.drawable.result_disconnect)
             binding.tvResult.text = string(R.string.result_failure)
             binding.tvResult.setTextColor(color(R.color.FFFEB72A))
         }

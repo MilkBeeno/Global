@@ -23,4 +23,5 @@
     <string name="result_vpn_ping">Speed</string>
     <string name="result_connected">Connected</string>
     <string name="result_failure">Disconnected</string>
+    <string name="main_connect_failure">Connect Failure</string>
 </resources>

@@ -18,4 +18,9 @@
     <string name="switch_node_title">Change Sever</string>
     <string name="common_auto_select">Auto Select</string>
     <string name="common_loading">Loading…</string>
+    <string name="result_title">Result Page</string>
+    <string name="result_vpn_name_tage">Vpn server</string>
+    <string name="result_vpn_ping">Speed</string>
+    <string name="result_connected">Connected</string>
+    <string name="result_failure">Disconnected</string>
 </resources>

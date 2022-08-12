@@ -2,10 +2,12 @@
 <resources>
     <color name="app_background">#FF0B0C3E</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="white_70">#4DFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="FF1E1250">#FF1E1250</color>
     <color name="FF0DC2FF">#FF0DC2FF</color>
     <color name="FFC5C8E4">#FFC5C8E4</color>
     <color name="FF121250">#FF121250</color>
     <color name="FF4A4A8D">#FF4A4A8D</color>
+    <color name="FFFEB72A">#FFFEB72A</color>
 </resources>

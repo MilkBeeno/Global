@@ -69,7 +69,6 @@ class MainActivity : AbstractActivity() {
                 VpnStatus.Connected -> vpnConnected()
                 VpnStatus.Failure -> {
                     vpnNotConnect()
-                    vpnConnectResult(false)
                 }
             }
         }
@@ -90,6 +89,11 @@ class MainActivity : AbstractActivity() {
         binding.tvConnect
             .setBackgroundResource(R.drawable.shape_main_not_connect)
         binding.tvConnect.setTextColor(color(R.color.white))
+        if (vpnViewModel.showResultPage) {
+            dialog.show()
+            vpnConnectResult(false)
+            vpnViewModel.showResultPage = false
+        }
     }
 
     private fun vpnConnecting() {
@@ -115,7 +119,7 @@ class MainActivity : AbstractActivity() {
     }
 
     /** 连接结果就是 1.加载广告 2.显示结果页面 */
-    private fun vpnConnectResult(isSuccess: Boolean) {
+    private fun vpnConnectResult(isConnected: Boolean) {
         dialog.show()
         vpnViewModel.loadMainAd(
             activity = this,
@@ -123,7 +127,7 @@ class MainActivity : AbstractActivity() {
                 dialog.dismiss()
                 ResultActivity.create(
                     this,
-                    isSuccess,
+                    isConnected,
                     vpnViewModel.currentImageUrl,
                     vpnViewModel.currentName,
                     vpnViewModel.currentPing

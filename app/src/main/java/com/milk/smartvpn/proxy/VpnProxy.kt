@@ -112,6 +112,7 @@ class VpnProxy(private val activity: MainActivity) {
     }
 
     fun closeVpn() {
+        vpnViewModel.showResultPage = true
         vpnViewModel.endTiming()
         vpnService?.disconnect()
     }

@@ -33,6 +33,9 @@ class VpnViewModel : ViewModel() {
     internal var currentName: String = ""
     internal var currentPing: Long = 0
 
+    /** 是否显示结果页面 */
+    internal var showResultPage: Boolean = false
+
     internal fun getVpnInfo(nodeId: Long = 0, switchNode: Boolean = false) {
         ioScope {
             if (connectionState.value == VpnStatus.Connecting) return@ioScope

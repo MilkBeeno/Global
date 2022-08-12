@@ -95,6 +95,7 @@ class VpnProxy(private val activity: MainActivity) {
         }
         LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE)
             .observe(activity) {
+                vpnViewModel.endTiming()
                 vpnViewModel.currentImageUrl = it[1]
                 vpnViewModel.currentName = it[2]
                 vpnViewModel.getVpnInfo(it[0].toLong(), true)

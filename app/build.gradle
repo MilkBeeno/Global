@@ -7,8 +7,8 @@ android {
     compileSdk 32
 
     defaultConfig {
-        // 测试服包名 com.milk.smartvpn 正式服包名 com.milk.simplesmartvpn
-        applicationId "com.milk.smartvpn"
+        // 测试服包名 com.milk.smart 正式服包名 com.milk.simplesmart
+        applicationId "com.milk.smart"
         minSdk 21
         targetSdk 32
         versionCode 100

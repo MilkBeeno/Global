@@ -1,5 +1,6 @@
 package com.milk.smartvpn.ui.vm
 
+import android.app.Activity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,10 +8,13 @@ import com.freetech.vpn.data.VpnProfile
 import com.freetech.vpn.data.VpnType
 import com.milk.simple.ktx.ioScope
 import com.milk.simple.ktx.mainScope
+import com.milk.smartvpn.ad.AdConfig
+import com.milk.smartvpn.ad.AdManager
+import com.milk.smartvpn.constant.AdCodeKey
 import com.milk.smartvpn.data.VpnModel
 import com.milk.smartvpn.repository.VpnRepository
 import com.milk.smartvpn.ui.type.VpnStatus
-import kotlinx.coroutines.delay
+import com.milk.smartvpn.util.MilkTimer
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
 
@@ -101,13 +105,28 @@ class VpnViewModel : ViewModel() {
         timer = null
     }
 
-    fun loadMainAd(
-        activity: FragmentActivity,
-        finishRequest: () -> Unit
+    internal fun loadConnectSuccessAd(activity: FragmentActivity, finishRequest: (String) -> Unit) {
+        val unitId =
+            AdConfig.getAdvertiseUnitId(AdCodeKey.CONNECT_SUCCESS)
+        val timer = MilkTimer.Builder()
+            .setMillisInFuture(10000)
+            .setOnFinishedListener { finishRequest(unitId) }
+            .build()
+        timer.start()
+        if (unitId.isNotBlank()) AdManager.loadInterstitial(activity, unitId,
+            onSuccessRequest = {
+                timer.finish()
+            },
+            onFailedRequest = {
+                timer.finish()
+            })
+    }
+
+    internal fun showConnectSuccessAd(
+        activity: Activity,
+        unitId: String,
+        dismissRequest: () -> Unit
     ) {
-        ioScope {
-            delay(2000)
-            finishRequest()
-        }
+        AdManager.showInterstitial(activity, unitId, onDismissRequest = dismissRequest)
     }
 }

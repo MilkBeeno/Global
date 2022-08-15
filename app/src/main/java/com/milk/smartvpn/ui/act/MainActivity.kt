@@ -123,19 +123,26 @@ class MainActivity : AbstractActivity() {
 
     /** 连接结果就是 1.加载广告 2.显示结果页面 */
     private fun vpnConnectResult(isConnected: Boolean) {
-        loadAdDialog.show()
-        vpnViewModel.loadMainAd(
-            activity = this,
-            finishRequest = {
+        if (isConnected) {
+            loadAdDialog.show()
+            vpnViewModel.loadConnectSuccessAd(this) {
                 loadAdDialog.dismiss()
-                ResultActivity.create(
-                    this,
-                    isConnected,
-                    vpnViewModel.currentImageUrl,
-                    vpnViewModel.currentName,
-                    vpnViewModel.currentPing
-                )
+                vpnViewModel.showConnectSuccessAd(this, it) {
+                    ResultActivity.create(
+                        this,
+                        isConnected,
+                        vpnViewModel.currentImageUrl,
+                        vpnViewModel.currentName,
+                        vpnViewModel.currentPing
+                    )
+                }
             }
+        } else ResultActivity.create(
+            this,
+            isConnected,
+            vpnViewModel.currentImageUrl,
+            vpnViewModel.currentName,
+            vpnViewModel.currentPing
         )
     }
 

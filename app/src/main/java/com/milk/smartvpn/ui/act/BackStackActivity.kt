@@ -36,7 +36,7 @@ class BackStackActivity : AbstractActivity() {
             .observeSticky(this) {
                 backStackViewModel.loadLaunchAd(
                     activity = this,
-                    dismissRequest = {
+                    finishRequest = {
                         backStackViewModel.showLaunchAd(this, it) {
                             MainActivity.create(this)
                             finish()
@@ -46,7 +46,7 @@ class BackStackActivity : AbstractActivity() {
             }
         else backStackViewModel.loadBackStackAd(
             activity = this,
-            dismissRequest = {
+            finishRequest = {
                 backStackViewModel.showBackStackAd(this, it) {
                     finish()
                 }

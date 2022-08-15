@@ -9,12 +9,12 @@ import com.milk.smartvpn.util.MilkTimer
 
 class BackStackViewModel : ViewModel() {
 
-    internal fun loadLaunchAd(activity: Activity, dismissRequest: (String) -> Unit) {
+    internal fun loadLaunchAd(activity: Activity, finishRequest: (String) -> Unit) {
         val unitId =
             AdConfig.getAdvertiseUnitId(AdCodeKey.APP_LAUNCH)
         val timer = MilkTimer.Builder()
             .setMillisInFuture(10000)
-            .setOnFinishedListener { dismissRequest(unitId) }
+            .setOnFinishedListener { finishRequest(unitId) }
             .build()
         timer.start()
         if (unitId.isNotBlank()) AdManager.loadInterstitial(activity, unitId,
@@ -30,12 +30,12 @@ class BackStackViewModel : ViewModel() {
         AdManager.showInterstitial(activity, unitId, onDismissRequest = dismissRequest)
     }
 
-    internal fun loadBackStackAd(activity: Activity, dismissRequest: (String) -> Unit) {
+    internal fun loadBackStackAd(activity: Activity, finishRequest: (String) -> Unit) {
         val unitId =
             AdConfig.getAdvertiseUnitId(AdCodeKey.BACK_STACK)
         val timer = MilkTimer.Builder()
             .setMillisInFuture(10000)
-            .setOnFinishedListener { dismissRequest(unitId) }
+            .setOnFinishedListener { finishRequest(unitId) }
             .build()
         timer.start()
         if (unitId.isNotBlank()) AdManager.loadInterstitial(activity, unitId,

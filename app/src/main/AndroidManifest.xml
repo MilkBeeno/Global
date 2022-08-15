@@ -17,6 +17,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartVpn"
         tools:ignore="UnusedAttribute">
+        <!-- Google 广告ID 正式服 ID=“ ca-app-pub-9835209825468303~6826154181 ”-->
+        <!-- Google 广告ID 测试服 ID=“ ca-app-pub-3940256099942544~3347511713 “-->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
+
         <activity
             android:name=".ui.act.LaunchActivity"
             android:exported="true"

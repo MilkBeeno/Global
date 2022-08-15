@@ -4,6 +4,8 @@ import android.app.Application
 import com.milk.simple.ktx.ioScope
 import com.milk.simple.log.Logger
 import com.milk.simple.mdr.KvManger
+import com.milk.smartvpn.ad.AdManager
+import com.milk.smartvpn.friebase.FireBaseManager
 import com.milk.smartvpn.media.LoaderConfig
 import com.milk.smartvpn.ui.act.BackStackActivity
 import com.milk.smartvpn.ui.act.LaunchActivity
@@ -29,6 +31,8 @@ class BaseApplication : Application() {
             KvManger.initialize(current)
             Logger.initialize(BuildConfig.DEBUG)
             LoaderConfig.initialize(current)
+            AdManager.initialize(current)
+            FireBaseManager.initialize(current)
         }
     }
 }

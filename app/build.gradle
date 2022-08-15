@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -16,11 +17,34 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    // 加载打包时的 JKS 认证
+    signingConfigs {
+        myJsk {
+            storeFile file("../app/jks/smart.jks")
+            storePassword 'smart123456'
+            keyAlias 'vpn'
+            keyPassword 'smart123456'
+        }
+    }
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // 测试服的广告ID
+            buildConfigField 'String', 'AD_APP_ID', "${AD_APP_ID_DEBUG}"
+            buildConfigField 'String', 'AD_APP_VERSION', "${AD_APP_VERSION_DEBUG}"
+            buildConfigField 'String', 'AD_APP_CHANNEL', "${AD_APP_CHANNEL}"
+            signingConfig signingConfigs.myJsk
+        }
+        release {
+            minifyEnabled true
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // 正试服的广告ID
+            buildConfigField 'String', 'AD_APP_ID', "${AD_APP_ID_RELEASE}"
+            buildConfigField 'String', 'AD_APP_VERSION', "${AD_APP_VERSION_RELEASE}"
+            buildConfigField 'String', 'AD_APP_CHANNEL', "${AD_APP_CHANNEL}"
+            signingConfig signingConfigs.myJsk
         }
     }
     compileOptions {
@@ -59,4 +83,9 @@ dependencies {
     implementation "io.coil-kt:coil:2.1.0"
     // liveEventBus 事件通知
     implementation 'io.github.jeremyliao:live-event-bus-x:1.8.0'
+    // 谷歌广告依赖库
+    implementation("com.google.android.gms:play-services-ads:21.1.0")
+    // firebase 统计功能
+    implementation platform('com.google.firebase:firebase-bom:30.1.0')
+    implementation("com.google.firebase:firebase-analytics:21.1.0")
 }

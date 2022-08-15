@@ -5,6 +5,7 @@ import android.view.View
 import com.milk.simple.ktx.*
 import com.milk.simple.mdr.KvManger
 import com.milk.smartvpn.R
+import com.milk.smartvpn.ad.AdConfig
 import com.milk.smartvpn.constant.KvKey
 import com.milk.smartvpn.databinding.ActivityLaunchBinding
 
@@ -14,6 +15,7 @@ class LaunchActivity : AbstractActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        AdConfig.obtain()
         val isFirst = KvManger.getBoolean(KvKey.FIRST_ENTER, true)
         if (isFirst) {
             binding.root.visible()

@@ -50,25 +50,26 @@ object AdManager {
     /** 显示插页广告 */
     fun showInterstitial(
         activity: Activity,
+        unitId: String,
         onFailedRequest: (String) -> Unit = {},
         onSuccessRequest: () -> Unit = {},
-        onFinishedRequest: () -> Unit = {}
+        onDismissRequest: () -> Unit = {}
     ) {
         if (interstitialAd == null) {
             onFailedRequest("")
-            onFinishedRequest()
+            onDismissRequest()
         } else {
             interstitialAd?.show(activity)
             interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
                     onSuccessRequest()
-                    onFinishedRequest()
+                    onDismissRequest()
                 }
 
                 override fun onAdFailedToShowFullScreenContent(p0: AdError) {
                     super.onAdFailedToShowFullScreenContent(p0)
                     onFailedRequest(p0.message)
-                    onFinishedRequest()
+                    onDismissRequest()
                 }
 
                 override fun onAdShowedFullScreenContent() {

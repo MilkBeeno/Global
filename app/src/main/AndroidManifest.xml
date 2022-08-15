@@ -22,7 +22,12 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />
-
+        <!-- google 广告的活动页面 -->
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:theme="@style/Theme.SmartVpn"
+            tools:replace="android:theme" />
         <activity
             android:name=".ui.act.LaunchActivity"
             android:exported="true"

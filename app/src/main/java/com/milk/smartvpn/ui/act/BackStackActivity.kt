@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
+import com.jeremyliao.liveeventbus.LiveEventBus
 import com.milk.simple.ktx.immersiveStatusBar
+import com.milk.smartvpn.constant.EventKey
 import com.milk.smartvpn.databinding.ActivityBackStackBinding
 import com.milk.smartvpn.ui.vm.BackStackViewModel
 
@@ -15,19 +17,39 @@ class BackStackActivity : AbstractActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        initializeView()
+        initializeObserver()
+    }
+
+    private fun initializeView() {
         immersiveStatusBar(false)
         binding.lottieView.setAnimation("back_stack_icon.json")
         binding.lottieView.playAnimation()
         binding.lineLottieView.setAnimation("back_stack_progress.json")
         binding.lineLottieView.playAnimation()
-        backStackViewModel.loadBackStackAd(
-            activity = this,
-            onSuccessRequest = {
-                MainActivity.create(this)
-                finish()
-            },
-            onFailureRequest = {
+    }
 
+    private fun initializeObserver() {
+        val isLaunched =
+            intent.getBooleanExtra(IS_APP_LAUNCH_AD, false)
+        if (isLaunched) LiveEventBus.get<Any?>(EventKey.UPDATE_START_AD_UNIT_ID)
+            .observeSticky(this) {
+                backStackViewModel.loadLaunchAd(
+                    activity = this,
+                    dismissRequest = {
+                        backStackViewModel.showLaunchAd(this, it) {
+                            MainActivity.create(this)
+                            finish()
+                        }
+                    }
+                )
+            }
+        else backStackViewModel.loadBackStackAd(
+            activity = this,
+            dismissRequest = {
+                backStackViewModel.showBackStackAd(this, it) {
+                    finish()
+                }
             })
     }
 

@@ -3,15 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="58dp"
+    android:layout_height="wrap_content"
     android:layout_marginStart="14dp"
     android:layout_marginTop="10dp"
     android:layout_marginEnd="14dp"
-    android:background="@drawable/shape_switch_group_not_expand">
+    android:background="@drawable/shape_switch_group_not_expand"
+    android:maxHeight="77dp"
+    android:minHeight="58dp">
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
         android:gravity="center_vertical">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -59,4 +63,10 @@
         android:background="@color/FF4A4A8D"
         android:visibility="gone"
         tools:visibility="visible" />
+
+    <com.milk.smartvpn.ui.view.VpnAdLayout
+        android:id="@+id/nativeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 </FrameLayout>

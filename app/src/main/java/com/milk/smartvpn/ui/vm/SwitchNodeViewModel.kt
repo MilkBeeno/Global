@@ -1,10 +1,16 @@
 package com.milk.smartvpn.ui.vm
 
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import com.milk.simple.ktx.ioScope
+import com.milk.smartvpn.ad.AdConfig
+import com.milk.smartvpn.ad.AdManager
+import com.milk.smartvpn.constant.AdCodeKey
 import com.milk.smartvpn.data.VpnGroup
 import com.milk.smartvpn.data.VpnNode
+import com.milk.smartvpn.repository.DataRepository
 import com.milk.smartvpn.repository.VpnRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -16,6 +22,34 @@ class SwitchNodeViewModel : ViewModel() {
     /** 是否连接 VPN 的状态和连接 VPN 的状态 */
     var currentNodeId: Long = 0L
     var currentConnected: Boolean = false
+
+    internal fun loadNodeNativeAd(
+        activity: FragmentActivity,
+        finishRequest: (String) -> Unit
+    ) {
+        val currentNativeAd =
+            DataRepository.vpnListAd.value.second
+        val unitId =
+            AdConfig.getAdvertiseUnitId(AdCodeKey.VPN_LIST)
+        if (unitId.isNotBlank() && currentNativeAd == null) {
+            AdManager.loadNativeAds(activity, unitId,
+                failedRequest = {
+                    // 加载失败、原因和理由
+                    finishRequest(unitId)
+                },
+                successRequest = {
+                    // 加载成功原因和理由
+                    finishRequest(unitId)
+                    DataRepository.vpnListAd.value = Pair(unitId, it)
+                },
+                clickAdRequest = {
+                    // 点击广告页面
+                })
+        } else ioScope {
+            delay(1500)
+            finishRequest(unitId)
+        }
+    }
 
     fun getVpnListInfo() {
         ioScope {
@@ -52,6 +86,13 @@ class SwitchNodeViewModel : ViewModel() {
                         }
                         group.itemSublist = nodes
                         groups.add(group)
+                    }
+                }
+                groups.forEachIndexed { index, _ ->
+                    if ((index + 1) % 5 == 0) {
+                        val vpnGroup = VpnGroup()
+                            .apply { nativeAd = DataRepository.vpnListAd.value.second }
+                        groups.add(index, vpnGroup)
                     }
                 }
                 vpnGroups.emit(groups)

@@ -92,7 +92,9 @@ class SwitchNodeActivity : AbstractActivity() {
         loadingDialog
             .setContent(string(R.string.common_loading))
         loadingDialog.show()
-        switchNodeViewModel.getVpnListInfo()
+        switchNodeViewModel.loadNodeNativeAd(this) {
+            switchNodeViewModel.getVpnListInfo()
+        }
     }
 
     override fun onMultipleClick(view: View) {
@@ -101,7 +103,9 @@ class SwitchNodeActivity : AbstractActivity() {
             binding.ivBack -> finish()
             binding.ivRefresh -> {
                 loadingDialog.show()
-                switchNodeViewModel.getVpnListInfo()
+                switchNodeViewModel.loadNodeNativeAd(this) {
+                    switchNodeViewModel.getVpnListInfo()
+                }
             }
         }
     }

@@ -5,6 +5,7 @@ import com.drake.brv.item.ItemBind
 import com.drake.brv.item.ItemExpand
 import com.drake.brv.item.ItemHover
 import com.drake.brv.item.ItemPosition
+import com.google.android.gms.ads.nativead.NativeAd
 import com.milk.simple.ktx.gone
 import com.milk.simple.ktx.string
 import com.milk.simple.ktx.visible
@@ -16,7 +17,7 @@ class VpnGroup : ItemExpand, ItemHover, ItemPosition, ItemBind {
     var areaImage: String = ""
     var areaName: String = ""
     var isSelect: Boolean = false
-    var nativeAd: Any? = null
+    var nativeAd: NativeAd? = null
     var isAutoSelectItem: Boolean = false
     override var itemExpand: Boolean = false
     override var itemGroupPosition: Int = 0
@@ -35,10 +36,16 @@ class VpnGroup : ItemExpand, ItemHover, ItemPosition, ItemBind {
         when {
             // 显示原生广告
             nativeAd != null -> {
-
+                binding.vLine.gone()
+                binding.llContent.gone()
+                binding.nativeView.visible()
+                nativeAd?.let { binding.nativeView.setNativeAd(it) }
             }
             // 显示 VPN 列表节点
             itemSublist != null -> {
+                binding.vLine.gone()
+                binding.nativeView.gone()
+                binding.llContent.visible()
                 ImageLoader.Builder()
                     .request(areaImage)
                     .target(binding.ivGroupImage)
@@ -57,6 +64,9 @@ class VpnGroup : ItemExpand, ItemHover, ItemPosition, ItemBind {
             }
             // 显示 VPN 自动连接选项
             else -> {
+                binding.vLine.gone()
+                binding.nativeView.gone()
+                binding.llContent.visible()
                 binding.tvGroupName.text =
                     binding.root.context.string(R.string.common_auto_select)
                 binding.ivGroupImage.setImageResource(R.drawable.main_network)

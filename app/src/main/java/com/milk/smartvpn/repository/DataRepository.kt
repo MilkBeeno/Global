@@ -6,4 +6,5 @@ import kotlinx.coroutines.flow.MutableStateFlow
 object DataRepository {
     internal val connectSuccessAd = MutableStateFlow<Pair<String, NativeAd?>>(Pair("", null))
     internal val disconnectAd = MutableStateFlow<Pair<String, NativeAd?>>(Pair("", null))
+    internal val vpnListAd = MutableStateFlow<Pair<String, NativeAd?>>(Pair("", null))
 }

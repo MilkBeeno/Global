@@ -58,4 +58,22 @@ object FirebaseKey {
 
     /** 点击自动节点 */
     internal const val CLICK_ON_THE_AUTOMATIC_NODE = "Click_on_the_automatic_node"
+
+    /** 发起广告请求的次数 */
+    internal const val MAKE_AN_AD_REQUEST = "Make_an_ad_request"
+
+    /** 广告请求成功的次数 */
+    internal const val AD_REQUEST_SUCCEEDED = "Ad_request_succeeded"
+
+    /** 广告请求失败的次数 */
+    internal const val AD_REQUEST_FAILED = "Ad_request_failed"
+
+    /** 广告展示成功的次数 */
+    internal const val THE_AD_SHOW_SUCCESS = "The_ad_show_success"
+
+    /** 广告展示失败的次数 */
+    internal const val AD_SHOW_FAILED = "Ad_show_failed"
+
+    /** 点击广告次数 */
+    internal const val CLICK_AD = "click_ad"
 }

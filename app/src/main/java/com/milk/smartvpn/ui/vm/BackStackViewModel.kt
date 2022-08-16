@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import com.milk.smartvpn.ad.AdConfig
 import com.milk.smartvpn.ad.AdManager
 import com.milk.smartvpn.constant.AdCodeKey
+import com.milk.smartvpn.friebase.FireBaseManager
+import com.milk.smartvpn.friebase.FirebaseKey
 import com.milk.smartvpn.util.MilkTimer
 
 class BackStackViewModel : ViewModel() {
@@ -21,9 +23,13 @@ class BackStackViewModel : ViewModel() {
         if (unitId.isNotBlank())
             AdManager.loadInterstitial(activity, unitId,
                 onFailedRequest = {
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
                     timer.finish()
                 },
                 onSuccessRequest = {
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
                     timer.finish()
                 })
     }
@@ -36,13 +42,19 @@ class BackStackViewModel : ViewModel() {
         AdManager.showInterstitial(
             activity = activity,
             failureRequest = {
+                FireBaseManager
+                    .logEvent(FirebaseKey.AD_SHOW_FAILED, unitId, it)
                 dismissRequest()
             },
             successRequest = {
+                FireBaseManager
+                    .logEvent(FirebaseKey.THE_AD_SHOW_SUCCESS, unitId, unitId)
                 dismissRequest()
             },
             clickRequest = {
                 // unitId 埋点事件ID
+                FireBaseManager
+                    .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
             })
     }
 
@@ -54,13 +66,18 @@ class BackStackViewModel : ViewModel() {
             .setOnFinishedListener { finishRequest(unitId) }
             .build()
         timer.start()
-        if (unitId.isNotBlank()) AdManager.loadInterstitial(activity, unitId,
-            onSuccessRequest = {
-                timer.finish()
-            },
-            onFailedRequest = {
-                timer.finish()
-            })
+        if (unitId.isNotBlank())
+            AdManager.loadInterstitial(activity, unitId,
+                onFailedRequest = {
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
+                    timer.finish()
+                },
+                onSuccessRequest = {
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
+                    timer.finish()
+                })
     }
 
     internal fun showBackStackAd(
@@ -71,13 +88,19 @@ class BackStackViewModel : ViewModel() {
         AdManager.showInterstitial(
             activity = activity,
             failureRequest = {
+                FireBaseManager
+                    .logEvent(FirebaseKey.AD_SHOW_FAILED, unitId, it)
                 dismissRequest()
             },
             successRequest = {
+                FireBaseManager
+                    .logEvent(FirebaseKey.THE_AD_SHOW_SUCCESS, unitId, unitId)
                 dismissRequest()
             },
             clickRequest = {
                 // unitId 埋点事件ID
+                FireBaseManager
+                    .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
             })
     }
 }

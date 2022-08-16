@@ -8,6 +8,8 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.nativead.NativeAd
 import com.milk.smartvpn.BuildConfig
 import com.milk.smartvpn.constant.AdCodeKey
+import com.milk.smartvpn.friebase.FireBaseManager
+import com.milk.smartvpn.friebase.FirebaseKey
 
 object AdManager {
     private var interstitialAd: InterstitialAd? = null
@@ -32,6 +34,7 @@ object AdManager {
         onFailedRequest: (String) -> Unit = {},
         onSuccessRequest: () -> Unit = {}
     ) {
+        FireBaseManager.logEvent(FirebaseKey.MAKE_AN_AD_REQUEST, adUnitId, adUnitId)
         val adRequest = AdRequest.Builder().build()
         InterstitialAd.load(context, adUnitId, adRequest,
             object : InterstitialAdLoadCallback() {
@@ -88,6 +91,7 @@ object AdManager {
         successRequest: (NativeAd) -> Unit = {},
         clickAdRequest: () -> Unit = {}
     ) {
+        FireBaseManager.logEvent(FirebaseKey.MAKE_AN_AD_REQUEST, adUnitId, adUnitId)
         val adLoader = AdLoader.Builder(context, adUnitId)
             .forNativeAd { successRequest(it) }
             .withAdListener(object : AdListener() {

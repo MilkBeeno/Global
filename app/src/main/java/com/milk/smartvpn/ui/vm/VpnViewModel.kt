@@ -54,13 +54,19 @@ class VpnViewModel : ViewModel() {
             adUnitId = unitId,
             failedRequest = {
                 // 失败埋点
+                FireBaseManager
+                    .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
             },
             successRequest = {
                 // 成功埋点
+                FireBaseManager
+                    .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
                 ioScope { mainNativeAd.emit(Pair(unitId, it)) }
             },
             clickAdRequest = {
                 // 点击埋点
+                FireBaseManager
+                    .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
             })
     }
 
@@ -162,9 +168,13 @@ class VpnViewModel : ViewModel() {
         if (unitId.isNotBlank())
             AdManager.loadInterstitial(activity, unitId,
                 onFailedRequest = {
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
                     failureRequest()
                 },
                 onSuccessRequest = {
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
                     successRequest(unitId)
                 })
         else failureRequest()
@@ -179,15 +189,21 @@ class VpnViewModel : ViewModel() {
             AdManager.loadNativeAds(activity, unitId,
                 failedRequest = {
                     // 加载失败、原因和理由
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
                 },
                 successRequest = {
                     // 加载成功原因和理由
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
                     ioScope {
                         DataRepository.connectSuccessAd.emit(Pair(unitId, it))
                     }
                 },
                 clickAdRequest = {
                     // 点击广告页面
+                    FireBaseManager
+                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
                 })
         }
     }
@@ -200,13 +216,19 @@ class VpnViewModel : ViewModel() {
         AdManager.showInterstitial(
             activity = activity,
             failureRequest = {
+                FireBaseManager
+                    .logEvent(FirebaseKey.AD_SHOW_FAILED, unitId, it)
                 dismissRequest()
             },
             successRequest = {
+                FireBaseManager
+                    .logEvent(FirebaseKey.THE_AD_SHOW_SUCCESS, unitId, unitId)
                 dismissRequest()
             },
             clickRequest = {
                 // unitId 埋点事件ID
+                FireBaseManager
+                    .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
             })
     }
 
@@ -222,10 +244,14 @@ class VpnViewModel : ViewModel() {
             AdManager.loadNativeAds(activity, unitId,
                 failedRequest = {
                     // 加载失败、原因和理由
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
                     finishRequest(unitId)
                 },
                 successRequest = {
                     // 加载成功原因和理由
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
                     finishRequest(unitId)
                     ioScope {
                         DataRepository.disconnectAd.emit(Pair(unitId, it))
@@ -233,6 +259,8 @@ class VpnViewModel : ViewModel() {
                 },
                 clickAdRequest = {
                     // 点击广告页面
+                    FireBaseManager
+                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
                 })
         } else ioScope {
             delay(1500)

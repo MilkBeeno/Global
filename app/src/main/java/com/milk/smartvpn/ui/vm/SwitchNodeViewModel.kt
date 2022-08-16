@@ -8,6 +8,8 @@ import com.milk.smartvpn.ad.AdManager
 import com.milk.smartvpn.constant.AdCodeKey
 import com.milk.smartvpn.data.VpnGroup
 import com.milk.smartvpn.data.VpnNode
+import com.milk.smartvpn.friebase.FireBaseManager
+import com.milk.smartvpn.friebase.FirebaseKey
 import com.milk.smartvpn.repository.DataRepository
 import com.milk.smartvpn.repository.VpnRepository
 import kotlinx.coroutines.delay
@@ -35,15 +37,21 @@ class SwitchNodeViewModel : ViewModel() {
             AdManager.loadNativeAds(activity, unitId,
                 failedRequest = {
                     // 加载失败、原因和理由
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
                     finishRequest(unitId)
                 },
                 successRequest = {
                     // 加载成功原因和理由
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
                     finishRequest(unitId)
                     DataRepository.vpnListAd.value = Pair(unitId, it)
                 },
                 clickAdRequest = {
                     // 点击广告页面
+                    FireBaseManager
+                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
                 })
         } else ioScope {
             delay(1500)

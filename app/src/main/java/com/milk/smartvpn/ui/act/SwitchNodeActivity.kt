@@ -15,6 +15,8 @@ import com.milk.smartvpn.constant.KvKey
 import com.milk.smartvpn.data.VpnGroup
 import com.milk.smartvpn.data.VpnNode
 import com.milk.smartvpn.databinding.ActivitySwitchNodeBinding
+import com.milk.smartvpn.friebase.FireBaseManager
+import com.milk.smartvpn.friebase.FirebaseKey
 import com.milk.smartvpn.ui.dialog.WaitDialog
 import com.milk.smartvpn.ui.vm.SwitchNodeViewModel
 import java.util.*
@@ -52,6 +54,9 @@ class SwitchNodeActivity : AbstractActivity() {
                     val nodes = vpnGroup.itemSublist
                     when {
                         nodes != null && nodes.isNotEmpty() -> {
+                            FireBaseManager.logEvent(FirebaseKey.CLICK_ON_NORMAL_NODE)
+                            if (currentConnected)
+                                FireBaseManager.logEvent(FirebaseKey.CLICK_TO_SWITCH_NODE)
                             val index = random.nextInt(nodes.size)
                             val node = nodes[index] as VpnNode
                             LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE)
@@ -64,14 +69,20 @@ class SwitchNodeActivity : AbstractActivity() {
                                     )
                                 )
                         }
-                        else -> LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE)
-                            .post(arrayListOf("0", "", "", "-1"))
+                        else -> {
+                            FireBaseManager.logEvent(FirebaseKey.CLICK_ON_THE_AUTOMATIC_NODE)
+                            LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE)
+                                .post(arrayListOf("0", "", "", "-1"))
+                        }
                     }
                     finish()
                 }
                 R.id.ivNodeSelect.onClick {
                     val node = this._data as VpnNode
                     if (node.isSelect) return@onClick
+                    FireBaseManager.logEvent(FirebaseKey.CLICK_ON_NORMAL_NODE)
+                    if (currentConnected)
+                        FireBaseManager.logEvent(FirebaseKey.CLICK_TO_SWITCH_NODE)
                     LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE)
                         .post(
                             arrayListOf(

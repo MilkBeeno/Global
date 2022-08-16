@@ -12,6 +12,8 @@ import com.milk.smartvpn.ad.AdConfig
 import com.milk.smartvpn.ad.AdManager
 import com.milk.smartvpn.constant.AdCodeKey
 import com.milk.smartvpn.data.VpnModel
+import com.milk.smartvpn.friebase.FireBaseManager
+import com.milk.smartvpn.friebase.FirebaseKey
 import com.milk.smartvpn.repository.DataRepository
 import com.milk.smartvpn.repository.VpnRepository
 import com.milk.smartvpn.ui.type.VpnStatus
@@ -96,6 +98,17 @@ class VpnViewModel : ViewModel() {
         val timerTask = object : TimerTask() {
             override fun run() {
                 vpnConnectDuration += 1
+                when (vpnConnectDuration) {
+                    in 0 until 60 * 1000 -> {
+                        FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_LESS_THAN_1MIN)
+                    }
+                    in 60 * 1000 until 30 * 60 * 1000 -> {
+                        FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_1_30MIN)
+                    }
+                    in 30 * 60 * 1000 until 60 * 60 * 1000 -> {
+                        FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_30_60MIN)
+                    }
+                }
                 // Hour
                 val hour = vpnConnectDuration / (60 * 60)
                 val hourString = if (hour >= 10)

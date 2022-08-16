@@ -9,6 +9,8 @@ import androidx.activity.viewModels
 import com.milk.simple.ktx.*
 import com.milk.smartvpn.R
 import com.milk.smartvpn.databinding.ActivityMainBinding
+import com.milk.smartvpn.friebase.FireBaseManager
+import com.milk.smartvpn.friebase.FirebaseKey
 import com.milk.smartvpn.media.ImageLoader
 import com.milk.smartvpn.proxy.VpnProxy
 import com.milk.smartvpn.ui.dialog.FailureDialog
@@ -22,6 +24,7 @@ class MainActivity : AbstractActivity() {
     private lateinit var vpnProxy: VpnProxy
     private val loadAdDialog by lazy { WaitDialog(this) }
     private val failureDialog by lazy { FailureDialog(this) }
+    private var currentTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,12 +32,13 @@ class MainActivity : AbstractActivity() {
         initializeView()
         initializeObserver()
         vpnProxy = VpnProxy(this)
+        FireBaseManager.logEvent(FirebaseKey.ENTER_MAIN_PAGE)
     }
 
     private fun initializeView() {
         immersiveStatusBar(false)
         binding.llHeaderToolbar.statusBarPadding()
-        binding.llHeaderToolbar.setOnClickListener(this)
+        binding.ivMenu.setOnClickListener(this)
         binding.ivShare.setOnClickListener(this)
         binding.llNetwork.setOnClickListener(this)
         binding.tvConnect.setOnClickListener(this)
@@ -78,6 +82,7 @@ class MainActivity : AbstractActivity() {
                 VpnStatus.Connecting -> vpnConnecting()
                 VpnStatus.Connected -> vpnConnected()
                 VpnStatus.Failure -> {
+                    FireBaseManager.logEvent(FirebaseKey.CONNECT_FAILED)
                     failureDialog.show()
                     vpnNotConnect()
                 }
@@ -131,9 +136,37 @@ class MainActivity : AbstractActivity() {
     /** 连接结果就是 1.加载广告 2.显示结果页面 */
     private fun vpnConnectResult(isConnected: Boolean) {
         loadAdDialog.show()
-        if (isConnected) vpnViewModel.loadSuccessAd(this) {
-            loadAdDialog.dismiss()
-            vpnViewModel.showConnectedAd(this, it) {
+        if (isConnected) {
+            FireBaseManager.logEvent(FirebaseKey.CONNECT_SUCCESSFULLY)
+            when ((System.currentTimeMillis() - currentTime)) {
+                in 0L until 3000L -> {
+                    FireBaseManager.logEvent(FirebaseKey.CONNECTION_SUCCESSFUL_WITHIN_3S)
+                }
+                in 3L until 8000L -> {
+                    FireBaseManager.logEvent(FirebaseKey.CONNECTION_SUCCESSFUL_WITHIN_3_8S)
+                }
+                in 8L until 15000L -> {
+                    FireBaseManager.logEvent(FirebaseKey.CONNECTION_SUCCESSFUL_WITHIN_8_15S)
+                }
+                else -> {
+                    FireBaseManager.logEvent(FirebaseKey.CONNECTION_SUCCESSFUL_FOR_MORE_THAN_15S)
+                }
+            }
+            vpnViewModel.loadSuccessAd(this) {
+                loadAdDialog.dismiss()
+                vpnViewModel.showConnectedAd(this, it) {
+                    ResultActivity.create(
+                        this,
+                        isConnected,
+                        vpnViewModel.currentImageUrl,
+                        vpnViewModel.currentName,
+                        vpnViewModel.currentPing
+                    )
+                }
+            }
+        } else {
+            vpnViewModel.loadDisconnectNativeAd(this) {
+                loadAdDialog.dismiss()
                 ResultActivity.create(
                     this,
                     isConnected,
@@ -142,16 +175,6 @@ class MainActivity : AbstractActivity() {
                     vpnViewModel.currentPing
                 )
             }
-        }
-        else vpnViewModel.loadDisconnectNativeAd(this) {
-            loadAdDialog.dismiss()
-            ResultActivity.create(
-                this,
-                isConnected,
-                vpnViewModel.currentImageUrl,
-                vpnViewModel.currentName,
-                vpnViewModel.currentPing
-            )
         }
     }
 
@@ -171,10 +194,18 @@ class MainActivity : AbstractActivity() {
     override fun onMultipleClick(view: View) {
         super.onMultipleClick(view)
         when (view) {
-            binding.llHeaderToolbar -> AboutActivity.create(this)
-            binding.ivShare -> toShareAppStoreAddress()
+            binding.ivMenu -> {
+                FireBaseManager.logEvent(FirebaseKey.CLICK_ON_MORE)
+                AboutActivity.create(this)
+            }
+            binding.ivShare -> {
+                FireBaseManager.logEvent(FirebaseKey.CLICK_THE_SHARE)
+                toShareAppStoreAddress()
+            }
             binding.llNetwork -> {
                 if (vpnViewModel.connectionState.value == VpnStatus.Connecting) return
+                currentTime = System.currentTimeMillis()
+                FireBaseManager.logEvent(FirebaseKey.CLICK_ON_THE_NODE_LIST_ENTRY)
                 SwitchNodeActivity.create(
                     this,
                     vpnViewModel.currentNodeId,
@@ -184,7 +215,10 @@ class MainActivity : AbstractActivity() {
             binding.tvConnect -> {
                 when (vpnViewModel.connectionState.value) {
                     VpnStatus.Connected -> vpnProxy.closeVpn()
-                    else -> vpnProxy.openVpn()
+                    else -> {
+                        FireBaseManager.logEvent(FirebaseKey.CLICK_TO_CONNECT_NODE)
+                        vpnProxy.openVpn()
+                    }
                 }
             }
         }

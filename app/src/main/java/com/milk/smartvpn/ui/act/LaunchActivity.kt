@@ -8,6 +8,8 @@ import com.milk.smartvpn.R
 import com.milk.smartvpn.ad.AdConfig
 import com.milk.smartvpn.constant.KvKey
 import com.milk.smartvpn.databinding.ActivityLaunchBinding
+import com.milk.smartvpn.friebase.FireBaseManager
+import com.milk.smartvpn.friebase.FirebaseKey
 
 class LaunchActivity : AbstractActivity() {
     private val binding by lazy { ActivityLaunchBinding.inflate(layoutInflater) }
@@ -22,6 +24,7 @@ class LaunchActivity : AbstractActivity() {
             KvManger.put(KvKey.FIRST_ENTER, false)
             initializeView()
         } else {
+            FireBaseManager.logEvent(FirebaseKey.ENTER_THE_STARTUP_PAGE)
             binding.root.gone()
             BackStackActivity.create(context = this, isAppLaunchAd = true)
             finish()
@@ -51,6 +54,7 @@ class LaunchActivity : AbstractActivity() {
             }
             binding.tvStart -> {
                 if (binding.ivSelect.isSelected) {
+                    FireBaseManager.logEvent(FirebaseKey.CLICK_START)
                     MainActivity.create(this)
                     finish()
                 } else showToast(string(R.string.launch_privacy_agreement))

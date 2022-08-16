@@ -4,13 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
-import com.milk.simple.ktx.color
-import com.milk.simple.ktx.gone
-import com.milk.simple.ktx.string
-import com.milk.simple.ktx.visible
+import com.milk.simple.ktx.*
 import com.milk.smartvpn.R
 import com.milk.smartvpn.databinding.ActivityResultBinding
 import com.milk.smartvpn.media.ImageLoader
+import com.milk.smartvpn.repository.DataRepository
 import com.milk.smartvpn.ui.vm.ResultViewModel
 
 class ResultActivity : AbstractActivity() {
@@ -33,7 +31,15 @@ class ResultActivity : AbstractActivity() {
             binding.ivResult.setBackgroundResource(R.drawable.result_connected)
             binding.tvResult.text = string(R.string.result_connected)
             binding.tvResult.setTextColor(color(R.color.FF0DC2FF))
+            DataRepository.connectSuccessAd.collectLatest(this) {
+                val native = it.second
+                if (native != null) binding.nativeView.setNativeAd(native)
+            }
         } else {
+            DataRepository.disconnectAd.collectLatest(this) {
+                val native = it.second
+                if (native != null) binding.nativeView.setNativeAd(native)
+            }
             binding.ivResult.setBackgroundResource(R.drawable.result_disconnect)
             binding.tvResult.text = string(R.string.result_failure)
             binding.tvResult.setTextColor(color(R.color.FFFEB72A))

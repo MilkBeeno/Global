@@ -15,6 +15,7 @@ import com.milk.smartvpn.repository.DataRepository
 import com.milk.smartvpn.repository.VpnRepository
 import com.milk.smartvpn.ui.type.VpnStatus
 import com.milk.smartvpn.util.MilkTimer
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
 
@@ -199,6 +200,9 @@ class VpnViewModel : ViewModel() {
                 clickAdRequest = {
                     // 点击广告页面
                 })
+        } else ioScope {
+            delay(1500)
+            finishRequest(unitId)
         }
     }
 }

@@ -120,4 +120,15 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvPing" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <com.milk.smartvpn.ui.view.ResultAdLayout
+        android:id="@+id/nativeView"
+        android:layout_width="match_parent"
+        android:layout_height="290dp"
+        android:layout_marginBottom="19dp" />
 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -165,11 +165,14 @@ class MainActivity : AbstractActivity() {
         when (view) {
             binding.llHeaderToolbar -> AboutActivity.create(this)
             binding.ivShare -> toShareAppStoreAddress()
-            binding.llNetwork -> SwitchNodeActivity.create(
-                this,
-                vpnViewModel.currentNodeId,
-                vpnViewModel.currentConnected
-            )
+            binding.llNetwork -> {
+                if (vpnViewModel.connectionState.value == VpnStatus.Connecting) return
+                SwitchNodeActivity.create(
+                    this,
+                    vpnViewModel.currentNodeId,
+                    vpnViewModel.currentConnected
+                )
+            }
             binding.tvConnect -> {
                 when (vpnViewModel.connectionState.value) {
                     VpnStatus.Connected -> vpnProxy.closeVpn()

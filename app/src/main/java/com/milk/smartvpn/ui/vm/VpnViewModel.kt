@@ -174,4 +174,31 @@ class VpnViewModel : ViewModel() {
                 // unitId 埋点事件ID
             })
     }
+
+    internal fun loadDisconnectNativeAd(
+        activity: FragmentActivity,
+        finishRequest: (String) -> Unit
+    ) {
+        val currentNativeAd =
+            DataRepository.disconnectAd.value.second
+        val unitId =
+            AdConfig.getAdvertiseUnitId(AdCodeKey.DISCONNECT_SUCCESS_RESULT)
+        if (unitId.isNotBlank() && currentNativeAd == null) {
+            AdManager.loadNativeAds(activity, unitId,
+                failedRequest = {
+                    // 加载失败、原因和理由
+                    finishRequest(unitId)
+                },
+                successRequest = {
+                    // 加载成功原因和理由
+                    finishRequest(unitId)
+                    ioScope {
+                        DataRepository.disconnectAd.emit(Pair(unitId, it))
+                    }
+                },
+                clickAdRequest = {
+                    // 点击广告页面
+                })
+        }
+    }
 }

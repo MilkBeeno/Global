@@ -93,7 +93,6 @@ class MainActivity : AbstractActivity() {
             .setBackgroundResource(R.drawable.shape_main_not_connect)
         binding.tvConnect.setTextColor(color(R.color.white))
         if (vpnViewModel.showResultPage) {
-            loadAdDialog.show()
             vpnConnectResult(false)
             vpnViewModel.showResultPage = false
         }
@@ -123,27 +122,29 @@ class MainActivity : AbstractActivity() {
 
     /** 连接结果就是 1.加载广告 2.显示结果页面 */
     private fun vpnConnectResult(isConnected: Boolean) {
-        if (isConnected) {
-            loadAdDialog.show()
-            vpnViewModel.loadSuccessAd(this) {
-                loadAdDialog.dismiss()
-                vpnViewModel.showConnectedAd(this, it) {
-                    ResultActivity.create(
-                        this,
-                        isConnected,
-                        vpnViewModel.currentImageUrl,
-                        vpnViewModel.currentName,
-                        vpnViewModel.currentPing
-                    )
-                }
+        loadAdDialog.show()
+        if (isConnected) vpnViewModel.loadSuccessAd(this) {
+            loadAdDialog.dismiss()
+            vpnViewModel.showConnectedAd(this, it) {
+                ResultActivity.create(
+                    this,
+                    isConnected,
+                    vpnViewModel.currentImageUrl,
+                    vpnViewModel.currentName,
+                    vpnViewModel.currentPing
+                )
             }
-        } else ResultActivity.create(
-            this,
-            isConnected,
-            vpnViewModel.currentImageUrl,
-            vpnViewModel.currentName,
-            vpnViewModel.currentPing
-        )
+        }
+        else vpnViewModel.loadDisconnectNativeAd(this) {
+            loadAdDialog.dismiss()
+            ResultActivity.create(
+                this,
+                isConnected,
+                vpnViewModel.currentImageUrl,
+                vpnViewModel.currentName,
+                vpnViewModel.currentPing
+            )
+        }
     }
 
     private fun updateConnectInfo() {

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.freetech.vpn.data.VpnProfile
 import com.freetech.vpn.data.VpnType
+import com.google.android.gms.ads.nativead.NativeAd
 import com.milk.simple.ktx.ioScope
 import com.milk.simple.ktx.mainScope
 import com.milk.smartvpn.ad.AdConfig
@@ -40,6 +41,26 @@ class VpnViewModel : ViewModel() {
 
     /** 是否显示结果页面 */
     internal var showResultPage: Boolean = false
+
+    internal var mainNativeAd = MutableStateFlow<Pair<String, NativeAd?>>(Pair("", null))
+
+    internal fun loadMainNativeAd(activity: FragmentActivity) {
+        val unitId =
+            AdConfig.getAdvertiseUnitId(AdCodeKey.MAIN_BOTTOM)
+        AdManager.loadNativeAds(
+            context = activity,
+            adUnitId = unitId,
+            failedRequest = {
+                // 失败埋点
+            },
+            successRequest = {
+                // 成功埋点
+                ioScope { mainNativeAd.emit(Pair(unitId, it)) }
+            },
+            clickAdRequest = {
+                // 点击埋点
+            })
+    }
 
     internal fun getVpnInfo(nodeId: Long = 0, switchNode: Boolean = false) {
         ioScope {

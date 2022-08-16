@@ -163,4 +163,11 @@
         tools:background="@drawable/shape_main_connected"
         tools:textColor="@color/FF1E1250" />
 
+    <com.milk.smartvpn.ui.view.MainAdLayout
+        android:id="@+id/nativeView"
+        android:layout_width="match_parent"
+        android:layout_height="127dp"
+        android:layout_marginBottom="14dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -64,6 +64,14 @@ class MainActivity : AbstractActivity() {
     }
 
     private fun initializeObserver() {
+        vpnViewModel.loadMainNativeAd(this)
+        vpnViewModel.mainNativeAd.collectLatest(this) {
+            val nativeAd = it.second
+            if (nativeAd != null) {
+                binding.nativeView.visible()
+                binding.nativeView.setNativeAd(nativeAd)
+            }
+        }
         vpnViewModel.connectionState.collectLatest(this) {
             when (it) {
                 VpnStatus.NotConnect -> vpnNotConnect()

@@ -1,6 +1,7 @@
 package com.milk.smartvpn.ui.vm
 
 import android.app.Activity
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import com.milk.smartvpn.ad.AdConfig
 import com.milk.smartvpn.ad.AdManager
@@ -17,17 +18,32 @@ class BackStackViewModel : ViewModel() {
             .setOnFinishedListener { finishRequest(unitId) }
             .build()
         timer.start()
-        if (unitId.isNotBlank()) AdManager.loadInterstitial(activity, unitId,
-            onSuccessRequest = {
-                timer.finish()
-            },
-            onFailedRequest = {
-                timer.finish()
-            })
+        if (unitId.isNotBlank())
+            AdManager.loadInterstitial(activity, unitId,
+                onFailedRequest = {
+                    timer.finish()
+                },
+                onSuccessRequest = {
+                    timer.finish()
+                })
     }
 
-    internal fun showLaunchAd(activity: Activity, unitId: String, dismissRequest: () -> Unit) {
-        AdManager.showInterstitial(activity, unitId, onDismissRequest = dismissRequest)
+    internal fun showLaunchAd(
+        activity: FragmentActivity,
+        unitId: String,
+        dismissRequest: () -> Unit
+    ) {
+        AdManager.showInterstitial(
+            activity = activity,
+            failureRequest = {
+                dismissRequest()
+            },
+            successRequest = {
+                dismissRequest()
+            },
+            clickRequest = {
+                // unitId 埋点事件ID
+            })
     }
 
     internal fun loadBackStackAd(activity: Activity, finishRequest: (String) -> Unit) {
@@ -47,7 +63,21 @@ class BackStackViewModel : ViewModel() {
             })
     }
 
-    internal fun showBackStackAd(activity: Activity, unitId: String, dismissRequest: () -> Unit) {
-        AdManager.showInterstitial(activity, unitId, onDismissRequest = dismissRequest)
+    internal fun showBackStackAd(
+        activity: FragmentActivity,
+        unitId: String,
+        dismissRequest: () -> Unit
+    ) {
+        AdManager.showInterstitial(
+            activity = activity,
+            failureRequest = {
+                dismissRequest()
+            },
+            successRequest = {
+                dismissRequest()
+            },
+            clickRequest = {
+                // unitId 埋点事件ID
+            })
     }
 }

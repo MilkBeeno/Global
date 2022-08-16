@@ -25,7 +25,7 @@ class BaseApplication : Application() {
     private fun initialize() {
         ioScope {
             BackStack.backToForegroundMonitor(current) {
-                if (it !is LaunchActivity)
+                if (it !is LaunchActivity && it !is BackStackActivity)
                     BackStackActivity.create(current)
             }
             KvManger.initialize(current)

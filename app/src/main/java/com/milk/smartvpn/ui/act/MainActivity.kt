@@ -125,7 +125,7 @@ class MainActivity : AbstractActivity() {
     private fun vpnConnectResult(isConnected: Boolean) {
         if (isConnected) {
             loadAdDialog.show()
-            vpnViewModel.loadConnectSuccessAd(this) {
+            vpnViewModel.loadSuccessAd(this) {
                 loadAdDialog.dismiss()
                 vpnViewModel.showConnectSuccessAd(this, it) {
                     ResultActivity.create(

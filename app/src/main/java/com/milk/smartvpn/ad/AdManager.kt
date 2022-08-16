@@ -1,7 +1,7 @@
 package com.milk.smartvpn.ad
 
-import android.app.Activity
 import android.content.Context
+import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
@@ -12,7 +12,7 @@ import com.milk.smartvpn.constant.AdCodeKey
 object AdManager {
     private var interstitialAd: InterstitialAd? = null
 
-    fun initialize(context: Context) {
+    internal fun initialize(context: Context) {
         MobileAds.initialize(context) {
             if (BuildConfig.DEBUG) {
                 MobileAds.setRequestConfiguration(
@@ -26,10 +26,10 @@ object AdManager {
     }
 
     /** 加载插页广告 */
-    fun loadInterstitial(
+    internal fun loadInterstitial(
         context: Context,
         adUnitId: String,
-        onFailedRequest: () -> Unit = {},
+        onFailedRequest: (String) -> Unit = {},
         onSuccessRequest: () -> Unit = {}
     ) {
         val adRequest = AdRequest.Builder().build()
@@ -37,7 +37,7 @@ object AdManager {
             object : InterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     interstitialAd = null
-                    onFailedRequest()
+                    onFailedRequest(adError.message)
                 }
 
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
@@ -48,52 +48,57 @@ object AdManager {
     }
 
     /** 显示插页广告 */
-    fun showInterstitial(
-        activity: Activity,
-        unitId: String,
-        onFailedRequest: (String) -> Unit = {},
-        onSuccessRequest: () -> Unit = {},
-        onDismissRequest: () -> Unit = {}
+    internal fun showInterstitial(
+        activity: FragmentActivity,
+        failureRequest: (String) -> Unit = {},
+        successRequest: () -> Unit = {},
+        clickRequest: () -> Unit = {}
     ) {
-        if (interstitialAd == null) {
-            onFailedRequest("")
-            onDismissRequest()
-        } else {
+        if (interstitialAd == null)
+            failureRequest("No interstitialAd object !")
+        else {
             interstitialAd?.show(activity)
             interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {
-                    onSuccessRequest()
-                    onDismissRequest()
+                    successRequest()
                 }
 
                 override fun onAdFailedToShowFullScreenContent(p0: AdError) {
                     super.onAdFailedToShowFullScreenContent(p0)
-                    onFailedRequest(p0.message)
-                    onDismissRequest()
+                    failureRequest(p0.message)
                 }
 
                 override fun onAdShowedFullScreenContent() {
                     interstitialAd = null
+                }
+
+                override fun onAdClicked() {
+                    super.onAdClicked()
+                    clickRequest()
                 }
             }
         }
     }
 
     /** 加载原生广告 */
-    fun loadNativeAds(
+    internal fun loadNativeAds(
         context: Context,
         adUnitId: String,
-        failedRequest: () -> Unit = {},
-        successRequest: (NativeAd) -> Unit = {}
+        failedRequest: (String) -> Unit = {},
+        successRequest: (NativeAd) -> Unit = {},
+        clickAdRequest: () -> Unit = {}
     ) {
         val adLoader = AdLoader.Builder(context, adUnitId)
-            .forNativeAd {
-                successRequest(it)
-            }
+            .forNativeAd { successRequest(it) }
             .withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(p0: LoadAdError) {
                     super.onAdFailedToLoad(p0)
-                    failedRequest()
+                    failedRequest(p0.message)
+                }
+
+                override fun onAdClicked() {
+                    super.onAdClicked()
+                    clickAdRequest()
                 }
             })
             .build()

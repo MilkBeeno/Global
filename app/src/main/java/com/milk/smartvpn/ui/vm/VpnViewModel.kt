@@ -157,7 +157,7 @@ class VpnViewModel : ViewModel() {
         }
     }
 
-    internal fun showConnectSuccessAd(
+    internal fun showConnectedAd(
         activity: FragmentActivity,
         unitId: String,
         dismissRequest: () -> Unit

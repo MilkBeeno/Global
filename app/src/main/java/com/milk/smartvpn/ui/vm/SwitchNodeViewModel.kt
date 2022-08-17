@@ -3,6 +3,7 @@ package com.milk.smartvpn.ui.vm
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import com.milk.simple.ktx.ioScope
+import com.milk.simple.log.Logger
 import com.milk.smartvpn.ad.AdConfig
 import com.milk.smartvpn.ad.AdManager
 import com.milk.smartvpn.constant.AdCodeKey
@@ -45,8 +46,8 @@ class SwitchNodeViewModel : ViewModel() {
                     // 加载成功原因和理由
                     FireBaseManager
                         .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
-                    finishRequest(unitId)
                     DataRepository.vpnListAd.value = Pair(unitId, it)
+                    finishRequest(unitId)
                 },
                 clickAdRequest = {
                     // 点击广告页面

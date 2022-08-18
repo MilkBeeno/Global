@@ -24,4 +24,7 @@
     <string name="result_connected">Connected</string>
     <string name="result_failure">Disconnected</string>
     <string name="main_connect_failure">Connect Failure</string>
+    <string name="dialog_open_notification_title">Open notification permission</string>
+    <string name="dialog_open_notification_content">To improve connection stability please turn on notifications</string>
+    <string name="dialog_open_notification_confirm">Confirm</string>
 </resources>

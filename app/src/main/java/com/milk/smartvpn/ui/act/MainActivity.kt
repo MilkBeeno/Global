@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.app.NotificationManagerCompat
 import com.milk.simple.ktx.*
 import com.milk.smartvpn.R
 import com.milk.smartvpn.databinding.ActivityMainBinding
@@ -14,9 +15,11 @@ import com.milk.smartvpn.friebase.FirebaseKey
 import com.milk.smartvpn.media.ImageLoader
 import com.milk.smartvpn.proxy.VpnProxy
 import com.milk.smartvpn.ui.dialog.FailureDialog
+import com.milk.smartvpn.ui.dialog.OpenNotificationDialog
 import com.milk.smartvpn.ui.dialog.WaitDialog
 import com.milk.smartvpn.ui.type.VpnStatus
 import com.milk.smartvpn.ui.vm.VpnViewModel
+import com.milk.smartvpn.util.Notification
 
 class MainActivity : AbstractActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -24,15 +27,16 @@ class MainActivity : AbstractActivity() {
     private lateinit var vpnProxy: VpnProxy
     private val loadAdDialog by lazy { WaitDialog(this) }
     private val failureDialog by lazy { FailureDialog(this) }
+    private val openNotificationDialog by lazy { OpenNotificationDialog(this) }
     private var currentTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        FireBaseManager.logEvent(FirebaseKey.ENTER_MAIN_PAGE)
         initializeView()
         initializeObserver()
         vpnProxy = VpnProxy(this)
-        FireBaseManager.logEvent(FirebaseKey.ENTER_MAIN_PAGE)
     }
 
     private fun initializeView() {
@@ -65,6 +69,12 @@ class MainActivity : AbstractActivity() {
                     vpnConnectResult(true)
                 }
             })
+        if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+            openNotificationDialog.show()
+            openNotificationDialog.setConfirm {
+                Notification.obtainNotification(this)
+            }
+        }
     }
 
     private fun initializeObserver() {

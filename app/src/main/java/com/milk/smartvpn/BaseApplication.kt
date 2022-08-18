@@ -1,6 +1,7 @@
 package com.milk.smartvpn
 
 import android.app.Application
+import com.google.android.gms.ads.AdActivity
 import com.milk.simple.ktx.ioScope
 import com.milk.simple.log.Logger
 import com.milk.simple.mdr.KvManger
@@ -25,7 +26,7 @@ class BaseApplication : Application() {
     private fun initialize() {
         ioScope {
             BackStack.backToForegroundMonitor(current) {
-                if (it !is LaunchActivity && it !is BackStackActivity)
+                if (it !is LaunchActivity && it !is BackStackActivity && it !is AdActivity)
                     BackStackActivity.create(current)
             }
             KvManger.initialize(current)

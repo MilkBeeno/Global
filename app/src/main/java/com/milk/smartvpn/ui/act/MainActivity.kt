@@ -67,6 +67,13 @@ class MainActivity : AbstractActivity() {
                         .setBackgroundResource(R.drawable.shape_main_connected)
                     binding.tvConnect.setTextColor(color(R.color.FF121250))
                     vpnConnectResult(true)
+                    if (NotificationManagerCompat.from(this@MainActivity)
+                            .areNotificationsEnabled()
+                    ) {
+                        Notification.showConnectedNotification(
+                            this@MainActivity,
+                            vpnViewModel.currentName.ifBlank { "United States" })
+                    }
                 }
             })
         if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {

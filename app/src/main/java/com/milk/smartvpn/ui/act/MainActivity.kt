@@ -62,7 +62,29 @@ class MainActivity : AbstractActivity() {
                     binding.lottieViewConnected.gone()
                     binding.tvConnectTime.visible()
                     binding.tvConnect.text = string(R.string.main_connected)
-                    vpnViewModel.startTiming { binding.tvConnectTime.text = it }
+                    vpnViewModel.startTiming {
+                        binding.tvConnectTime.text = it
+                        if (NotificationManagerCompat.from(this@MainActivity)
+                                .areNotificationsEnabled()
+                        ) {
+                            when (vpnViewModel.vpnConnectDuration) {
+                                40 * 60 * 1000L -> {
+                                    Notification.showConnectedNotification(
+                                        this@MainActivity,
+                                        "The latest high-speed nodes have been updated",
+                                        "Click to view now."
+                                    )
+                                }
+                                20 * 60 * 1000L -> {
+                                    Notification.showConnectedNotification(
+                                        this@MainActivity,
+                                        "The current node has high latency",
+                                        "Click to switch nodes now."
+                                    )
+                                }
+                            }
+                        }
+                    }
                     binding.tvConnect
                         .setBackgroundResource(R.drawable.shape_main_connected)
                     binding.tvConnect.setTextColor(color(R.color.FF121250))

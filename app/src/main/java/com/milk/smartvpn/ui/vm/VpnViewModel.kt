@@ -28,7 +28,7 @@ class VpnViewModel : ViewModel() {
 
     /** 连接 VPN 后的计时器、以及连接 VPN 的时长 */
     private var timer: Timer? = null
-    private var vpnConnectDuration = 0L
+    internal var vpnConnectDuration = 0L
 
     /** 是否连接 VPN 的状态和连接 VPN 的状态 */
     internal val vpnStartConnect = MutableLiveData<Boolean>()

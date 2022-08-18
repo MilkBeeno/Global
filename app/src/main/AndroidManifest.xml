@@ -66,6 +66,7 @@
         <activity
             android:name=".ui.act.SwitchNodeActivity"
             android:exported="false"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
     </application>

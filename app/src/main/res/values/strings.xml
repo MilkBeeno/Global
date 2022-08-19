@@ -10,7 +10,7 @@
     <string name="back_stack_content">connected and fetch server list …</string>
     <!--主页面翻译-->
     <string name="main_not_connect">Connect</string>
-    <string name="main_connected">Connected</string>
+    <string name="main_connected">Disconnect</string>
     <string name="main_connecting">Connecting</string>
     <!--关于我们页面翻译-->
     <string name="about_us_title">About Us</string>
@@ -27,4 +27,6 @@
     <string name="dialog_open_notification_title">Open notification permission</string>
     <string name="dialog_open_notification_content">To improve connection stability please turn on notifications</string>
     <string name="dialog_open_notification_confirm">Confirm</string>
+    <string name="main_connect_now">Connect now…</string>
+    <string name="main_disconnect_now">Disconnect now…</string>
 </resources>

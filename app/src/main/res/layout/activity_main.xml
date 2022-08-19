@@ -155,7 +155,7 @@
         android:layout_marginStart="72dp"
         android:layout_marginEnd="72dp"
         android:gravity="center"
-        android:text="@string/main_connected"
+        tools:text="@string/main_connected"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/clConnect"
         app:layout_constraintEnd_toEndOf="parent"

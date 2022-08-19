@@ -175,6 +175,9 @@ class MainActivity : AbstractActivity() {
 
     /** 连接结果就是 1.加载广告 2.显示结果页面 */
     private fun vpnConnectResult(isConnected: Boolean) {
+        loadAdDialog.setContent(
+            string(if (isConnected) R.string.main_connect_now else R.string.main_disconnect_now)
+        )
         loadAdDialog.show()
         if (isConnected) {
             FireBaseManager.logEvent(FirebaseKey.CONNECT_SUCCESSFULLY)

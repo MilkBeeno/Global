@@ -47,6 +47,7 @@ class MainActivity : AbstractActivity() {
         binding.llNetwork.setOnClickListener(this)
         binding.tvConnect.setOnClickListener(this)
         binding.llNetwork.setOnClickListener(this)
+        binding.ivConnect.setOnClickListener(this)
         binding.lottieViewConnecting.setAnimation("main_vpn_connecting.json")
         binding.lottieViewConnected.setAnimation("main_vpn_connected.json")
         binding.lottieViewConnected
@@ -251,6 +252,7 @@ class MainActivity : AbstractActivity() {
                     vpnViewModel.currentConnected
                 )
             }
+            binding.ivConnect,
             binding.tvConnect -> {
                 when (vpnViewModel.connectionState.value) {
                     VpnStatus.Connected -> vpnProxy.closeVpn()

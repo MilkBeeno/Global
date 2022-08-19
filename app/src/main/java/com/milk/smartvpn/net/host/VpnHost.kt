@@ -6,6 +6,6 @@ class VpnHost : ApiHost {
     }
 
     override fun debugUrl(): String {
-        return "http://apv.milksmartvpn.click"
+        return "https://apv.getsimplesmart.com"
     }
 }

@@ -24,7 +24,7 @@ class ApiHeaderInterceptor : Interceptor {
             requestBuilder.url(finalUrl)
             headerBuilder
                 .add("H007", "1")
-                .add("H006", "com.milk.smartvpn")
+                .add("H006", "com.milk.simplesmart")
                 .add("Content-Type", "application/json")
         }
         requestBuilder.headers(headerBuilder.build())

@@ -111,15 +111,15 @@ class VpnViewModel : ViewModel() {
         vpnConnectDuration = 0L
         val timerTask = object : TimerTask() {
             override fun run() {
-                vpnConnectDuration += 1000
+                vpnConnectDuration += 1
                 when (vpnConnectDuration) {
-                    in 0 until 60 * 1000 -> {
+                    in 0 until 60 -> {
                         FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_LESS_THAN_1MIN)
                     }
-                    in 60 * 1000 until 30 * 60 * 1000 -> {
+                    in 60 until 30 * 60 -> {
                         FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_1_30MIN)
                     }
-                    in 30 * 60 * 1000 until 60 * 60 * 1000 -> {
+                    in 30 * 60 until 60 * 60 -> {
                         FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_30_60MIN)
                     }
                 }
@@ -143,7 +143,7 @@ class VpnViewModel : ViewModel() {
                 else
                     "0".plus(timeLeftSecond)
                 mainScope { successRequest(hourString.plus(minuteString).plus(secondString)) }
-                if (vpnConnectDuration > 60 * 60 * 1000L) finishRequest()
+                if (vpnConnectDuration > 60 * 60) finishRequest()
             }
         }
         if (timer == null) timer = Timer()

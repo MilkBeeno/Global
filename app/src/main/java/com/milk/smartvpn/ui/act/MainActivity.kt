@@ -71,14 +71,14 @@ class MainActivity : AbstractActivity() {
                                     .areNotificationsEnabled()
                             ) {
                                 when (vpnViewModel.vpnConnectDuration) {
-                                    40 * 60 * 1000L -> {
+                                    40 * 60L -> {
                                         Notification.showConnectedNotification(
                                             this@MainActivity,
                                             "The latest high-speed nodes have been updated",
                                             "Click to view now."
                                         )
                                     }
-                                    20 * 60 * 1000L -> {
+                                    20 * 60L -> {
                                         Notification.showConnectedNotification(
                                             this@MainActivity,
                                             "The current node has high latency",

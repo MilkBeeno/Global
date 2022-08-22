@@ -15,11 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartVpn"
         tools:ignore="UnusedAttribute">
-        <!-- Google 广告ID 正式服 ID=“ ca-app-pub-9835209825468303~6826154181 ”-->
+        <!-- Google 广告ID 正式服 ID=“ ca-app-pub-7382266762101400~6021862456 ”-->
         <!-- Google 广告ID 测试服 ID=“ ca-app-pub-3940256099942544~3347511713 “-->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-7382266762101400~6021862456" />
         <!-- google 广告的活动页面 -->
         <activity
             android:name="com.google.android.gms.ads.AdActivity"

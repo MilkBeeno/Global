@@ -42,7 +42,7 @@ class LaunchActivity : AbstractActivity() {
             Pair(
                 string(R.string.launch_privacy),
                 colorClickableSpan(color(R.color.FF0DC2FF)) {
-                    val url = "https://justfuncall.com/terms.html"
+                    val url = "https://res.getsimplesmart.com/privacy.html"
                     WebActivity.create(this, url)
                 })
         )

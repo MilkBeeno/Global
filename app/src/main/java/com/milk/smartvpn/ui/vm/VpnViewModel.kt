@@ -111,7 +111,7 @@ class VpnViewModel : ViewModel() {
         vpnConnectDuration = 0L
         val timerTask = object : TimerTask() {
             override fun run() {
-                vpnConnectDuration += 1
+                vpnConnectDuration += 1000
                 when (vpnConnectDuration) {
                     in 0 until 60 * 1000 -> {
                         FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_LESS_THAN_1MIN)

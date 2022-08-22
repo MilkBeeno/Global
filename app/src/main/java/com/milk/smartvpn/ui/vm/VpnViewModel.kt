@@ -87,7 +87,7 @@ class VpnViewModel : ViewModel() {
         }
         MilkTimer.Builder()
             .setOnFinishedListener {
-                if (connectionState.value != VpnStatus.Connected)
+                if (connectionState.value == VpnStatus.Connecting)
                     ioScope { connectionState.emit(VpnStatus.Failure) }
             }
             .setMillisInFuture(15000)

@@ -14,6 +14,7 @@ import com.milk.smartvpn.friebase.FireBaseManager
 import com.milk.smartvpn.friebase.FirebaseKey
 import com.milk.smartvpn.media.ImageLoader
 import com.milk.smartvpn.proxy.VpnProxy
+import com.milk.smartvpn.repository.DataRepository
 import com.milk.smartvpn.ui.dialog.FailureDialog
 import com.milk.smartvpn.ui.dialog.OpenNotificationDialog
 import com.milk.smartvpn.ui.dialog.WaitDialog
@@ -271,7 +272,7 @@ class MainActivity : AbstractActivity() {
     private fun toShareAppStoreAddress() {
         val intent = Intent()
         intent.action = Intent.ACTION_SEND
-        intent.putExtra(Intent.EXTRA_TEXT, "文本内容")
+        intent.putExtra(Intent.EXTRA_TEXT, DataRepository.shareAppUrl.value)
         intent.type = "text/plain"
         startActivity(intent)
     }

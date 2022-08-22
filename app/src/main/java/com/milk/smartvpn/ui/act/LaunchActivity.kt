@@ -10,6 +10,7 @@ import com.milk.smartvpn.constant.KvKey
 import com.milk.smartvpn.databinding.ActivityLaunchBinding
 import com.milk.smartvpn.friebase.FireBaseManager
 import com.milk.smartvpn.friebase.FirebaseKey
+import com.milk.smartvpn.repository.DataRepository
 
 class LaunchActivity : AbstractActivity() {
     private val binding by lazy { ActivityLaunchBinding.inflate(layoutInflater) }
@@ -18,6 +19,7 @@ class LaunchActivity : AbstractActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         AdConfig.obtain()
+        DataRepository.appConfig()
         val isFirst = KvManger.getBoolean(KvKey.FIRST_ENTER, true)
         if (isFirst) {
             binding.root.visible()

@@ -6,4 +6,7 @@ object KvKey {
 
     /** 切换 VPN 连接的节点 */
     const val SWITCH_VPN_NODE = "SWITCH_VPN_NODE"
+
+    /** app share 地址 */
+    const val APP_SHARE_URL = "APP_SHARE_URL"
 }

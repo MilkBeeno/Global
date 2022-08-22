@@ -85,6 +85,14 @@ class VpnViewModel : ViewModel() {
                 vpnStartConnect.postValue(currentConnected)
             } else connectionState.emit(VpnStatus.Failure)
         }
+        MilkTimer.Builder()
+            .setOnFinishedListener {
+                if (connectionState.value != VpnStatus.Connected)
+                    ioScope { connectionState.emit(VpnStatus.Failure) }
+            }
+            .setMillisInFuture(15000)
+            .build()
+            .start()
     }
 
     internal fun getVpnProfile(): VpnProfile {

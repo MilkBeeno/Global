@@ -107,7 +107,7 @@ class VpnViewModel : ViewModel() {
         return vpnProfile
     }
 
-    internal fun startTiming(request: (String) -> Unit) {
+    internal fun startTiming(successRequest: (String) -> Unit, finishRequest: () -> Unit) {
         vpnConnectDuration = 0L
         val timerTask = object : TimerTask() {
             override fun run() {
@@ -142,7 +142,8 @@ class VpnViewModel : ViewModel() {
                     timeLeftSecond.toString()
                 else
                     "0".plus(timeLeftSecond)
-                mainScope { request(hourString.plus(minuteString).plus(secondString)) }
+                mainScope { successRequest(hourString.plus(minuteString).plus(secondString)) }
+                if (vpnConnectDuration > 60 * 60 * 1000L) finishRequest()
             }
         }
         if (timer == null) timer = Timer()

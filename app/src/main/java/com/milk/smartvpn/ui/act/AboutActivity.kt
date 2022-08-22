@@ -27,7 +27,7 @@ class AboutActivity : AbstractActivity() {
         when (view) {
             binding.ivBack -> finish()
             binding.llPrivacy -> {
-                val url = "https://justfuncall.com/terms.html"
+                val url = "https://res.getsimplesmart.com/privacy.html"
                 WebActivity.create(this, url)
             }
         }

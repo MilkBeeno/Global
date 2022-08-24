@@ -130,5 +130,6 @@
         android:id="@+id/nativeView"
         android:layout_width="match_parent"
         android:layout_height="290dp"
-        android:layout_marginBottom="19dp" />
+        android:layout_marginBottom="19dp"
+        android:visibility="gone" />
 </androidx.appcompat.widget.LinearLayoutCompat>

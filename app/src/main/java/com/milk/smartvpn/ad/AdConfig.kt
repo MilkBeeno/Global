@@ -29,8 +29,8 @@ object AdConfig {
                 BuildConfig.AD_APP_VERSION
             )
             val result = apiResult.data
-            if (apiResult.code == 2000 && result != null) {
-                updateAdUnitId(result)
+            if (apiResult.code == 2000) {
+                result?.let { updateAdUnitId(it) }
                 KvManger.put(AD_CONFIG, apiResult)
             } else {
                 val config = getLocalConfig(BaseApplication.current)

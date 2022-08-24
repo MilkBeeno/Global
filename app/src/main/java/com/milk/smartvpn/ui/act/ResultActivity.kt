@@ -31,12 +31,18 @@ class ResultActivity : AbstractActivity() {
             binding.tvResult.setTextColor(color(R.color.FF0DC2FF))
             DataRepository.connectSuccessAd.collectLatest(this) {
                 val native = it.second
-                if (native != null) binding.nativeView.setNativeAd(native)
+                if (native != null) {
+                    binding.nativeView.visible()
+                    binding.nativeView.setNativeAd(native)
+                }
             }
         } else {
             DataRepository.disconnectAd.collectLatest(this) {
                 val native = it.second
-                if (native != null) binding.nativeView.setNativeAd(native)
+                if (native != null) {
+                    binding.nativeView.visible()
+                    binding.nativeView.setNativeAd(native)
+                }
             }
             binding.ivResult.setBackgroundResource(R.drawable.result_disconnect)
             binding.tvResult.text = string(R.string.result_failure)

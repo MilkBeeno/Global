@@ -10,7 +10,7 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface MainApiService {
-    @Headers("TestMode:open")
+    //@Headers("TestMode:open")
     @POST("/v1/sdk/appPosition")
     suspend fun getAdConfig(@Body adBody: AdBody): ApiResponse<AdModel>
 

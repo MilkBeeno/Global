@@ -1,5 +1,6 @@
 package com.milk.smartvpn.ui.act
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,6 +12,7 @@ import com.jeremyliao.liveeventbus.LiveEventBus
 import com.milk.simple.ktx.collectLatest
 import com.milk.simple.ktx.string
 import com.milk.smartvpn.R
+import com.milk.smartvpn.constant.EventKey
 import com.milk.smartvpn.constant.KvKey
 import com.milk.smartvpn.data.VpnGroup
 import com.milk.smartvpn.data.VpnNode
@@ -99,6 +101,7 @@ class SwitchNodeActivity : AbstractActivity() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initializeData() {
         loadingDialog
             .setContent(string(R.string.common_loading))
@@ -106,6 +109,11 @@ class SwitchNodeActivity : AbstractActivity() {
         switchNodeViewModel.loadNodeNativeAd(this) {
             switchNodeViewModel.getVpnListInfo()
         }
+        switchNodeViewModel.loadNativeByTimer(this)
+        LiveEventBus.get<Any>(EventKey.UPDATE_SWITCH_LIST_AD)
+            .observe(this) {
+                binding.rvNode.adapter?.notifyDataSetChanged()
+            }
     }
 
     override fun onMultipleClick(view: View) {
@@ -119,6 +127,11 @@ class SwitchNodeActivity : AbstractActivity() {
                 }
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        switchNodeViewModel.destroy()
     }
 
     companion object {

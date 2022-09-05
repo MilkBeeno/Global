@@ -2,17 +2,19 @@ package com.milk.smartvpn.ui.vm
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
+import com.jeremyliao.liveeventbus.LiveEventBus
 import com.milk.simple.ktx.ioScope
-import com.milk.simple.log.Logger
 import com.milk.smartvpn.ad.AdConfig
 import com.milk.smartvpn.ad.AdManager
 import com.milk.smartvpn.constant.AdCodeKey
+import com.milk.smartvpn.constant.EventKey
 import com.milk.smartvpn.data.VpnGroup
 import com.milk.smartvpn.data.VpnNode
 import com.milk.smartvpn.friebase.FireBaseManager
 import com.milk.smartvpn.friebase.FirebaseKey
 import com.milk.smartvpn.repository.DataRepository
 import com.milk.smartvpn.repository.VpnRepository
+import com.milk.smartvpn.util.MilkTimer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.BufferedReader
@@ -26,15 +28,30 @@ class SwitchNodeViewModel : ViewModel() {
     var currentNodeId: Long = 0L
     var currentConnected: Boolean = false
 
+    private var milkTimer: MilkTimer? = null
+
+    internal fun loadNativeByTimer(activity: FragmentActivity) {
+        milkTimer = MilkTimer.Builder()
+            .setMillisInFuture(30000)
+            .setCountDownInterval(1000)
+            .setOnFinishedListener {
+                loadNodeNativeAd(activity) {
+                    LiveEventBus
+                        .get<Any>(EventKey.UPDATE_SWITCH_LIST_AD)
+                        .post(null)
+                    loadNativeByTimer(activity)
+                }
+            }.build()
+        milkTimer?.start()
+    }
+
     internal fun loadNodeNativeAd(
         activity: FragmentActivity,
         finishRequest: (String) -> Unit
     ) {
-        val currentNativeAd =
-            DataRepository.vpnListAd.value.second
         val unitId =
             AdConfig.getAdvertiseUnitId(AdCodeKey.VPN_LIST)
-        if (unitId.isNotBlank() && currentNativeAd == null) {
+        if (unitId.isNotBlank()) {
             AdManager.loadNativeAds(activity, unitId,
                 failedRequest = {
                     // 加载失败、原因和理由
@@ -119,5 +136,9 @@ class SwitchNodeViewModel : ViewModel() {
             return speed.toFloat().toInt()
         }
         return 0
+    }
+
+    internal fun destroy() {
+        milkTimer?.destroy()
     }
 }

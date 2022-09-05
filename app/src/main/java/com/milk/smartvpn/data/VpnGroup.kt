@@ -12,6 +12,7 @@ import com.milk.simple.ktx.visible
 import com.milk.smartvpn.R
 import com.milk.smartvpn.databinding.ItemSwitchGroupBinding
 import com.milk.smartvpn.media.ImageLoader
+import com.milk.smartvpn.repository.DataRepository
 
 class VpnGroup : ItemExpand, ItemHover, ItemPosition, ItemBind {
     var areaImage: String = ""
@@ -39,6 +40,7 @@ class VpnGroup : ItemExpand, ItemHover, ItemPosition, ItemBind {
                 binding.vLine.gone()
                 binding.llContent.gone()
                 binding.nativeView.visible()
+                val nativeAd = DataRepository.vpnListAd.value.second
                 nativeAd?.let { binding.nativeView.setNativeAd(it) }
             }
             // 显示 VPN 列表节点

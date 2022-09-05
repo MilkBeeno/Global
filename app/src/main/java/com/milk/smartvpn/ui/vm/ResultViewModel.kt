@@ -1,0 +1,98 @@
+package com.milk.smartvpn.ui.vm
+
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModel
+import com.milk.simple.ktx.ioScope
+import com.milk.smartvpn.ad.AdConfig
+import com.milk.smartvpn.ad.AdManager
+import com.milk.smartvpn.constant.AdCodeKey
+import com.milk.smartvpn.friebase.FireBaseManager
+import com.milk.smartvpn.friebase.FirebaseKey
+import com.milk.smartvpn.repository.DataRepository
+import com.milk.smartvpn.util.MilkTimer
+
+class ResultViewModel : ViewModel() {
+    private var successMilkTimer: MilkTimer? = null
+    private var failureMilkTimer: MilkTimer? = null
+
+    internal fun loadNativeSuccess(activity: FragmentActivity) {
+        successMilkTimer = MilkTimer.Builder()
+            .setMillisInFuture(30000)
+            .setCountDownInterval(1000)
+            .setOnFinishedListener {
+                loadConnectedNativeAd(activity)
+                loadNativeSuccess(activity)
+            }.build()
+        successMilkTimer?.start()
+    }
+
+    private fun loadConnectedNativeAd(activity: FragmentActivity) {
+        val unitId =
+            AdConfig.getAdvertiseUnitId(AdCodeKey.CONNECT_SUCCESS_RESULT)
+        if (unitId.isNotBlank()) {
+            AdManager.loadNativeAds(activity, unitId,
+                failedRequest = {
+                    // 加载失败、原因和理由
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
+                },
+                successRequest = {
+                    // 加载成功原因和理由
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
+                    ioScope {
+                        DataRepository.connectSuccessAd.emit(Pair(unitId, it))
+                    }
+                },
+                clickAdRequest = {
+                    // 点击广告页面
+                    FireBaseManager
+                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
+                })
+        }
+    }
+
+    internal fun loadNativeFailure(activity: FragmentActivity) {
+        failureMilkTimer = MilkTimer.Builder()
+            .setMillisInFuture(30000)
+            .setCountDownInterval(1000)
+            .setOnFinishedListener {
+                loadDisconnectNativeAd(activity)
+                loadNativeFailure(activity)
+            }.build()
+        failureMilkTimer?.start()
+    }
+
+    private fun loadDisconnectNativeAd(activity: FragmentActivity) {
+        val currentNativeAd =
+            DataRepository.disconnectAd.value.second
+        val unitId =
+            AdConfig.getAdvertiseUnitId(AdCodeKey.DISCONNECT_SUCCESS_RESULT)
+        if (unitId.isNotBlank() && currentNativeAd == null) {
+            AdManager.loadNativeAds(activity, unitId,
+                failedRequest = {
+                    // 加载失败、原因和理由
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
+                },
+                successRequest = {
+                    // 加载成功原因和理由
+                    FireBaseManager
+                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
+                    ioScope {
+                        DataRepository.disconnectAd.emit(Pair(unitId, it))
+                    }
+                },
+                clickAdRequest = {
+                    // 点击广告页面
+                    FireBaseManager
+                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
+                })
+        }
+    }
+
+    internal fun destroy() {
+        successMilkTimer?.destroy()
+        failureMilkTimer?.destroy()
+    }
+}

@@ -9,9 +9,11 @@ import com.milk.smartvpn.R
 import com.milk.smartvpn.databinding.ActivityResultBinding
 import com.milk.smartvpn.media.ImageLoader
 import com.milk.smartvpn.repository.DataRepository
+import com.milk.smartvpn.ui.vm.ResultViewModel
 
 class ResultActivity : AbstractActivity() {
     private val binding by lazy { ActivityResultBinding.inflate(layoutInflater) }
+    private val resultViewModel by viewModels<ResultViewModel>()
     private val isConnected by lazy { intent.getBooleanExtra(IS_CONNECTED, false) }
     private val vpnImage by lazy { intent.getStringExtra(VPN_IMAGE).toString() }
     private val vpnName by lazy { intent.getStringExtra(VPN_NAME).toString() }
@@ -29,6 +31,7 @@ class ResultActivity : AbstractActivity() {
             binding.ivResult.setBackgroundResource(R.drawable.result_connected)
             binding.tvResult.text = string(R.string.result_connected)
             binding.tvResult.setTextColor(color(R.color.FF0DC2FF))
+            resultViewModel.loadNativeSuccess(this)
             DataRepository.connectSuccessAd.collectLatest(this) {
                 val native = it.second
                 if (native != null) {
@@ -37,6 +40,7 @@ class ResultActivity : AbstractActivity() {
                 }
             }
         } else {
+            resultViewModel.loadNativeFailure(this)
             DataRepository.disconnectAd.collectLatest(this) {
                 val native = it.second
                 if (native != null) {
@@ -64,6 +68,11 @@ class ResultActivity : AbstractActivity() {
             binding.tvPing.gone()
             binding.tvPingTag.gone()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        resultViewModel.destroy()
     }
 
     companion object {

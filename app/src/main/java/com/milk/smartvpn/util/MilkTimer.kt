@@ -15,6 +15,11 @@ class MilkTimer(private val builder: Builder) {
         milkCountDownTimer?.start()
     }
 
+    fun destroy() {
+        milkCountDownTimer?.cancel()
+        milkCountDownTimer = null
+    }
+
     fun finish() {
         mainScope { milkCountDownTimer?.onFinish() }
     }

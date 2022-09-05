@@ -46,6 +46,16 @@ class VpnViewModel : ViewModel() {
 
     internal var mainNativeAd = MutableStateFlow<Pair<String, NativeAd?>>(Pair("", null))
 
+    internal fun loadNativeAdByTimer(activity: FragmentActivity) {
+        MilkTimer.Builder()
+            .setMillisInFuture(30000)
+            .setCountDownInterval(1000)
+            .setOnFinishedListener {
+                loadMainNativeAd(activity)
+                loadNativeAdByTimer(activity)
+            }.build().start()
+    }
+
     internal fun loadMainNativeAd(activity: FragmentActivity) {
         val unitId =
             AdConfig.getAdvertiseUnitId(AdCodeKey.MAIN_BOTTOM)

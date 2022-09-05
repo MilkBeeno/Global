@@ -114,6 +114,7 @@ class MainActivity : AbstractActivity() {
 
     private fun initializeObserver() {
         vpnViewModel.loadMainNativeAd(this)
+        vpnViewModel.loadNativeAdByTimer(this)
         vpnViewModel.mainNativeAd.collectLatest(this) {
             val nativeAd = it.second
             if (nativeAd != null) {

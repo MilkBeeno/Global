@@ -10,6 +10,7 @@ import com.milk.simple.ktx.ioScope
 import com.milk.simple.ktx.mainScope
 import com.milk.smartvpn.ad.AdConfig
 import com.milk.smartvpn.ad.AdManager
+import com.milk.smartvpn.ad.TopOnManager
 import com.milk.smartvpn.constant.AdCodeKey
 import com.milk.smartvpn.data.VpnModel
 import com.milk.smartvpn.friebase.FireBaseManager
@@ -184,19 +185,29 @@ class VpnViewModel : ViewModel() {
     ) {
         val unitId =
             AdConfig.getAdvertiseUnitId(AdCodeKey.CONNECT_SUCCESS)
-        if (unitId.isNotBlank())
-            AdManager.loadInterstitial(activity, unitId,
-                onFailedRequest = {
+        if (unitId.isNotBlank()) {
+            FireBaseManager.logEvent(FirebaseKey.MAKE_AN_AD_REQUEST, unitId, unitId)
+            TopOnManager.loadInterstitial(activity, unitId,
+                loadFailureRequest = {
                     FireBaseManager
                         .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
                     failureRequest()
                 },
-                onSuccessRequest = {
+                loadSuccessRequest = {
                     FireBaseManager
                         .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
                     successRequest(unitId)
+                },
+                showFailureRequest = {
+
+                },
+                showSuccessRequest = {
+
+                },
+                clickRequest = {
+
                 })
-        else failureRequest()
+        } else failureRequest()
     }
 
     private fun loadConnectedNativeAd(activity: FragmentActivity) {

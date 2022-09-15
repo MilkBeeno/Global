@@ -4,6 +4,14 @@ pluginManagement {
         google()
         mavenCentral()
         maven { url "https://jitpack.io" }
+        /** 聚合广告依赖、允许添加仓库地址 */
+        flatDir {
+            dirs 'libs'
+        }
+        //Anythink(Core)
+        maven {
+            url "https://anythink.jfrog.io/artifactory/android_sdk"
+        }
     }
 }
 dependencyResolutionManagement {
@@ -12,6 +20,14 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url "https://jitpack.io" }
+        /** 聚合广告依赖、允许添加仓库地址 */
+        flatDir {
+            dirs 'libs'
+        }
+        //Anythink(Core)
+        maven {
+            url "https://anythink.jfrog.io/artifactory/android_sdk"
+        }
     }
 }
 rootProject.name = "SmartVpn"

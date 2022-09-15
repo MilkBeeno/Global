@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         // 测试服包名 com.milk.smart 正式服包名 com.milk.simplesmart
-        applicationId "com.milk.simplesmart"
+        applicationId "com.milk.smart"
         minSdk 21
         targetSdk 32
         versionCode 101
@@ -34,6 +34,8 @@ android {
             buildConfigField 'String', 'AD_APP_ID', "${AD_APP_ID_DEBUG}"
             buildConfigField 'String', 'AD_APP_VERSION', "${AD_APP_VERSION_DEBUG}"
             buildConfigField 'String', 'AD_APP_CHANNEL', "${AD_APP_CHANNEL}"
+            buildConfigField 'String', 'TOP_ON_ID', "${TOP_ON_APP_ID_DEBUG}"
+            buildConfigField 'String', 'TOP_ON_KEY', "${TOP_ON_APP_KEY_DEBUG}"
             signingConfig signingConfigs.myJsk
         }
         release {
@@ -44,6 +46,8 @@ android {
             buildConfigField 'String', 'AD_APP_ID', "${AD_APP_ID_RELEASE}"
             buildConfigField 'String', 'AD_APP_VERSION', "${AD_APP_VERSION_RELEASE}"
             buildConfigField 'String', 'AD_APP_CHANNEL', "${AD_APP_CHANNEL}"
+            buildConfigField 'String', 'TOP_ON_ID', "${TOP_ON_APP_ID_RELEASE}"
+            buildConfigField 'String', 'TOP_ON_KEY', "${TOP_ON_APP_KEY_RELEASE}"
             signingConfig signingConfigs.myJsk
         }
     }
@@ -88,4 +92,15 @@ dependencies {
     // firebase 统计功能
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
     implementation("com.google.firebase:firebase-analytics:21.1.0")
+    // Anythink (Necessary) 聚合广告- TopOn 平台依赖
+    implementation "com.anythink.sdk:core:5.9.96"
+    implementation "com.anythink.sdk:nativead:5.9.96"
+    implementation "com.anythink.sdk:banner:5.9.96"
+    implementation "com.anythink.sdk:interstitial:5.9.96"
+    implementation "com.anythink.sdk:rewardedvideo:5.9.96"
+    implementation "com.anythink.sdk:splash:5.9.96"
+    // Facebook 聚合广告- Facebook 广告依赖
+    implementation "com.anythink.sdk:adapter-facebook:5.9.96"
+    implementation "com.facebook.android:audience-network-sdk:6.11.0"
+    implementation "androidx.annotation:annotation:1.4.0"
 }

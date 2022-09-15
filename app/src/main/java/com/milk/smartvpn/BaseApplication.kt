@@ -6,6 +6,7 @@ import com.milk.simple.ktx.ioScope
 import com.milk.simple.log.Logger
 import com.milk.simple.mdr.KvManger
 import com.milk.smartvpn.ad.AdManager
+import com.milk.smartvpn.ad.TopOnManager
 import com.milk.smartvpn.friebase.FireBaseManager
 import com.milk.smartvpn.media.LoaderConfig
 import com.milk.smartvpn.ui.act.BackStackActivity
@@ -33,6 +34,7 @@ class BaseApplication : Application() {
             Logger.initialize(BuildConfig.DEBUG)
             LoaderConfig.initialize(current)
             AdManager.initialize(current)
+            TopOnManager.initialize(current)
             FireBaseManager.initialize(current)
         }
     }

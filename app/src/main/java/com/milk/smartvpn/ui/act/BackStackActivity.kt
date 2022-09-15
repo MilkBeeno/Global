@@ -37,10 +37,8 @@ class BackStackActivity : AbstractActivity() {
                 backStackViewModel.loadLaunchAd(
                     activity = this,
                     finishRequest = {
-                        backStackViewModel.showLaunchAd(this, it) {
-                            MainActivity.create(this)
-                            finish()
-                        }
+                        MainActivity.create(this)
+                        finish()
                     }
                 )
             }

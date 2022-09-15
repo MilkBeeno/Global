@@ -42,13 +42,7 @@ class BackStackActivity : AbstractActivity() {
                     }
                 )
             }
-        else backStackViewModel.loadBackStackAd(
-            activity = this,
-            finishRequest = {
-                backStackViewModel.showBackStackAd(this, it) {
-                    finish()
-                }
-            })
+        else backStackViewModel.loadBackStackAd(this) { finish() }
     }
 
     override fun onInterceptKeyDownEvent(): Boolean = true

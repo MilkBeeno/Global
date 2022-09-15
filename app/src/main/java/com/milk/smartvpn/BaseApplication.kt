@@ -1,11 +1,9 @@
 package com.milk.smartvpn
 
 import android.app.Application
-import com.google.android.gms.ads.AdActivity
 import com.milk.simple.ktx.ioScope
 import com.milk.simple.log.Logger
 import com.milk.simple.mdr.KvManger
-import com.milk.smartvpn.ad.AdManager
 import com.milk.smartvpn.ad.TopOnManager
 import com.milk.smartvpn.friebase.FireBaseManager
 import com.milk.smartvpn.media.LoaderConfig
@@ -27,13 +25,12 @@ class BaseApplication : Application() {
     private fun initialize() {
         ioScope {
             BackStack.backToForegroundMonitor(current) {
-                if (it !is LaunchActivity && it !is BackStackActivity && it !is AdActivity)
+                if (it !is LaunchActivity && it !is BackStackActivity)
                     BackStackActivity.create(current)
             }
-            KvManger.initialize(current)
             Logger.initialize(BuildConfig.DEBUG)
+            KvManger.initialize(current)
             LoaderConfig.initialize(current)
-            AdManager.initialize(current)
             TopOnManager.initialize(current)
             FireBaseManager.initialize(current)
         }

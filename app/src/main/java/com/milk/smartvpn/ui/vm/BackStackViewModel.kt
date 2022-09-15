@@ -59,7 +59,7 @@ class BackStackViewModel : ViewModel() {
                     FireBaseManager
                         .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
                 })
-        }
+        } else adLoadStatus = AdLoadStatus.Failure
     }
 
     internal fun loadBackStackAd(activity: FragmentActivity, finishRequest: () -> Unit) {
@@ -108,6 +108,6 @@ class BackStackViewModel : ViewModel() {
                     FireBaseManager
                         .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
                 })
-        }
+        } else adLoadStatus = AdLoadStatus.Failure
     }
 }

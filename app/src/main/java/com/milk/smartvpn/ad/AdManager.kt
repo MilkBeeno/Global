@@ -12,8 +12,6 @@ import com.milk.smartvpn.friebase.FireBaseManager
 import com.milk.smartvpn.friebase.FirebaseKey
 
 object AdManager {
-    private var interstitialAd: InterstitialAd? = null
-
     internal fun initialize(context: Context) {
         MobileAds.initialize(context) {
             if (BuildConfig.DEBUG) {
@@ -23,62 +21,6 @@ object AdManager {
                         .setTestDeviceIds(AdCodeKey.TEST_DEVICE_NUMBER)
                         .build()
                 )
-            }
-        }
-    }
-
-    /** 加载插页广告 */
-    internal fun loadInterstitial(
-        context: Context,
-        adUnitId: String,
-        onFailedRequest: (String) -> Unit = {},
-        onSuccessRequest: () -> Unit = {}
-    ) {
-        FireBaseManager.logEvent(FirebaseKey.MAKE_AN_AD_REQUEST, adUnitId, adUnitId)
-        val adRequest = AdRequest.Builder().build()
-        InterstitialAd.load(context, adUnitId, adRequest,
-            object : InterstitialAdLoadCallback() {
-                override fun onAdFailedToLoad(adError: LoadAdError) {
-                    interstitialAd = null
-                    onFailedRequest(adError.message)
-                }
-
-                override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    AdManager.interstitialAd = interstitialAd
-                    onSuccessRequest()
-                }
-            })
-    }
-
-    /** 显示插页广告 */
-    internal fun showInterstitial(
-        activity: FragmentActivity,
-        failureRequest: (String) -> Unit = {},
-        successRequest: () -> Unit = {},
-        clickRequest: () -> Unit = {}
-    ) {
-        if (interstitialAd == null)
-            failureRequest("No interstitialAd object !")
-        else {
-            interstitialAd?.show(activity)
-            interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
-                override fun onAdDismissedFullScreenContent() {
-                    successRequest()
-                }
-
-                override fun onAdFailedToShowFullScreenContent(p0: AdError) {
-                    super.onAdFailedToShowFullScreenContent(p0)
-                    failureRequest(p0.message)
-                }
-
-                override fun onAdShowedFullScreenContent() {
-                    interstitialAd = null
-                }
-
-                override fun onAdClicked() {
-                    super.onAdClicked()
-                    clickRequest()
-                }
             }
         }
     }

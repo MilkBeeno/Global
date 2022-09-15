@@ -201,17 +201,15 @@ class MainActivity : AbstractActivity() {
                     FireBaseManager.logEvent(FirebaseKey.CONNECTION_SUCCESSFUL_FOR_MORE_THAN_15S)
                 }
             }
-            vpnViewModel.loadSuccessAd(this) {
+            vpnViewModel.showConnectedAd(this) {
                 loadAdDialog.dismiss()
-                vpnViewModel.showConnectedAd(this, it) {
-                    ResultActivity.create(
-                        this,
-                        isConnected,
-                        vpnViewModel.currentImageUrl,
-                        vpnViewModel.currentName,
-                        vpnViewModel.currentPing
-                    )
-                }
+                ResultActivity.create(
+                    this,
+                    isConnected,
+                    vpnViewModel.currentImageUrl,
+                    vpnViewModel.currentName,
+                    vpnViewModel.currentPing
+                )
             }
         } else {
             vpnViewModel.loadDisconnectNativeAd(this) {

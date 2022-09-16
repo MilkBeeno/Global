@@ -29,35 +29,31 @@ class BackStackViewModel : ViewModel() {
         timer.start()
         if (unitId.isNotBlank()) {
             adLoadStatus = AdLoadStatus.Loading
+            FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_3)
             aTInterstitial = TopOnManager.loadInterstitial(
                 activity = activity,
                 adUnitId = unitId,
                 loadFailureRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
+                    FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_3, it)
                     adLoadStatus = AdLoadStatus.Failure
                 },
                 loadSuccessRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
+                    FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_3)
                     adLoadStatus = AdLoadStatus.Success
                     timer.finish()
                 },
                 showFailureRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_SHOW_FAILED, unitId, it)
+                    FireBaseManager.logEvent(FirebaseKey.Ad_show_failed_3, it)
                 },
                 showSuccessRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.THE_AD_SHOW_SUCCESS, unitId, unitId)
+                    FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_3)
                 },
                 finishedRequest = {
                     adLoadStatus = AdLoadStatus.Loading
                     finishRequest()
                 },
                 clickRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
+                    FireBaseManager.logEvent(FirebaseKey.click_ad_3)
                 })
         } else adLoadStatus = AdLoadStatus.Failure
     }
@@ -77,36 +73,32 @@ class BackStackViewModel : ViewModel() {
         timer.start()
         if (unitId.isNotBlank()) {
             adLoadStatus = AdLoadStatus.Loading
+            FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_2)
             aTInterstitial = TopOnManager.loadInterstitial(
                 activity = activity,
                 adUnitId = unitId,
                 loadFailureRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
+                    FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_2, it)
                     adLoadStatus = AdLoadStatus.Failure
                     timer.finish()
                 },
                 loadSuccessRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
+                    FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_2)
                     adLoadStatus = AdLoadStatus.Success
                     timer.finish()
                 },
                 showFailureRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_SHOW_FAILED, unitId, it)
+                    FireBaseManager.logEvent(FirebaseKey.Ad_show_failed_2, it)
                 },
                 showSuccessRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.THE_AD_SHOW_SUCCESS, unitId, unitId)
+                    FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_2)
                 },
                 finishedRequest = {
                     adLoadStatus = AdLoadStatus.Loading
                     finishRequest()
                 },
                 clickRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
+                    FireBaseManager.logEvent(FirebaseKey.click_ad_2)
                 })
         } else adLoadStatus = AdLoadStatus.Failure
     }

@@ -9,6 +9,8 @@ import com.anythink.nativead.api.ATNativeAdView
 import com.anythink.nativead.api.ATNativeDislikeListener
 import com.anythink.nativead.api.ATNativeEventListener
 import com.anythink.nativead.api.NativeAd
+import com.milk.smartvpn.friebase.FireBaseManager
+import com.milk.smartvpn.friebase.FirebaseKey
 
 /**
  * 原生广告  分为 google原生  Facebook 原生， is原生
@@ -45,11 +47,29 @@ class AdView : FrameLayout {
                 }
 
                 override fun onAdClicked(view: ATNativeAdView, atAdInfo: ATAdInfo) {
-
+                    when (adType) {
+                        AdType.Main ->
+                            FireBaseManager.logEvent(FirebaseKey.click_ad)
+                        AdType.VpnList ->
+                            FireBaseManager.logEvent(FirebaseKey.click_ad_1)
+                        AdType.Connected ->
+                            FireBaseManager.logEvent(FirebaseKey.click_ad_5)
+                        AdType.DisConnect ->
+                            FireBaseManager.logEvent(FirebaseKey.click_ad_6)
+                    }
                 }
 
                 override fun onAdVideoStart(view: ATNativeAdView) {
-
+                    when (adType) {
+                        AdType.Main ->
+                            FireBaseManager.logEvent(FirebaseKey.The_ad_show_success)
+                        AdType.VpnList ->
+                            FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_1)
+                        AdType.Connected ->
+                            FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_5)
+                        AdType.DisConnect ->
+                            FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_6)
+                    }
                 }
 
                 override fun onAdVideoEnd(view: ATNativeAdView) {

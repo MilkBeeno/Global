@@ -49,22 +49,18 @@ class SwitchNodeViewModel : ViewModel() {
         activity: FragmentActivity,
         finishRequest: (String) -> Unit
     ) {
-        val unitId =
-            AdConfig.getAdvertiseUnitId(AdCodeKey.VPN_LIST)
+        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.VPN_LIST)
+        FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_1)
         if (unitId.isNotBlank()) {
             TopOnManager.loadNativeAd(
                 activity = activity,
                 adUnitId = unitId,
                 loadFailureRequest = {
-                    // 加载失败、原因和理由
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
+                    FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_1,it)
                     finishRequest(unitId)
                 },
                 loadSuccessRequest = {
-                    // 加载成功原因和理由
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
+                    FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_1)
                     DataRepository.vpnListAd.value = Pair(unitId, it?.nativeAd)
                     finishRequest(unitId)
                 })

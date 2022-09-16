@@ -20,7 +20,6 @@ import com.milk.smartvpn.repository.DataRepository
 import com.milk.smartvpn.repository.VpnRepository
 import com.milk.smartvpn.ui.type.VpnStatus
 import com.milk.smartvpn.util.MilkTimer
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
 
@@ -62,16 +61,15 @@ class VpnViewModel : ViewModel() {
     internal fun loadMainNativeAd(activity: FragmentActivity) {
         val adUnitId =
             AdConfig.getAdvertiseUnitId(AdCodeKey.MAIN_BOTTOM)
+        FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request)
         TopOnManager.loadNativeAd(
             activity = activity,
             adUnitId = adUnitId,
             loadFailureRequest = {
-                FireBaseManager
-                    .logEvent(FirebaseKey.AD_REQUEST_FAILED, adUnitId, it)
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_failed, it)
             },
             loadSuccessRequest = {
-                FireBaseManager
-                    .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, adUnitId, adUnitId)
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded)
                 ioScope { mainNativeAd.emit(Pair(adUnitId, it)) }
             })
     }
@@ -177,34 +175,30 @@ class VpnViewModel : ViewModel() {
         timer.start()
         if (unitId.isNotBlank()) {
             adLoadStatus = AdLoadStatus.Loading
+            FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_4)
             aTInterstitial = TopOnManager.loadInterstitial(
                 activity = activity,
                 adUnitId = unitId,
                 loadFailureRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_SHOW_FAILED, unitId, it)
+                    FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_4, it)
                     adLoadStatus = AdLoadStatus.Failure
                 },
                 loadSuccessRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.THE_AD_SHOW_SUCCESS, unitId, unitId)
+                    FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_4)
                     adLoadStatus = AdLoadStatus.Success
                     timer.finish()
                 },
                 showFailureRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.THE_AD_SHOW_SUCCESS, unitId, it)
+                    FireBaseManager.logEvent(FirebaseKey.Ad_show_failed_4, it)
                 },
                 showSuccessRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.THE_AD_SHOW_SUCCESS, unitId, unitId)
+                    FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_4)
                 },
                 finishedRequest = {
                     finishRequest()
                 },
                 clickRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
+                    FireBaseManager.logEvent(FirebaseKey.click_ad_4)
                 })
         } else adLoadStatus = AdLoadStatus.Failure
     }

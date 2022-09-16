@@ -38,20 +38,17 @@ object DataRepository {
         ioScope {
             val unitId =
                 AdConfig.getAdvertiseUnitId(AdCodeKey.CONNECT_SUCCESS_RESULT)
+            FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_5)
             if (unitId.isNotBlank()) {
                 TopOnManager.loadNativeAd(
                     activity = activity,
                     adUnitId = unitId,
                     loadFailureRequest = {
-                        FireBaseManager
-                            .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
+                        FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_5, it)
                     },
                     loadSuccessRequest = {
-                        FireBaseManager
-                            .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
-                        ioScope {
-                            connectSuccessAd.emit(Pair(unitId, it?.nativeAd))
-                        }
+                        FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_5)
+                        ioScope { connectSuccessAd.emit(Pair(unitId, it?.nativeAd)) }
                     })
             }
         }
@@ -62,23 +59,18 @@ object DataRepository {
             val unitId =
                 AdConfig.getAdvertiseUnitId(AdCodeKey.DISCONNECT_SUCCESS_RESULT)
             if (unitId.isNotBlank()) {
+                FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_6)
                 TopOnManager.loadNativeAd(
                     activity = activity,
                     adUnitId = unitId,
                     loadFailureRequest = {
-                        // 加载失败、原因和理由
-                        FireBaseManager
-                            .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
+                        FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_6, it)
                         finishRequest()
                     },
                     loadSuccessRequest = {
-                        // 加载成功原因和理由
-                        FireBaseManager
-                            .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
+                        FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_6)
                         finishRequest()
-                        ioScope {
-                            DataRepository.disconnectAd.emit(Pair(unitId, it?.nativeAd))
-                        }
+                        ioScope { disconnectAd.emit(Pair(unitId, it?.nativeAd)) }
                     })
             } else ioScope {
                 delay(1500)

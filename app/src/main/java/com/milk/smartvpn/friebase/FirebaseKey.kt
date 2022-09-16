@@ -62,18 +62,55 @@ object FirebaseKey {
     /** 发起广告请求的次数 */
     internal const val MAKE_AN_AD_REQUEST = "Make_an_ad_request"
 
-    /** 广告请求成功的次数 */
-    internal const val AD_REQUEST_SUCCEEDED = "Ad_request_succeeded"
+    /** Main 原生广告 */
+    internal const val Make_an_ad_request = "Make_an_ad_request"
+    internal const val Ad_request_succeeded = "Ad_request_succeeded"
+    internal const val Ad_request_failed = "Ad_request_failed"
+    internal const val The_ad_show_success = "The_ad_show_success"
+    internal const val click_ad = "click_ad"
 
-    /** 广告请求失败的次数 */
-    internal const val AD_REQUEST_FAILED = "Ad_request_failed"
+    /** VpnList 原生广告 */
+    internal const val Make_an_ad_request_1 = "Make_an_ad_request_1"
+    internal const val Ad_request_succeeded_1 = "Ad_request_failed_1"
+    internal const val Ad_request_failed_1 = "Ad_request_failed_1"
+    internal const val The_ad_show_success_1 = "The_ad_show_success_1"
+    internal const val click_ad_1 = "click_ad_1"
 
-    /** 广告展示成功的次数 */
-    internal const val THE_AD_SHOW_SUCCESS = "The_ad_show_success"
+    /** 返回 app 插页广告 */
+    internal const val Make_an_ad_request_2 = "Make_an_ad_request_2"
+    internal const val Ad_request_succeeded_2 = "Ad_request_succeeded_2"
+    internal const val Ad_request_failed_2 = "Ad_request_failed_2"
+    internal const val The_ad_show_success_2 = "The_ad_show_success_2"
+    internal const val Ad_show_failed_2 = "Ad_show_failed_2"
+    internal const val click_ad_2 = "click_ad_2"
 
-    /** 广告展示失败的次数 */
-    internal const val AD_SHOW_FAILED = "Ad_show_failed"
+    /** 启动 app 插页广告 */
+    internal const val Make_an_ad_request_3 = "Make_an_ad_request_3"
+    internal const val Ad_request_succeeded_3 = "Ad_request_succeeded_3"
+    internal const val Ad_request_failed_3 = "Ad_request_failed_3"
+    internal const val The_ad_show_success_3 = "The_ad_show_success_3"
+    internal const val Ad_show_failed_3 = "Ad_show_failed_3"
+    internal const val click_ad_3 = "click_ad_3"
 
-    /** 点击广告次数 */
-    internal const val CLICK_AD = "click_ad"
+    /** 连接成功 插页广告 */
+    internal const val Make_an_ad_request_4 = "Make_an_ad_request_4"
+    internal const val Ad_request_succeeded_4 = "Ad_request_succeeded_4"
+    internal const val Ad_request_failed_4 = "Ad_request_failed_4"
+    internal const val The_ad_show_success_4 = "The_ad_show_success_4"
+    internal const val Ad_show_failed_4 = "Ad_show_failed_4"
+    internal const val click_ad_4 = "click_ad_4"
+
+    /** 连接成功 原生广告 */
+    internal const val Make_an_ad_request_5 = "Make_an_ad_request_5"
+    internal const val Ad_request_succeeded_5 = "Ad_request_succeeded_5"
+    internal const val Ad_request_failed_5 = "Ad_request_failed_5"
+    internal const val The_ad_show_success_5 = "The_ad_show_success_5"
+    internal const val click_ad_5 = "click_ad_5"
+
+    /** 连接失败 原生广告 */
+    internal const val Make_an_ad_request_6 = "Make_an_ad_request_6"
+    internal const val Ad_request_succeeded_6 = "Ad_request_succeeded_6"
+    internal const val Ad_request_failed_6 = "Ad_request_failed_6"
+    internal const val The_ad_show_success_6 = "The_ad_show_success_6"
+    internal const val click_ad_6 = "click_ad_6"
 }

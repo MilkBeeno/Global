@@ -56,8 +56,8 @@ import com.freetech.vpn.logic.imc.RemediationInstruction;
 import com.freetech.vpn.utils.Constants;
 import com.freetech.vpn.utils.IPRange;
 import com.freetech.vpn.utils.IPRangeSet;
-import com.freetech.vpn.utils.SettingsWriter;
 import com.freetech.vpn.utils.IPUtils;
+import com.freetech.vpn.utils.SettingsWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -624,28 +624,20 @@ public class CharonVpnService extends VpnService implements Runnable, VpnStateSe
     private byte[][] getTrustedCertificates() {
         ArrayList<byte[]> certs = new ArrayList<byte[]>();
         TrustedCertificateManager certman = TrustedCertificateManager.getInstance().load();
-        try
-        {
+        try {
             String alias = null;
-            if (alias != null)
-            {
+            if (alias != null) {
                 X509Certificate cert = certman.getCACertificateFromAlias(alias);
-                if (cert == null)
-                {
+                if (cert == null) {
                     return null;
                 }
                 certs.add(cert.getEncoded());
-            }
-            else
-            {
-                for (X509Certificate cert : certman.getAllCACertificates().values())
-                {
+            } else {
+                for (X509Certificate cert : certman.getAllCACertificates().values()) {
                     certs.add(cert.getEncoded());
                 }
             }
-        }
-        catch (CertificateEncodingException e)
-        {
+        } catch (CertificateEncodingException e) {
             e.printStackTrace();
             return null;
         }
@@ -1107,6 +1099,12 @@ public class CharonVpnService extends VpnService implements Runnable, VpnStateSe
                     default:
                         break;
                 }
+            }
+            try {
+                builder.addDisallowedApplication("com.google.android.gms");
+                builder.addDisallowedApplication("com.android.vending");
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
             }
             builder.setMtu(mMtu);
         }

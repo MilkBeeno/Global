@@ -119,7 +119,7 @@ class MainActivity : AbstractActivity() {
             val nativeAd = it.second
             if (nativeAd != null) {
                 binding.nativeView.visible()
-                binding.nativeView.setNativeAd(nativeAd)
+                binding.nativeView.showNativeAd(nativeAd.nativeAd)
             }
         }
         vpnViewModel.connectionState.collectLatest(this) {

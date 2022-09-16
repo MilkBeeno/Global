@@ -4,9 +4,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.anythink.interstitial.api.ATInterstitial
+import com.anythink.nativead.api.ATNative
 import com.freetech.vpn.data.VpnProfile
 import com.freetech.vpn.data.VpnType
-import com.google.android.gms.ads.nativead.NativeAd
 import com.milk.simple.ktx.ioScope
 import com.milk.simple.ktx.mainScope
 import com.milk.smartvpn.ad.AdConfig
@@ -48,11 +48,11 @@ class VpnViewModel : ViewModel() {
     /** 是否显示结果页面 */
     internal var showResultPage: Boolean = false
 
-    internal var mainNativeAd = MutableStateFlow<Pair<String, NativeAd?>>(Pair("", null))
+    internal var mainNativeAd = MutableStateFlow<Pair<String, ATNative?>>(Pair("", null))
 
     internal fun loadNativeAdByTimer(activity: FragmentActivity) {
         MilkTimer.Builder()
-            .setMillisInFuture(30000)
+            .setMillisInFuture(30 * 60 * 1000)
             .setCountDownInterval(1000)
             .setOnFinishedListener {
                 loadMainNativeAd(activity)
@@ -61,23 +61,19 @@ class VpnViewModel : ViewModel() {
     }
 
     internal fun loadMainNativeAd(activity: FragmentActivity) {
-        val unitId =
+        val adUnitId =
             AdConfig.getAdvertiseUnitId(AdCodeKey.MAIN_BOTTOM)
-        AdManager.loadNativeAds(
-            context = activity,
-            adUnitId = unitId,
-            failedRequest = {
+        TopOnManager.loadNativeAd(
+            activity = activity,
+            adUnitId = adUnitId,
+            loadFailureRequest = {
                 FireBaseManager
-                    .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
+                    .logEvent(FirebaseKey.AD_REQUEST_FAILED, adUnitId, it)
             },
-            successRequest = {
+            loadSuccessRequest = {
                 FireBaseManager
-                    .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
-                ioScope { mainNativeAd.emit(Pair(unitId, it)) }
-            },
-            clickAdRequest = {
-                FireBaseManager
-                    .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
+                    .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, adUnitId, adUnitId)
+                ioScope { mainNativeAd.emit(Pair(adUnitId, it)) }
             })
     }
 

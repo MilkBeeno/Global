@@ -163,7 +163,7 @@
         tools:background="@drawable/shape_main_connected"
         tools:textColor="@color/FF1E1250" />
 
-    <com.milk.smartvpn.ui.view.MainAdLayout
+    <com.milk.smartvpn.ad.ui.AdView
         android:id="@+id/nativeView"
         android:layout_width="match_parent"
         android:layout_height="127dp"

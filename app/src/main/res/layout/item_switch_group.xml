@@ -64,9 +64,18 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <com.milk.smartvpn.ui.view.VpnAdLayout
-        android:id="@+id/nativeView"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/transparent"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp">
+
+        <com.milk.smartvpn.ad.ui.AdView
+            android:id="@+id/nativeView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.cardview.widget.CardView>
 </FrameLayout>

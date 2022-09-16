@@ -9,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.core.app.NotificationManagerCompat
 import com.milk.simple.ktx.*
 import com.milk.smartvpn.R
+import com.milk.smartvpn.ad.ui.AdType
 import com.milk.smartvpn.databinding.ActivityMainBinding
 import com.milk.smartvpn.friebase.FireBaseManager
 import com.milk.smartvpn.friebase.FirebaseKey
@@ -116,10 +117,10 @@ class MainActivity : AbstractActivity() {
         vpnViewModel.loadMainNativeAd(this)
         vpnViewModel.loadNativeAdByTimer(this)
         vpnViewModel.mainNativeAd.collectLatest(this) {
-            val nativeAd = it.second
+            val nativeAd = it.second?.nativeAd
             if (nativeAd != null) {
                 binding.nativeView.visible()
-                binding.nativeView.showNativeAd(nativeAd.nativeAd)
+                binding.nativeView.showNativeAd(AdType.Main, nativeAd)
             }
         }
         vpnViewModel.connectionState.collectLatest(this) {
@@ -212,7 +213,7 @@ class MainActivity : AbstractActivity() {
                 )
             }
         } else {
-            vpnViewModel.loadDisconnectNativeAd(this) {
+            DataRepository.loadDisconnectNativeAd(this) {
                 loadAdDialog.dismiss()
                 ResultActivity.create(
                     this,

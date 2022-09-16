@@ -22,7 +22,7 @@ class AdView : FrameLayout {
     private var anyThinkNativeAdView: ATNativeAdView? = null
     private var mNativeAdTop: NativeAd? = null
 
-    fun showNativeAd(nativeAd: NativeAd) {
+    fun showNativeAd(adType: AdType, nativeAd: NativeAd) {
         removeAllViews()
         visibility = VISIBLE
         anyThinkNativeAdView?.removeAllViews()

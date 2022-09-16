@@ -11,7 +11,6 @@ import com.milk.simple.ktx.ioScope
 import com.milk.simple.ktx.mainScope
 import com.milk.smartvpn.ad.AdConfig
 import com.milk.smartvpn.ad.AdLoadStatus
-import com.milk.smartvpn.ad.AdManager
 import com.milk.smartvpn.ad.TopOnManager
 import com.milk.smartvpn.constant.AdCodeKey
 import com.milk.smartvpn.data.VpnModel
@@ -163,7 +162,7 @@ class VpnViewModel : ViewModel() {
     }
 
     internal fun showConnectedAd(activity: FragmentActivity, finishRequest: () -> Unit) {
-        loadConnectedNativeAd(activity)
+        DataRepository.loadConnectedNativeAd(activity)
         var aTInterstitial: ATInterstitial? = null
         val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.CONNECT_SUCCESS)
         val timer = MilkTimer.Builder()
@@ -208,66 +207,5 @@ class VpnViewModel : ViewModel() {
                         .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
                 })
         } else adLoadStatus = AdLoadStatus.Failure
-    }
-
-    private fun loadConnectedNativeAd(activity: FragmentActivity) {
-        val currentNativeAd =
-            DataRepository.connectSuccessAd.value.second
-        val unitId =
-            AdConfig.getAdvertiseUnitId(AdCodeKey.CONNECT_SUCCESS_RESULT)
-        if (unitId.isNotBlank() && currentNativeAd == null) {
-            AdManager.loadNativeAds(activity, unitId,
-                failedRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
-                },
-                successRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
-                    ioScope {
-                        DataRepository.connectSuccessAd.emit(Pair(unitId, it))
-                    }
-                },
-                clickAdRequest = {
-                    FireBaseManager
-                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
-                })
-        }
-    }
-
-    internal fun loadDisconnectNativeAd(
-        activity: FragmentActivity,
-        finishRequest: (String) -> Unit
-    ) {
-        val currentNativeAd =
-            DataRepository.disconnectAd.value.second
-        val unitId =
-            AdConfig.getAdvertiseUnitId(AdCodeKey.DISCONNECT_SUCCESS_RESULT)
-        if (unitId.isNotBlank() && currentNativeAd == null) {
-            AdManager.loadNativeAds(activity, unitId,
-                failedRequest = {
-                    // 加载失败、原因和理由
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
-                    finishRequest(unitId)
-                },
-                successRequest = {
-                    // 加载成功原因和理由
-                    FireBaseManager
-                        .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
-                    finishRequest(unitId)
-                    ioScope {
-                        DataRepository.disconnectAd.emit(Pair(unitId, it))
-                    }
-                },
-                clickAdRequest = {
-                    // 点击广告页面
-                    FireBaseManager
-                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
-                })
-        } else ioScope {
-            delay(1500)
-            finishRequest(unitId)
-        }
     }
 }

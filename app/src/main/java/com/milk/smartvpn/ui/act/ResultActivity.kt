@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import com.milk.simple.ktx.*
 import com.milk.smartvpn.R
+import com.milk.smartvpn.ad.ui.AdType
 import com.milk.smartvpn.databinding.ActivityResultBinding
 import com.milk.smartvpn.media.ImageLoader
 import com.milk.smartvpn.repository.DataRepository
@@ -36,7 +37,7 @@ class ResultActivity : AbstractActivity() {
                 val native = it.second
                 if (native != null) {
                     binding.nativeView.visible()
-                    binding.nativeView.setNativeAd(native)
+                    binding.nativeView.showNativeAd(AdType.Connected, native)
                 }
             }
         } else {
@@ -45,7 +46,7 @@ class ResultActivity : AbstractActivity() {
                 val native = it.second
                 if (native != null) {
                     binding.nativeView.visible()
-                    binding.nativeView.setNativeAd(native)
+                    binding.nativeView.showNativeAd(AdType.DisConnect, native)
                 }
             }
             binding.ivResult.setBackgroundResource(R.drawable.result_disconnect)

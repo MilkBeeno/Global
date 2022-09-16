@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.milk.simple.ktx.ioScope
 import com.milk.smartvpn.ad.AdConfig
-import com.milk.smartvpn.ad.AdManager
+import com.milk.smartvpn.ad.TopOnManager
 import com.milk.smartvpn.constant.AdCodeKey
 import com.milk.smartvpn.constant.EventKey
 import com.milk.smartvpn.data.VpnGroup
@@ -52,24 +52,21 @@ class SwitchNodeViewModel : ViewModel() {
         val unitId =
             AdConfig.getAdvertiseUnitId(AdCodeKey.VPN_LIST)
         if (unitId.isNotBlank()) {
-            AdManager.loadNativeAds(activity, unitId,
-                failedRequest = {
+            TopOnManager.loadNativeAd(
+                activity = activity,
+                adUnitId = unitId,
+                loadFailureRequest = {
                     // 加载失败、原因和理由
                     FireBaseManager
                         .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
                     finishRequest(unitId)
                 },
-                successRequest = {
+                loadSuccessRequest = {
                     // 加载成功原因和理由
                     FireBaseManager
                         .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
-                    DataRepository.vpnListAd.value = Pair(unitId, it)
+                    DataRepository.vpnListAd.value = Pair(unitId, it?.nativeAd)
                     finishRequest(unitId)
-                },
-                clickAdRequest = {
-                    // 点击广告页面
-                    FireBaseManager
-                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
                 })
         } else ioScope {
             delay(1500)

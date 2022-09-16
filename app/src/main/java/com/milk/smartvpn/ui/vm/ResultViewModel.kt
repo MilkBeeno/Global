@@ -4,7 +4,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import com.milk.simple.ktx.ioScope
 import com.milk.smartvpn.ad.AdConfig
-import com.milk.smartvpn.ad.AdManager
+import com.milk.smartvpn.ad.TopOnManager
 import com.milk.smartvpn.constant.AdCodeKey
 import com.milk.smartvpn.friebase.FireBaseManager
 import com.milk.smartvpn.friebase.FirebaseKey
@@ -30,24 +30,21 @@ class ResultViewModel : ViewModel() {
         val unitId =
             AdConfig.getAdvertiseUnitId(AdCodeKey.CONNECT_SUCCESS_RESULT)
         if (unitId.isNotBlank()) {
-            AdManager.loadNativeAds(activity, unitId,
-                failedRequest = {
+            TopOnManager.loadNativeAd(
+                activity = activity,
+                adUnitId = unitId,
+                loadFailureRequest = {
                     // 加载失败、原因和理由
                     FireBaseManager
                         .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
                 },
-                successRequest = {
+                loadSuccessRequest = {
                     // 加载成功原因和理由
                     FireBaseManager
                         .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
                     ioScope {
-                        DataRepository.connectSuccessAd.emit(Pair(unitId, it))
+                        DataRepository.connectSuccessAd.emit(Pair(unitId, it?.nativeAd))
                     }
-                },
-                clickAdRequest = {
-                    // 点击广告页面
-                    FireBaseManager
-                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
                 })
         }
     }
@@ -69,24 +66,21 @@ class ResultViewModel : ViewModel() {
         val unitId =
             AdConfig.getAdvertiseUnitId(AdCodeKey.DISCONNECT_SUCCESS_RESULT)
         if (unitId.isNotBlank() && currentNativeAd == null) {
-            AdManager.loadNativeAds(activity, unitId,
-                failedRequest = {
+            TopOnManager.loadNativeAd(
+                activity = activity,
+                adUnitId = unitId,
+                loadFailureRequest = {
                     // 加载失败、原因和理由
                     FireBaseManager
                         .logEvent(FirebaseKey.AD_REQUEST_FAILED, unitId, it)
                 },
-                successRequest = {
+                loadSuccessRequest = {
                     // 加载成功原因和理由
                     FireBaseManager
                         .logEvent(FirebaseKey.AD_REQUEST_SUCCEEDED, unitId, unitId)
                     ioScope {
-                        DataRepository.disconnectAd.emit(Pair(unitId, it))
+                        DataRepository.disconnectAd.emit(Pair(unitId, it?.nativeAd))
                     }
-                },
-                clickAdRequest = {
-                    // 点击广告页面
-                    FireBaseManager
-                        .logEvent(FirebaseKey.CLICK_AD, unitId, unitId)
                 })
         }
     }

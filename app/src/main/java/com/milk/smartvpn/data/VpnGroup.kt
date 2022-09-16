@@ -1,15 +1,16 @@
 package com.milk.smartvpn.data
 
+import com.anythink.nativead.api.NativeAd
 import com.drake.brv.BindingAdapter
 import com.drake.brv.item.ItemBind
 import com.drake.brv.item.ItemExpand
 import com.drake.brv.item.ItemHover
 import com.drake.brv.item.ItemPosition
-import com.google.android.gms.ads.nativead.NativeAd
 import com.milk.simple.ktx.gone
 import com.milk.simple.ktx.string
 import com.milk.simple.ktx.visible
 import com.milk.smartvpn.R
+import com.milk.smartvpn.ad.ui.AdType
 import com.milk.smartvpn.databinding.ItemSwitchGroupBinding
 import com.milk.smartvpn.media.ImageLoader
 import com.milk.smartvpn.repository.DataRepository
@@ -39,14 +40,14 @@ class VpnGroup : ItemExpand, ItemHover, ItemPosition, ItemBind {
             nativeAd != null -> {
                 binding.vLine.gone()
                 binding.llContent.gone()
-                binding.nativeView.visible()
+                binding.cardView.visible()
                 val nativeAd = DataRepository.vpnListAd.value.second
-                nativeAd?.let { binding.nativeView.setNativeAd(it) }
+                nativeAd?.let { binding.nativeView.showNativeAd(AdType.VpnList, it) }
             }
             // 显示 VPN 列表节点
             itemSublist != null -> {
                 binding.vLine.gone()
-                binding.nativeView.gone()
+                binding.cardView.gone()
                 binding.llContent.visible()
                 ImageLoader.Builder()
                     .request(areaImage)

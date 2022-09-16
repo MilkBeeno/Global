@@ -9,11 +9,11 @@ android {
 
     defaultConfig {
         // 测试服包名 com.milk.smart 正式服包名 com.milk.simplesmart
-        applicationId "com.milk.smart"
+        applicationId "com.milk.simplesmart"
         minSdk 21
         targetSdk 32
-        versionCode 101
-        versionName "1.0.1"
+        versionCode 110
+        versionName "1.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

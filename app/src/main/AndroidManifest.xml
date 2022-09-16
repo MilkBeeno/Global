@@ -17,15 +17,15 @@
         tools:ignore="UnusedAttribute">
         <!-- Google 广告ID 正式服 ID=“ ca-app-pub-7382266762101400~6021862456 ”-->
         <!-- Google 广告ID 测试服 ID=“ ca-app-pub-3940256099942544~3347511713 “-->
-        <meta-data
+        <!--<meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-7382266762101400~6021862456" />
-        <!-- google 广告的活动页面 -->
+        &lt;!&ndash; google 广告的活动页面 &ndash;&gt;
         <activity
             android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@style/Theme.SmartVpn"
-            tools:replace="android:theme" />
+            tools:replace="android:theme" />-->
         <activity
             android:name=".ui.act.LaunchActivity"
             android:exported="true"

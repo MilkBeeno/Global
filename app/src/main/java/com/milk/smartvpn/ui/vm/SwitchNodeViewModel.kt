@@ -32,7 +32,7 @@ class SwitchNodeViewModel : ViewModel() {
 
     internal fun loadNativeByTimer(activity: FragmentActivity) {
         milkTimer = MilkTimer.Builder()
-            .setMillisInFuture(30000)
+            .setMillisInFuture(30 * 60 * 1000)
             .setCountDownInterval(1000)
             .setOnFinishedListener {
                 loadNodeNativeAd(activity) {
@@ -56,7 +56,7 @@ class SwitchNodeViewModel : ViewModel() {
                 activity = activity,
                 adUnitId = unitId,
                 loadFailureRequest = {
-                    FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_1,it)
+                    FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_1, it)
                     finishRequest(unitId)
                 },
                 loadSuccessRequest = {

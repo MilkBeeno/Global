@@ -17,7 +17,7 @@ class ResultViewModel : ViewModel() {
 
     internal fun loadNativeSuccess(activity: FragmentActivity) {
         successMilkTimer = MilkTimer.Builder()
-            .setMillisInFuture(30000)
+            .setMillisInFuture(30 * 60 * 1000)
             .setCountDownInterval(1000)
             .setOnFinishedListener {
                 loadConnectedNativeAd(activity)
@@ -48,7 +48,7 @@ class ResultViewModel : ViewModel() {
 
     internal fun loadNativeFailure(activity: FragmentActivity) {
         failureMilkTimer = MilkTimer.Builder()
-            .setMillisInFuture(30000)
+            .setMillisInFuture(30 * 60 * 1000)
             .setCountDownInterval(1000)
             .setOnFinishedListener {
                 loadDisconnectNativeAd(activity)

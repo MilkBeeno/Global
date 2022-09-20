@@ -30,7 +30,7 @@ object TopOnManager {
         val builder = ATNetworkConfig.Builder()
         builder.withInitConfigList(atInitConfigs)
         val atNetworkConfig = builder.build()
-        ATSDK.init(application, BuildConfig.TOP_ON_ID, BuildConfig.TOP_ON_KEY, atNetworkConfig)
+         ATSDK.init(application, BuildConfig.TOP_ON_ID, BuildConfig.TOP_ON_KEY, atNetworkConfig)
         ATSDK.setNetworkLogDebug(BuildConfig.DEBUG)
         if (BuildConfig.DEBUG) {
             val deviceId = "9b7ae0dd286ed369"

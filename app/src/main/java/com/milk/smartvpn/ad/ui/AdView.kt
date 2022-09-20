@@ -87,7 +87,10 @@ class AdView : FrameLayout {
                     }
                 }
             })
-            val selfRender = NativeView(context)
+            val selfRender = when (adType) {
+                AdType.Main -> MainNativeView(context)
+                else -> NativeView(context)
+            }
             selfRender.createView(it)
             try {
                 it.renderAdContainer(anyThinkNativeAdView, selfRender)
@@ -95,7 +98,7 @@ class AdView : FrameLayout {
                 e.printStackTrace()
             }
             anyThinkNativeAdView?.visibility = VISIBLE
-            it.prepare(anyThinkNativeAdView, selfRender.prepareInfo)
+            it.prepare(anyThinkNativeAdView, selfRender.getPrepareInfo())
         }
     }
 }

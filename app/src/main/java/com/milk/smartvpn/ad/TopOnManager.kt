@@ -11,7 +11,6 @@ import com.anythink.interstitial.api.ATInterstitial
 import com.anythink.interstitial.api.ATInterstitialListener
 import com.anythink.nativead.api.ATNative
 import com.anythink.nativead.api.ATNativeNetworkListener
-import com.anythink.network.facebook.FacebookATInitConfig
 import com.anythink.rewardvideo.api.ATRewardVideoAd
 import com.anythink.rewardvideo.api.ATRewardVideoListener
 import com.milk.simple.log.Logger
@@ -25,8 +24,6 @@ object TopOnManager {
 
     internal fun initialize(application: Application) {
         // 初始化 SDK
-        val facebookATInitConfig = FacebookATInitConfig()
-        atInitConfigs.add(facebookATInitConfig)
         val builder = ATNetworkConfig.Builder()
         builder.withInitConfigList(atInitConfigs)
         val atNetworkConfig = builder.build()

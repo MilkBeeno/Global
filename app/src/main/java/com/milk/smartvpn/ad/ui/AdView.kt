@@ -88,7 +88,9 @@ class AdView : FrameLayout {
                 }
             })
             val selfRender = when (adType) {
-                AdType.Main -> MainNativeView(context)
+                AdType.Main,
+                AdType.Connected,
+                AdType.DisConnect -> MainNativeView(context)
                 else -> NativeView(context)
             }
             selfRender.createView(it)

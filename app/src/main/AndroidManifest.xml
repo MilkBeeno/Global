@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartVpn"
         tools:ignore="UnusedAttribute">
-        <!-- Admob 广告相关的 -->
+        <!-- TopOn 广告相关的 -->
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />

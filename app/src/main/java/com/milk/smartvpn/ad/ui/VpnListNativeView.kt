@@ -13,7 +13,7 @@ import com.anythink.nativead.api.ATNativePrepareInfo
 import com.anythink.nativead.api.NativeAd
 import com.milk.smartvpn.R
 
-class VpnListNative : FrameLayout, NativeView {
+class VpnListNativeView : FrameLayout, NativeView {
     private var mClickView: MutableList<View> = ArrayList()
     private var prepareInfo: ATNativePrepareInfo? = null
 
@@ -26,7 +26,7 @@ class VpnListNative : FrameLayout, NativeView {
         mClickView.clear()
         prepareInfo = ATNativePrepareInfo()
         LayoutInflater
-            .from(context).inflate(R.layout.layout_miain_ad, this)
+            .from(context).inflate(R.layout.layout_vpn_list_ad, this)
         val titleView = findViewById<TextView>(R.id.native_ad_title)
         val contentArea = findViewById<FrameLayout>(R.id.native_ad_content_image_area)
         val descView = findViewById<TextView>(R.id.native_ad_desc)
@@ -73,7 +73,7 @@ class VpnListNative : FrameLayout, NativeView {
         iconArea.visibility = VISIBLE
         ctaView.visibility = VISIBLE
         logoView.visibility = VISIBLE
-        contentArea.visibility = VISIBLE
+        contentArea.visibility = GONE
 
         titleView.text = adMaterial.title
         descView.text = adMaterial.descriptionText
@@ -85,7 +85,7 @@ class VpnListNative : FrameLayout, NativeView {
         } else {
             iconArea.addView(adIconView)
         }
-        // ctaView.text = adMaterial.callToActionText
+        ctaView.text = adMaterial.callToActionText
 
         if (!TextUtils.isEmpty(adMaterial.adChoiceIconUrl)) {
             logoView.setImage(adMaterial.adChoiceIconUrl)

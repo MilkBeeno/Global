@@ -91,7 +91,7 @@ class AdView : FrameLayout {
                 AdType.Main,
                 AdType.Connected,
                 AdType.DisConnect -> MainNativeView(context)
-                else -> VpnListNative(context)
+                else -> VpnListNativeView(context)
             }
             selfRender.createView(it)
             try {

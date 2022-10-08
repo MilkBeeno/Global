@@ -105,5 +105,5 @@ dependencies {
     implementation "com.anythink.sdk:adapter-admob:5.9.98"
     implementation "com.google.android.gms:play-services-ads:21.2.0"
     // facebook 推广
-    implementation "com.facebook.android:facebook-android-sdk:[8,9)"
+    implementation "com.facebook.android:facebook-android-sdk:14.0.0"
 }

@@ -45,10 +45,11 @@ class LaunchActivity : AbstractActivity() {
         binding.ivSelect.setOnClickListener(this)
         binding.tvStart.setOnClickListener(this)
         binding.tvPrivacy.setSpannableClick(
-            Pair(string(R.string.launch_privacy), colorClickableSpan(color(R.color.FF0DC2FF)) {
-                val url = "https://res.getsimplesmart.com/privacy.html"
-                WebActivity.create(this, url)
-            })
+            Pair(string(R.string.launch_privacy),
+                colorClickableSpan(color(R.color.FF0DC2FF)) {
+                    val url = "https://res.getsimplesmart.com/privacy.html"
+                    WebActivity.create(this, url)
+                })
         )
     }
 

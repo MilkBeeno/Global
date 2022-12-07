@@ -19,3 +19,4 @@ local.properties
 /.idea/misc.xml
 /.idea/vcs.xml
 /app/debug/app-debug.aab
+/app/release/app-release.aab

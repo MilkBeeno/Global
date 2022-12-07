@@ -15,6 +15,7 @@ import com.freetech.vpn.logic.VpnStateService
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.milk.simple.ktx.ioScope
 import com.milk.smartvpn.constant.KvKey
+import com.milk.smartvpn.ui.act.BackStackActivity
 import com.milk.smartvpn.ui.act.MainActivity
 import com.milk.smartvpn.ui.type.VpnStatus
 import com.milk.smartvpn.ui.vm.VpnViewModel
@@ -51,7 +52,7 @@ class VpnProxy(private val activity: MainActivity) {
             // 连接结果回调
             vpnViewModel.currentConnected =
                 vpnService?.errorState == VpnStateService.ErrorState.NO_ERROR &&
-                        vpnService?.state == VpnStateService.State.CONNECTED
+                    vpnService?.state == VpnStateService.State.CONNECTED
         }
     }
 
@@ -93,14 +94,14 @@ class VpnProxy(private val activity: MainActivity) {
             vpnService?.disconnect()
             connecting()
         }
-        LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE)
-            .observe(activity) {
-                vpnViewModel.endTiming()
-                vpnViewModel.currentImageUrl = it[1]
-                vpnViewModel.currentName = it[2]
-                vpnViewModel.currentPing = it[3].toLong()
-                vpnViewModel.getVpnInfo(it[0].toLong(), true)
-            }
+        LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE).observe(activity) {
+            BackStackActivity.create(activity)
+            vpnViewModel.endTiming()
+            vpnViewModel.currentImageUrl = it[1]
+            vpnViewModel.currentName = it[2]
+            vpnViewModel.currentPing = it[3].toLong()
+            vpnViewModel.getVpnInfo(it[0].toLong(), true)
+        }
     }
 
     fun openVpn() {

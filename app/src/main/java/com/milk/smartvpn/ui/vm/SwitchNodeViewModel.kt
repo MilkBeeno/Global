@@ -107,11 +107,10 @@ class SwitchNodeViewModel : ViewModel() {
                         groups.add(group)
                     }
                 }
-                groups.forEachIndexed { index, _ ->
-                    if ((index + 1) % 4 == 0) {
-                        val vpnGroup = VpnGroup()
-                            .apply { nativeAd = DataRepository.vpnListAd.value.second }
-                        groups.add(index + 1, vpnGroup)
+                DataRepository.vpnListAd.value.second.let {
+                    if (it != null) {
+                        val vpnGroup = VpnGroup().apply { nativeAd = it }
+                        groups.add(0, vpnGroup)
                     }
                 }
                 vpnGroups.emit(groups)

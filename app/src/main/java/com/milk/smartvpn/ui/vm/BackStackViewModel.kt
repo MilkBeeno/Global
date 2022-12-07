@@ -1,8 +1,10 @@
 package com.milk.smartvpn.ui.vm
 
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import com.anythink.interstitial.api.ATInterstitial
+import com.anythink.splashad.api.ATSplashAd
 import com.milk.smartvpn.ad.AdConfig
 import com.milk.smartvpn.ad.AdLoadStatus
 import com.milk.smartvpn.ad.TopOnManager
@@ -14,23 +16,28 @@ import com.milk.smartvpn.util.MilkTimer
 class BackStackViewModel : ViewModel() {
     private var adLoadStatus: AdLoadStatus = AdLoadStatus.Loading
 
-    internal fun loadLaunchAd(activity: FragmentActivity, finishRequest: () -> Unit) {
-        var aTInterstitial: ATInterstitial? = null
-        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.APP_LAUNCH)
+    internal fun loadLaunchAd(
+        activity: FragmentActivity,
+        viewGroup: ViewGroup,
+        finishRequest: () -> Unit
+    ) {
+        var splashAd: ATSplashAd? = null
+        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.LAUNCH_OPEN_AD_KEY)
         val timer = MilkTimer.Builder()
             .setMillisInFuture(10000)
             .setOnFinishedListener {
-                if (adLoadStatus == AdLoadStatus.Success)
-                    aTInterstitial?.show(activity)
-                else
+                if (adLoadStatus == AdLoadStatus.Success) {
+                    splashAd?.show(activity, viewGroup)
+                } else {
                     finishRequest()
+                }
             }
             .build()
         timer.start()
         if (unitId.isNotBlank()) {
             adLoadStatus = AdLoadStatus.Loading
             FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_3)
-            aTInterstitial = TopOnManager.loadInterstitial(
+            splashAd = TopOnManager.loadOpenAd(
                 activity = activity,
                 adUnitId = unitId,
                 loadFailureRequest = {
@@ -60,7 +67,7 @@ class BackStackViewModel : ViewModel() {
 
     internal fun loadBackStackAd(activity: FragmentActivity, finishRequest: () -> Unit) {
         var aTInterstitial: ATInterstitial? = null
-        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.BACK_STACK)
+        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.INTERSTITIAL_AD_KEY)
         val timer = MilkTimer.Builder()
             .setMillisInFuture(10000)
             .setOnFinishedListener {

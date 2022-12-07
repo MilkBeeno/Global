@@ -1,19 +1,16 @@
 package com.milk.smartvpn.ad
 
 import android.app.Application
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.fragment.app.FragmentActivity
-import com.anythink.banner.api.ATBannerListener
-import com.anythink.banner.api.ATBannerView
 import com.anythink.core.api.*
 import com.anythink.interstitial.api.ATInterstitial
 import com.anythink.interstitial.api.ATInterstitialListener
 import com.anythink.nativead.api.ATNative
 import com.anythink.nativead.api.ATNativeNetworkListener
 import com.anythink.network.facebook.FacebookATInitConfig
-import com.anythink.rewardvideo.api.ATRewardVideoAd
-import com.anythink.rewardvideo.api.ATRewardVideoListener
+import com.anythink.splashad.api.ATSplashAd
+import com.anythink.splashad.api.ATSplashAdExtraInfo
+import com.anythink.splashad.api.ATSplashAdListener
 import com.milk.simple.log.Logger
 import com.milk.smartvpn.BuildConfig
 
@@ -42,6 +39,48 @@ object TopOnManager {
                 Logger.d("deviceInfo: $deviceInfo", "TopOnManager")
             }
         }
+    }
+
+    /** 加载插页广告 */
+    internal fun loadOpenAd(
+        activity: FragmentActivity,
+        adUnitId: String,
+        loadFailureRequest: (String) -> Unit = {},
+        loadSuccessRequest: () -> Unit = {},
+        showFailureRequest: (String) -> Unit = {},
+        showSuccessRequest: () -> Unit = {},
+        finishedRequest: () -> Unit = {},
+        clickRequest: () -> Unit = {}
+    ): ATSplashAd {
+        val splashAd = ATSplashAd(activity, adUnitId, object : ATSplashAdListener {
+            override fun onAdLoaded(p0: Boolean) {
+                loadSuccessRequest()
+            }
+
+            override fun onAdLoadTimeout() {
+                loadFailureRequest("加载广告超时了")
+            }
+
+            override fun onNoAdError(p0: AdError?) {
+                showFailureRequest(p0?.desc.toString())
+
+            }
+
+            override fun onAdShow(p0: ATAdInfo?) {
+                // ATAdInfo 可区分广告平台以及获取广告平台的广告位ID等
+                showSuccessRequest()
+            }
+
+            override fun onAdClick(p0: ATAdInfo?) {
+                clickRequest()
+            }
+
+            override fun onAdDismiss(p0: ATAdInfo?, p1: ATSplashAdExtraInfo?) {
+                finishedRequest()
+            }
+        })
+        splashAd.loadAd()
+        return splashAd
     }
 
     /** 加载插页广告 */
@@ -94,102 +133,6 @@ object TopOnManager {
         })
         interstitialAd.load()
         return interstitialAd
-    }
-
-    /** 查看横幅广告 */
-    internal fun loadBannerAd(
-        activity: FragmentActivity,
-        adUnitId: String,
-        loadFailureRequest: (String) -> Unit = {},
-        loadSuccessRequest: () -> Unit = {},
-        showFailureRequest: (String) -> Unit = {},
-        showSuccessRequest: () -> Unit = {},
-        clickRequest: () -> Unit = {},
-    ): ATBannerView {
-        val bannerView = ATBannerView(activity)
-        bannerView.setPlacementId(adUnitId)
-        val width = activity.resources.displayMetrics.widthPixels
-        val height = ViewGroup.LayoutParams.WRAP_CONTENT
-        bannerView.layoutParams = FrameLayout.LayoutParams(width, height)
-        bannerView.setBannerAdListener(object : ATBannerListener {
-            override fun onBannerLoaded() {
-                loadSuccessRequest()
-            }
-
-            override fun onBannerFailed(p0: AdError?) {
-                loadFailureRequest(p0?.desc.toString())
-            }
-
-            override fun onBannerClicked(p0: ATAdInfo?) {
-                clickRequest()
-            }
-
-            override fun onBannerShow(p0: ATAdInfo?) {
-                showSuccessRequest()
-            }
-
-            override fun onBannerClose(p0: ATAdInfo?) {
-
-            }
-
-            override fun onBannerAutoRefreshed(p0: ATAdInfo?) {
-
-            }
-
-            override fun onBannerAutoRefreshFail(p0: AdError?) {
-                showFailureRequest(p0?.desc.toString())
-            }
-        })
-        bannerView.loadAd()
-        return bannerView
-    }
-
-    /** 激励视频广告展示 */
-    internal fun loadIncentiveVideoAd(
-        activity: FragmentActivity,
-        adUnitId: String,
-        loadFailureRequest: (String) -> Unit = {},
-        loadSuccessRequest: () -> Unit = {},
-        showFailureRequest: (String) -> Unit = {},
-        showSuccessRequest: () -> Unit = {},
-        clickRequest: () -> Unit = {},
-    ) {
-        val rewardVideoAd = ATRewardVideoAd(activity, adUnitId)
-        rewardVideoAd.setAdListener(object : ATRewardVideoListener {
-            override fun onRewardedVideoAdLoaded() {
-                loadSuccessRequest()
-                rewardVideoAd.show(activity)
-            }
-
-            override fun onRewardedVideoAdFailed(p0: AdError?) {
-                // 注意：禁止在此回调中执行广告的加载方法进行重试，否则会引起很多无用请求且可能会导致应用卡顿
-                loadFailureRequest(p0?.desc.toString())
-            }
-
-            override fun onRewardedVideoAdPlayStart(p0: ATAdInfo?) {
-                // ATAdInfo可区分广告平台以及获取广告平台的广告位ID等
-                showSuccessRequest()
-            }
-
-            override fun onRewardedVideoAdPlayEnd(p0: ATAdInfo?) {
-            }
-
-            override fun onRewardedVideoAdPlayFailed(p0: AdError?, p1: ATAdInfo?) {
-                showFailureRequest(p0?.desc.toString())
-            }
-
-            override fun onRewardedVideoAdClosed(p0: ATAdInfo?) {
-            }
-
-            override fun onRewardedVideoAdPlayClicked(p0: ATAdInfo?) {
-                clickRequest()
-            }
-
-            override fun onReward(p0: ATAdInfo?) {
-                // 建议在此回调中下发奖励，一般在onRewardedVideoAdClosed之前回调
-            }
-        })
-        rewardVideoAd.load()
     }
 
     /** 加载原生广告 */

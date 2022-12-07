@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
-import com.jeremyliao.liveeventbus.LiveEventBus
 import com.milk.simple.ktx.immersiveStatusBar
-import com.milk.smartvpn.constant.EventKey
 import com.milk.smartvpn.databinding.ActivityBackStackBinding
 import com.milk.smartvpn.ui.vm.BackStackViewModel
 
@@ -30,19 +28,17 @@ class BackStackActivity : AbstractActivity() {
     }
 
     private fun initializeObserver() {
-        val isLaunched =
-            intent.getBooleanExtra(IS_APP_LAUNCH_AD, false)
-        if (isLaunched) LiveEventBus.get<Any?>(EventKey.UPDATE_START_AD_UNIT_ID)
-            .observeSticky(this) {
-                backStackViewModel.loadLaunchAd(
-                    activity = this,
-                    finishRequest = {
-                        MainActivity.create(this)
-                        finish()
-                    }
-                )
-            }
-        else backStackViewModel.loadBackStackAd(this) { finish() }
+        val isLaunched = intent.getBooleanExtra(IS_APP_LAUNCH_AD, false)
+        if (isLaunched) {
+            backStackViewModel.loadLaunchAd(
+                activity = this,
+                viewGroup = binding.root,
+                finishRequest = {
+                    MainActivity.create(this)
+                    finish()
+                }
+            )
+        } else backStackViewModel.loadBackStackAd(this) { finish() }
     }
 
     override fun onInterceptKeyDownEvent(): Boolean = true

@@ -60,7 +60,7 @@ class VpnViewModel : ViewModel() {
 
     internal fun loadMainNativeAd(activity: FragmentActivity) {
         val adUnitId =
-            AdConfig.getAdvertiseUnitId(AdCodeKey.MAIN_BOTTOM)
+            AdConfig.getAdvertiseUnitId(AdCodeKey.MAIN_NATIVE_AD_KEY)
         FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request)
         TopOnManager.loadNativeAd(
             activity = activity,
@@ -162,7 +162,7 @@ class VpnViewModel : ViewModel() {
     internal fun showConnectedAd(activity: FragmentActivity, finishRequest: () -> Unit) {
         DataRepository.loadConnectedNativeAd(activity)
         var aTInterstitial: ATInterstitial? = null
-        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.CONNECT_SUCCESS)
+        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.INTERSTITIAL_AD_KEY)
         val timer = MilkTimer.Builder()
             .setMillisInFuture(10000)
             .setOnFinishedListener {

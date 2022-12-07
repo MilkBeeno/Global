@@ -28,7 +28,7 @@ class ResultViewModel : ViewModel() {
 
     private fun loadConnectedNativeAd(activity: FragmentActivity) {
         val unitId =
-            AdConfig.getAdvertiseUnitId(AdCodeKey.CONNECT_SUCCESS_RESULT)
+            AdConfig.getAdvertiseUnitId(AdCodeKey.OTHER_NATIVE_AD_KEY)
         FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_5)
         if (unitId.isNotBlank()) {
             TopOnManager.loadNativeAd(
@@ -59,7 +59,7 @@ class ResultViewModel : ViewModel() {
 
     private fun loadDisconnectNativeAd(activity: FragmentActivity) {
         val unitId =
-            AdConfig.getAdvertiseUnitId(AdCodeKey.DISCONNECT_SUCCESS_RESULT)
+            AdConfig.getAdvertiseUnitId(AdCodeKey.OTHER_NATIVE_AD_KEY)
         if (unitId.isNotBlank()) {
             FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_6)
             TopOnManager.loadNativeAd(

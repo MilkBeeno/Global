@@ -49,7 +49,7 @@ class SwitchNodeViewModel : ViewModel() {
         activity: FragmentActivity,
         finishRequest: (String) -> Unit
     ) {
-        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.VPN_LIST)
+        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.VPN_LIST_NATIVE_AD_KEY)
         FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_1)
         if (unitId.isNotBlank()) {
             TopOnManager.loadNativeAd(

@@ -23,7 +23,7 @@ class LaunchActivity : AbstractActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        AdConfig.obtain()
+        AdConfig.initialize()
         DataRepository.appConfig()
         val isFirst = KvManger.getBoolean(KvKey.FIRST_ENTER, true)
         if (isFirst) {

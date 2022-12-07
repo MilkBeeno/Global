@@ -110,6 +110,9 @@ class MainActivity : AbstractActivity() {
             openNotificationDialog.setConfirm {
                 Notification.obtainNotification(this)
             }
+            openNotificationDialog.setCancel {
+                BackStackActivity.create(this)
+            }
         }
     }
 

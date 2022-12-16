@@ -45,11 +45,12 @@ object Notification {
     internal fun showConnectedNotification(context: Context, vpnName: String) {
         val intent = Intent(context, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-        val pendingIntent =
-            PendingIntent.getActivity(
-                context, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT
-            )
+        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, flag)
         val finalChannelId =
             createNotificationChannel(context, CONNECT_CHANNEL_ID, CONNECT_CHANNEL_NAME)
         val notification = NotificationCompat.Builder(context, finalChannelId)
@@ -69,11 +70,12 @@ object Notification {
     internal fun showConnectedNotification(context: Context, title: String, content: String) {
         val intent = Intent(context, SwitchNodeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
-        val pendingIntent =
-            PendingIntent.getActivity(
-                context, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT
-            )
+        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, flag)
         val finalChannelId =
             createNotificationChannel(context, CONNECT_SWITCH_ID, CONNECT_SWITCH_NAME)
         val notification = NotificationCompat.Builder(context, finalChannelId)

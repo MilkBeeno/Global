@@ -53,6 +53,7 @@ import com.freetech.vpn.logic.VpnStateService.ErrorState;
 import com.freetech.vpn.logic.VpnStateService.State;
 import com.freetech.vpn.logic.imc.ImcState;
 import com.freetech.vpn.logic.imc.RemediationInstruction;
+import com.freetech.vpn.utils.VpnWhiteList;
 import com.freetech.vpn.utils.Constants;
 import com.freetech.vpn.utils.IPRange;
 import com.freetech.vpn.utils.IPRangeSet;
@@ -1105,6 +1106,14 @@ public class CharonVpnService extends VpnService implements Runnable, VpnStateSe
                 builder.addDisallowedApplication("com.android.vending");
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
+            }
+            // 广告翻墙
+            for (String pkn : VpnWhiteList.getVpnList()) {
+                try {
+                    builder.addDisallowedApplication(pkn);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
             builder.setMtu(mMtu);
         }

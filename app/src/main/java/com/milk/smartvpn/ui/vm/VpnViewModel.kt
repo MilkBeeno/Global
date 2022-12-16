@@ -50,7 +50,7 @@ class VpnViewModel : ViewModel() {
 
     internal fun loadNativeAdByTimer(activity: FragmentActivity) {
         MilkTimer.Builder()
-            .setMillisInFuture(30 * 60 * 1000)
+            .setMillisInFuture(AdConfig.adRefreshTime.toLong())
             .setCountDownInterval(1000)
             .setOnFinishedListener {
                 loadMainNativeAd(activity)

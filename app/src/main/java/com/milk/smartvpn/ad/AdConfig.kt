@@ -7,6 +7,8 @@ object AdConfig {
     private val releasePositionMap = mutableMapOf<String, String>()
     private val debugPositionMap = mutableMapOf<String, String>()
 
+    internal var adRefreshTime: Int = 10
+
     internal fun initialize() {
         // 正式服
         releasePositionMap[AdCodeKey.INTERSTITIAL_AD_KEY] =

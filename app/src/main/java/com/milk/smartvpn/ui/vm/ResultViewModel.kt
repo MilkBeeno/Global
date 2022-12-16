@@ -17,7 +17,7 @@ class ResultViewModel : ViewModel() {
 
     internal fun loadNativeSuccess(activity: FragmentActivity) {
         successMilkTimer = MilkTimer.Builder()
-            .setMillisInFuture(30 * 60 * 1000)
+            .setMillisInFuture(AdConfig.adRefreshTime.toLong())
             .setCountDownInterval(1000)
             .setOnFinishedListener {
                 loadConnectedNativeAd(activity)

@@ -32,7 +32,7 @@ class SwitchNodeViewModel : ViewModel() {
 
     internal fun loadNativeByTimer(activity: FragmentActivity) {
         milkTimer = MilkTimer.Builder()
-            .setMillisInFuture(30 * 60 * 1000)
+            .setMillisInFuture(AdConfig.adRefreshTime.toLong())
             .setCountDownInterval(1000)
             .setOnFinishedListener {
                 loadNodeNativeAd(activity) {

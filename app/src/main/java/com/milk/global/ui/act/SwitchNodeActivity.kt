@@ -9,8 +9,6 @@ import androidx.activity.viewModels
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.jeremyliao.liveeventbus.LiveEventBus
-import com.milk.simple.ktx.collectLatest
-import com.milk.simple.ktx.string
 import com.milk.global.R
 import com.milk.global.constant.EventKey
 import com.milk.global.constant.KvKey
@@ -19,8 +17,8 @@ import com.milk.global.data.VpnNode
 import com.milk.global.databinding.ActivitySwitchNodeBinding
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
-import com.milk.global.ui.dialog.WaitDialog
 import com.milk.global.ui.vm.SwitchNodeViewModel
+import com.milk.simple.ktx.collectLatest
 import java.util.*
 
 class SwitchNodeActivity : AbstractActivity() {
@@ -28,7 +26,6 @@ class SwitchNodeActivity : AbstractActivity() {
     private val switchNodeViewModel by viewModels<SwitchNodeViewModel>()
     private val currentNodeId by lazy { intent.getLongExtra(CURRENT_NODE_ID, 0) }
     private val currentConnected by lazy { intent.getBooleanExtra(CURRENT_CONNECTED, false) }
-    private val loadingDialog by lazy { WaitDialog(this) }
     private val random by lazy { Random() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,15 +94,11 @@ class SwitchNodeActivity : AbstractActivity() {
                     finish()
                 }
             }.models = it
-            loadingDialog.dismiss()
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initializeData() {
-        loadingDialog
-            .setContent(string(R.string.common_loading))
-        loadingDialog.show()
         switchNodeViewModel.loadNodeNativeAd(this) {
             switchNodeViewModel.getVpnListInfo()
         }
@@ -121,7 +114,6 @@ class SwitchNodeActivity : AbstractActivity() {
         when (view) {
             binding.ivBack -> finish()
             binding.ivRefresh -> {
-                loadingDialog.show()
                 switchNodeViewModel.loadNodeNativeAd(this) {
                     switchNodeViewModel.getVpnListInfo()
                 }

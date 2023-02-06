@@ -221,12 +221,12 @@
 -keep class retrofit2.** { *; }
 
 # Java Bean类处理
--keep public class com.milk.smartvpn.data.** {
+-keep public class com.milk.global.data.** {
     public void set*(***);
     public *** get*();
 }
 
--keep class com.milk.smartvpn.proxy.VpnProxy.** { *; }
+-keep class com.milk.global.proxy.VpnProxy.** { *; }
 
 # Topon 的混淆
 -keep public class com.anythink.**

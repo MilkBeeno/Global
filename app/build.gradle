@@ -8,8 +8,8 @@ android {
     compileSdk 32
 
     defaultConfig {
-        // 测试服包名 com.milk.smart 正式服包名 com.milk.simplesmart
-        applicationId "com.milk.simplesmart"
+        // 测试服包名 com.milk.global 正式服包名 com.milk.simpleglobal
+        applicationId "com.milk.global"
         minSdk 21
         targetSdk 32
         versionCode 113
@@ -20,10 +20,10 @@ android {
     // 加载打包时的 JKS 认证
     signingConfigs {
         myJsk {
-            storeFile file("../app/jks/smart.jks")
-            storePassword 'smart123456'
-            keyAlias 'vpn'
-            keyPassword 'smart123456'
+            storeFile file("../app/jks/global.jks")
+            storePassword 'global123456'
+            keyAlias 'glob'
+            keyPassword 'global123456'
         }
     }
     buildTypes {

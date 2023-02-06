@@ -30,6 +30,6 @@ dependencyResolutionManagement {
         }
     }
 }
-rootProject.name = "SmartVpn"
+rootProject.name = "GlobalVpn"
 include ':vpn'
 include ':app'

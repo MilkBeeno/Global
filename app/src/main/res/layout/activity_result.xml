@@ -126,7 +126,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
-    <com.milk.smartvpn.ad.ui.AdView
+    <com.milk.global.ad.ui.AdView
         android:id="@+id/nativeView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

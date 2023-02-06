@@ -13,7 +13,7 @@
         android:layout_height="293dp"
         android:layout_marginTop="58dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/back_stack_background"
+        android:src="@drawable/launch_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -5,9 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Base64
 import android.view.View
-import com.milk.simple.ktx.*
-import com.milk.simple.log.Logger
-import com.milk.simple.mdr.KvManger
 import com.milk.global.R
 import com.milk.global.ad.AdConfig
 import com.milk.global.constant.KvKey
@@ -15,6 +12,9 @@ import com.milk.global.databinding.ActivityLaunchBinding
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
 import com.milk.global.repository.DataRepository
+import com.milk.simple.ktx.*
+import com.milk.simple.log.Logger
+import com.milk.simple.mdr.KvManger
 import java.security.MessageDigest
 
 class LaunchActivity : AbstractActivity() {
@@ -46,7 +46,7 @@ class LaunchActivity : AbstractActivity() {
         binding.tvStart.setOnClickListener(this)
         binding.tvPrivacy.setSpannableClick(
             Pair(string(R.string.launch_privacy),
-                colorClickableSpan(color(R.color.FF0DC2FF)) {
+                colorClickableSpan(color(R.color.FF0D5EFF)) {
                     val url = "https://res.getsimplesmart.com/privacy.html"
                     WebActivity.create(this, url)
                 })

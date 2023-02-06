@@ -15,7 +15,7 @@
         android:layout_height="139dp"
         android:layout_marginTop="216dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/launch_top_image"
+        android:src="@drawable/common_app_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

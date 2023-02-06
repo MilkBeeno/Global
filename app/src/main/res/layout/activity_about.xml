@@ -30,8 +30,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/about_us_title"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textColor="@color/FF121212"
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </FrameLayout>
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -40,7 +41,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/about_us_app">
+        android:src="@drawable/common_app_image">
 
     </androidx.appcompat.widget.AppCompatImageView>
 
@@ -50,7 +51,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="14dp"
         android:text="@string/app_name"
-        android:textColor="@color/white"
+        android:textColor="@color/FF0D5EFF"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -60,10 +61,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="5dp"
-        android:text="@string/app_name"
-        android:textColor="@color/FFC5C8E4"
+        android:textColor="@color/FF808080"
         android:textSize="14sp"
-        android:textStyle="bold" />
+        tools:text="@string/app_name" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/llPrivacy"
@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="@string/launch_privacy"
-            android:textColor="@color/white"
+            android:textColor="@color/FF121212"
             android:textSize="14sp"
             android:textStyle="bold" />
 

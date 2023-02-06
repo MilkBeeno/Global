@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
-import com.milk.simple.ktx.immersiveStatusBar
 import com.milk.global.databinding.ActivityBackStackBinding
 import com.milk.global.ui.vm.BackStackViewModel
+import com.milk.simple.ktx.immersiveStatusBar
 
 class BackStackActivity : AbstractActivity() {
     private val binding by lazy { ActivityBackStackBinding.inflate(layoutInflater) }
@@ -21,8 +21,6 @@ class BackStackActivity : AbstractActivity() {
 
     private fun initializeView() {
         immersiveStatusBar(false)
-        binding.lottieView.setAnimation("back_stack_icon.json")
-        binding.lottieView.playAnimation()
         binding.lineLottieView.setAnimation("back_stack_progress.json")
         binding.lineLottieView.playAnimation()
     }

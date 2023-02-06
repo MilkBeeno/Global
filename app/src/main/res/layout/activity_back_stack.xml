@@ -4,51 +4,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/home_background"
+    android:background="@drawable/back_stack_background"
     tools:context=".ui.act.LaunchActivity">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivTopBackground"
-        android:layout_width="293dp"
-        android:layout_height="293dp"
-        android:layout_marginTop="58dp"
+        android:layout_width="197dp"
+        android:layout_height="190dp"
+        android:layout_marginTop="216dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/launch_background"
+        android:src="@drawable/back_stack_top_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottieView"
-        android:layout_width="176dp"
-        android:layout_height="199dp"
-        app:layout_constraintBottom_toBottomOf="@+id/ivTopBackground"
+        android:id="@+id/lineLottieView"
+        android:layout_width="258dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/ivTopBackground"
+        app:layout_constraintTop_toBottomOf="@+id/ivTopBackground"
         app:lottie_autoPlay="true"
-        app:lottie_repeatCount="-1" />
+        app:lottie_repeatCount="0" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvContent"
-        android:layout_width="wrap_content"
+        android:layout_width="194dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="81dp"
+        android:layout_marginTop="-35dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:text="@string/back_stack_content"
-        android:textColor="@color/white"
-        android:textSize="13sp"
+        android:textColor="@color/FF121212"
+        android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lottieView" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lineLottieView"
-        android:layout_width="245dp"
-        android:layout_height="8dp"
-        android:layout_marginTop="29dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvContent"
-        app:lottie_autoPlay="true"
-        app:lottie_repeatCount="-1" />
+        app:layout_constraintTop_toBottomOf="@+id/lineLottieView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

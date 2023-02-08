@@ -47,7 +47,7 @@ class LaunchActivity : AbstractActivity() {
         binding.tvPrivacy.setSpannableClick(
             Pair(string(R.string.launch_privacy),
                 colorClickableSpan(color(R.color.FF0D5EFF)) {
-                    val url = "https://res.getsimplesmart.com/privacy.html"
+                    val url = "https://res.duoglobalmaster.com/privacy.html"
                     WebActivity.create(this, url)
                 })
         )

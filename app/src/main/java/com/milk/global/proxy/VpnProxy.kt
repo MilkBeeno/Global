@@ -10,50 +10,43 @@ import android.os.IBinder
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
+import com.freetech.vpn.data.VpnProfile
 import com.freetech.vpn.logic.VpnStateService
 import com.milk.global.ui.act.MainActivity
-import com.milk.global.ui.type.VpnStatus
-import com.milk.global.ui.vm.VpnViewModel
+import com.milk.global.ui.type.VpnState
 import com.milk.simple.ktx.ioScope
 
 class VpnProxy(private val activity: MainActivity) {
     private var vpnService: VpnStateService? = null
-    private val vpnViewModel: VpnViewModel by lazy {
-        ViewModelProvider(activity)[VpnViewModel::class.java]
-    }
 
-    /** vpn permission is available and start connect */
-    private val activityResult = activity.registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (it.resultCode == Activity.RESULT_OK) openVpn()
-    }
+    private var vpnStateChangedRequest: ((VpnState, Boolean) -> Unit)? = null
 
-    /** vpn state changed */
     private val vpnStateListener = VpnStateService.VpnStateListener {
         ioScope {
             when (vpnService?.errorState) {
                 VpnStateService.ErrorState.NO_ERROR ->
                     when (vpnService?.state) {
-                        VpnStateService.State.CONNECTING ->
-                            vpnViewModel.connectionState.emit(VpnStatus.Connecting)
-                        VpnStateService.State.CONNECTED ->
-                            vpnViewModel.connectionState.emit(VpnStatus.Connected)
-                        VpnStateService.State.DISCONNECTING ->
-                            vpnViewModel.connectionState.emit(VpnStatus.DisConnect)
+                        VpnStateService.State.DISABLED -> {
+                            vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, true)
+                        }
+                        VpnStateService.State.CONNECTING -> {
+                            vpnStateChangedRequest?.invoke(VpnState.CONNECTING, true)
+                        }
+                        VpnStateService.State.CONNECTED -> {
+                            vpnStateChangedRequest?.invoke(VpnState.CONNECTED, true)
+                        }
+                        VpnStateService.State.DISCONNECTING -> {
+                            vpnStateChangedRequest?.invoke(VpnState.DISCOUNTING, true)
+                        }
                         else -> Unit
                     }
-                else -> vpnViewModel.connectionState.emit(VpnStatus.Failure)
+                else -> {
+                    vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, false)
+                }
             }
-            // 连接结果回调
-            vpnViewModel.currentConnected =
-                vpnService?.errorState == VpnStateService.ErrorState.NO_ERROR &&
-                    vpnService?.state == VpnStateService.State.CONNECTED
         }
     }
 
-    /** vpn service connection */
     private val vpnServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
             vpnService = (service as VpnStateService.LocalBinder).service
@@ -67,10 +60,6 @@ class VpnProxy(private val activity: MainActivity) {
     }
 
     init {
-        initObserver()
-    }
-
-    private fun initObserver() {
         activity.lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onCreate(owner: LifecycleOwner) {
                 super.onCreate(owner)
@@ -87,34 +76,32 @@ class VpnProxy(private val activity: MainActivity) {
                 activity.unbindService(vpnServiceConnection)
             }
         })
-        vpnViewModel.startConnectVpnNode.observe(activity) {
-            vpnService?.disconnect()
-            connecting()
-        }
     }
 
-    fun openVpn() {
+    fun setVpnStateChangedListener(vpnStateChangedRequest: (VpnState, Boolean) -> Unit) {
+        this.vpnStateChangedRequest = vpnStateChangedRequest
+    }
+
+    fun openVpn(vpnOpenedListener: () -> Unit, connectVpnListener: () -> VpnProfile) {
         val prepare = VpnService.prepare(activity)
         if (prepare == null) {
-            vpnViewModel.getVpnInfo()
+            val vpnProfile = connectVpnListener()
+            val profileInfo = Bundle()
+            profileInfo.putSerializable(PROFILE, vpnProfile)
+            profileInfo.putInt(G_ID, vpnProfile.id.toInt())
+            vpnService?.connect(profileInfo, true)
         } else {
-            activityResult.launch(prepare)
+            val result = ActivityResultContracts.StartActivityForResult()
+            activity.registerForActivityResult(result) {
+                if (it.resultCode == Activity.RESULT_OK) {
+                    openVpn(vpnOpenedListener, connectVpnListener)
+                }
+            }.launch(prepare)
         }
     }
 
     fun closeVpn() {
-        vpnViewModel.showResultPage = true
-        vpnViewModel.endTiming()
         vpnService?.disconnect()
-    }
-
-    private fun connecting() {
-        val vpnProfile = vpnViewModel.getVpnProfile()
-        val profileInfo = Bundle().apply {
-            putSerializable(PROFILE, vpnProfile)
-            putInt(G_ID, vpnProfile.id.toInt())
-        }
-        vpnService?.connect(profileInfo, true)
     }
 
     companion object {

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
-import androidx.core.app.NotificationManagerCompat
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.milk.global.R
 import com.milk.global.ad.ui.AdType
@@ -19,23 +18,21 @@ import com.milk.global.repository.DataRepository
 import com.milk.global.ui.dialog.ConnectingDialog
 import com.milk.global.ui.dialog.DisConnectDialog
 import com.milk.global.ui.dialog.FailureDialog
-import com.milk.global.ui.dialog.OpenNotificationDialog
-import com.milk.global.ui.type.VpnStatus
+import com.milk.global.ui.type.VpnState
 import com.milk.global.ui.vm.VpnViewModel
-import com.milk.global.util.Notification
 import com.milk.simple.ktx.*
 
 class MainActivity : AbstractActivity() {
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val vpnViewModel by viewModels<VpnViewModel>()
-    private lateinit var vpnProxy: VpnProxy
-    private val failureDialog by lazy { FailureDialog(this) }
-    private val openNotificationDialog by lazy { OpenNotificationDialog(this) }
+    private val vpnProxy by lazy { VpnProxy(this) }
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+
     private var currentTime: Long = 0
 
     // 连接状态弹窗
     private val connectingDialog by lazy { ConnectingDialog(this) }
     private val disconnectDialog by lazy { DisConnectDialog(this) }
+    private val connectFailureDialog by lazy { FailureDialog(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +40,6 @@ class MainActivity : AbstractActivity() {
         FireBaseManager.logEvent(FirebaseKey.ENTER_MAIN_PAGE)
         initializeView()
         initializeObserver()
-        vpnProxy = VpnProxy(this)
     }
 
     private fun initializeView() {
@@ -55,60 +51,55 @@ class MainActivity : AbstractActivity() {
         binding.tvConnect.setOnClickListener(this)
         binding.llNetwork.setOnClickListener(this)
         binding.ivConnect.setOnClickListener(this)
+        vpnProxy.setVpnStateChangedListener { v, b -> vpnStateChanged(v, b) }
+        vpnDisconnect()
+    }
 
-        if (!NotificationManagerCompat.from(this).areNotificationsEnabled()) {
-            openNotificationDialog.show()
-            openNotificationDialog.setConfirm {
-                Notification.obtainNotification(this)
+    private fun vpnStateChanged(vpnState: VpnState, success: Boolean) {
+        if (success) {
+            when (vpnState) {
+                VpnState.DISCONNECT -> {
+                    disconnectDialog.dismiss()
+                    vpnDisconnect()
+                }
+                VpnState.CONNECTING -> {
+                    vpnDisconnect(false)
+                }
+                VpnState.CONNECTED -> {
+                    connectingDialog.dismiss()
+                    vpnConnected()
+                }
+                VpnState.DISCOUNTING -> {
+                    vpnDisconnect(false)
+                }
             }
-            openNotificationDialog.setCancel {
-                BackStackActivity.create(this)
-            }
+        } else {
+            connectingDialog.dismiss()
+            disconnectDialog.dismiss()
+            connectFailureDialog.show()
+            vpnDisconnect(false)
+            FireBaseManager.logEvent(FirebaseKey.CONNECT_FAILED)
         }
     }
 
     private fun initializeObserver() {
         vpnViewModel.loadMainNativeAd(this)
         vpnViewModel.loadNativeAdByTimer(this)
+        // 原生广告
         vpnViewModel.mainNativeAd.collectLatest(this) {
-            val nativeAd = it.second?.nativeAd
-            if (nativeAd != null) {
-                binding.nativeView.visible()
-                binding.nativeView.showNativeAd(AdType.Main, nativeAd)
-            }
+            binding.nativeView.visible()
+            binding.nativeView.showNativeAd(AdType.Main, it.nativeAd)
         }
-        vpnViewModel.connectionState.collectLatest(this) {
-            when (it) {
-                VpnStatus.DisConnect -> {
-                    disconnectDialog.dismiss()
-                    vpnDisconnect()
-                }
-                VpnStatus.Connecting -> {
-                    vpnDisconnect(false)
-                }
-                VpnStatus.Connected -> {
-                    connectingDialog.dismiss()
-                    vpnConnected()
-                }
-                VpnStatus.Failure -> {
-                    connectingDialog.dismiss()
-                    disconnectDialog.dismiss()
-                    failureDialog.show()
-                    vpnDisconnect(false)
-                    FireBaseManager.logEvent(FirebaseKey.CONNECT_FAILED)
-                }
-                VpnStatus.Default -> {
-                    vpnDisconnect(false)
-                }
-            }
-        }
+        // 切换 VPN 节点
         LiveEventBus.get<ArrayList<String>>(EventKey.SWITCH_VPN_NODE).observe(this) {
             connectingDialog.show()
-            vpnViewModel.endTiming()
             vpnViewModel.currentImageUrl = it[1]
             vpnViewModel.currentName = it[2]
             vpnViewModel.currentPing = it[3].toLong()
-            vpnViewModel.getVpnInfo(it[0].toLong(), true)
+
+            vpnViewModel.getVpnProfileInfo(it[0].toLong(), true) { vpnProfile ->
+
+            }
         }
     }
 
@@ -189,52 +180,49 @@ class MainActivity : AbstractActivity() {
         super.onMultipleClick(view)
         when (view) {
             binding.ivMenu -> {
-                FireBaseManager.logEvent(FirebaseKey.CLICK_ON_MORE)
                 AboutActivity.create(this)
+                FireBaseManager.logEvent(FirebaseKey.CLICK_ON_MORE)
             }
             binding.ivShare -> {
+                val intent = Intent()
+                intent.action = Intent.ACTION_SEND
+                intent.putExtra(Intent.EXTRA_TEXT, DataRepository.shareAppUrl.value)
+                intent.type = "text/plain"
+                startActivity(intent)
                 FireBaseManager.logEvent(FirebaseKey.CLICK_THE_SHARE)
-                toShareAppStoreAddress()
             }
             binding.llNetwork -> {
-                if (vpnViewModel.connectionState.value == VpnStatus.Connecting) return
                 currentTime = System.currentTimeMillis()
-                FireBaseManager.logEvent(FirebaseKey.CLICK_ON_THE_NODE_LIST_ENTRY)
                 SwitchNodeActivity.create(
                     this,
                     vpnViewModel.currentNodeId,
                     vpnViewModel.currentConnected
                 )
+                FireBaseManager.logEvent(FirebaseKey.CLICK_ON_THE_NODE_LIST_ENTRY)
             }
             binding.ivConnect,
             binding.tvConnect -> {
-                when (vpnViewModel.connectionState.value) {
-                    VpnStatus.Connected -> {
-                        disconnectDialog.show()
-                        binding.tvConnect.postDelayed({ vpnProxy.closeVpn() }, 2000)
-                    }
-                    else -> {
+                if (vpnViewModel.currentConnected) {
+                    disconnectDialog.show()
+                    binding.tvConnect.postDelayed({
+                        vpnProxy.closeVpn()
+                    }, 2000)
+                } else {
                         connectingDialog.show()
+                    vpnViewModel.getVpnProfileInfo {
                         vpnProxy.openVpn()
-                        FireBaseManager.logEvent(FirebaseKey.CLICK_TO_CONNECT_NODE)
                     }
+                    FireBaseManager.logEvent(FirebaseKey.CLICK_TO_CONNECT_NODE)
                 }
             }
         }
     }
 
-    private fun toShareAppStoreAddress() {
-        val intent = Intent()
-        intent.action = Intent.ACTION_SEND
-        intent.putExtra(Intent.EXTRA_TEXT, DataRepository.shareAppUrl.value)
-        intent.type = "text/plain"
-        startActivity(intent)
-    }
-
     override fun onInterceptKeyDownEvent() = true
 
     companion object {
-        fun create(context: Context) =
+        fun create(context: Context) {
             context.startActivity(Intent(context, MainActivity::class.java))
+        }
     }
 }

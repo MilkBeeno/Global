@@ -201,12 +201,12 @@ class MainActivity : AbstractActivity() {
                 when (vpnViewModel.connectionState.value) {
                     VpnStatus.Connected -> {
                         disconnectDialog.show()
-                        vpnProxy.closeVpn()
+                        binding.tvConnect.postDelayed({ vpnProxy.closeVpn() }, 2000)
                     }
                     else -> {
-                        FireBaseManager.logEvent(FirebaseKey.CLICK_TO_CONNECT_NODE)
                         connectingDialog.show()
                         vpnProxy.openVpn()
+                        FireBaseManager.logEvent(FirebaseKey.CLICK_TO_CONNECT_NODE)
                     }
                 }
             }

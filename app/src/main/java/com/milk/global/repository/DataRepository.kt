@@ -3,8 +3,6 @@ package com.milk.global.repository
 import androidx.fragment.app.FragmentActivity
 import com.anythink.nativead.api.NativeAd
 import com.freetech.vpn.utils.VpnWhiteList
-import com.milk.simple.ktx.ioScope
-import com.milk.simple.mdr.KvManger
 import com.milk.global.BuildConfig
 import com.milk.global.ad.AdConfig
 import com.milk.global.ad.TopOnManager
@@ -12,13 +10,14 @@ import com.milk.global.constant.AdCodeKey
 import com.milk.global.constant.KvKey
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
+import com.milk.simple.ktx.ioScope
+import com.milk.simple.mdr.KvManger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 
 object DataRepository {
     internal val connectSuccessAd = MutableStateFlow<Pair<String, NativeAd?>>(Pair("", null))
     internal val disconnectAd = MutableStateFlow<Pair<String, NativeAd?>>(Pair("", null))
-    internal val vpnListAd = MutableStateFlow<Pair<String, NativeAd?>>(Pair("", null))
     internal val shareAppUrl = MutableStateFlow("")
     private val adRepository by lazy { AdRepository() }
 

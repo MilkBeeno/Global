@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.core.app.NotificationManagerCompat
+import com.jeremyliao.liveeventbus.LiveEventBus
 import com.milk.global.R
 import com.milk.global.ad.ui.AdType
+import com.milk.global.constant.EventKey
 import com.milk.global.databinding.ActivityMainBinding
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
@@ -99,6 +101,14 @@ class MainActivity : AbstractActivity() {
                     vpnDisconnect(false)
                 }
             }
+        }
+        LiveEventBus.get<ArrayList<String>>(EventKey.SWITCH_VPN_NODE).observe(this) {
+            connectingDialog.show()
+            vpnViewModel.endTiming()
+            vpnViewModel.currentImageUrl = it[1]
+            vpnViewModel.currentName = it[2]
+            vpnViewModel.currentPing = it[3].toLong()
+            vpnViewModel.getVpnInfo(it[0].toLong(), true)
         }
     }
 

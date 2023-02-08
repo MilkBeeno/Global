@@ -1,21 +1,10 @@
 package com.milk.global.ui.vm
 
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
-import com.jeremyliao.liveeventbus.LiveEventBus
-import com.milk.simple.ktx.ioScope
-import com.milk.global.ad.AdConfig
-import com.milk.global.ad.TopOnManager
-import com.milk.global.constant.AdCodeKey
-import com.milk.global.constant.EventKey
 import com.milk.global.data.VpnGroup
 import com.milk.global.data.VpnNode
-import com.milk.global.friebase.FireBaseManager
-import com.milk.global.friebase.FirebaseKey
-import com.milk.global.repository.DataRepository
 import com.milk.global.repository.VpnRepository
-import com.milk.global.util.MilkTimer
-import kotlinx.coroutines.delay
+import com.milk.simple.ktx.ioScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -27,48 +16,6 @@ class SwitchNodeViewModel : ViewModel() {
     /** 是否连接 VPN 的状态和连接 VPN 的状态 */
     var currentNodeId: Long = 0L
     var currentConnected: Boolean = false
-
-    private var milkTimer: MilkTimer? = null
-
-    internal fun loadNativeByTimer(activity: FragmentActivity) {
-        milkTimer = MilkTimer.Builder()
-            .setMillisInFuture(AdConfig.adRefreshTime.toLong())
-            .setCountDownInterval(1000)
-            .setOnFinishedListener {
-                loadNodeNativeAd(activity) {
-                    LiveEventBus
-                        .get<Any>(EventKey.UPDATE_SWITCH_LIST_AD)
-                        .post(null)
-                    loadNativeByTimer(activity)
-                }
-            }.build()
-        milkTimer?.start()
-    }
-
-    internal fun loadNodeNativeAd(
-        activity: FragmentActivity,
-        finishRequest: (String) -> Unit
-    ) {
-        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.VPN_LIST_NATIVE_AD_KEY)
-        FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_1)
-        if (unitId.isNotBlank()) {
-            TopOnManager.loadNativeAd(
-                activity = activity,
-                adUnitId = unitId,
-                loadFailureRequest = {
-                    FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_1, it)
-                    finishRequest(unitId)
-                },
-                loadSuccessRequest = {
-                    FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_1)
-                    DataRepository.vpnListAd.value = Pair(unitId, it?.nativeAd)
-                    finishRequest(unitId)
-                })
-        } else ioScope {
-            delay(1500)
-            finishRequest(unitId)
-        }
-    }
 
     fun getVpnListInfo() {
         ioScope {
@@ -107,12 +54,6 @@ class SwitchNodeViewModel : ViewModel() {
                         groups.add(group)
                     }
                 }
-                DataRepository.vpnListAd.value.second.let {
-                    if (it != null) {
-                        val vpnGroup = VpnGroup().apply { nativeAd = it }
-                        groups.add(0, vpnGroup)
-                    }
-                }
                 vpnGroups.emit(groups)
             }
         }
@@ -128,9 +69,5 @@ class SwitchNodeViewModel : ViewModel() {
             return speed.toFloat().toInt()
         }
         return 0
-    }
-
-    internal fun destroy() {
-        milkTimer?.destroy()
     }
 }

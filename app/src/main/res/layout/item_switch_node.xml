@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:src="@drawable/switch_node_expand"
-            android:textColor="@color/FF0DC2FF"
+            android:textColor="@color/FF0C9AFF"
             android:textSize="12sp"
             android:textStyle="bold"
             tools:text="375ms" />
@@ -60,7 +60,7 @@
         android:layout_gravity="bottom"
         android:layout_marginStart="60dp"
         android:layout_marginEnd="14dp"
-        android:background="@color/FF4A4A8D"
+        android:background="@color/FFD9D9D9"
         android:visibility="gone"
         tools:visibility="visible" />
 </FrameLayout>

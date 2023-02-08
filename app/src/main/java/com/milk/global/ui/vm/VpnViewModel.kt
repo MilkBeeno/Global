@@ -19,7 +19,6 @@ import com.milk.global.repository.VpnRepository
 import com.milk.global.ui.type.VpnStatus
 import com.milk.global.util.MilkTimer
 import com.milk.simple.ktx.ioScope
-import com.milk.simple.ktx.mainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
 
@@ -31,8 +30,8 @@ class VpnViewModel : ViewModel() {
     private var timer: Timer? = null
     internal var vpnConnectDuration = 0L
 
-    /** 是否连接 VPN 的状态和连接 VPN 的状态 */
-    internal val vpnStartConnect = MutableLiveData<Boolean>()
+    /** 开始连接 VPN 节点通知 和 连接 VPN 的状态 */
+    internal val startConnectVpnNode = MutableLiveData<Boolean>()
     internal val connectionState = MutableStateFlow(VpnStatus.Default)
 
     /** 当前连接的节点 ID 和是否是连接成功 */
@@ -86,7 +85,7 @@ class VpnViewModel : ViewModel() {
             val result = response.data
             if (response.code == 2000 && result != null) {
                 vpnModel = result
-                vpnStartConnect.postValue(currentConnected)
+                startConnectVpnNode.postValue(currentConnected)
             } else connectionState.emit(VpnStatus.Failure)
         }
         MilkTimer.Builder()
@@ -112,51 +111,51 @@ class VpnViewModel : ViewModel() {
     }
 
     internal fun startTiming(successRequest: (String) -> Unit, finishRequest: () -> Unit) {
-        vpnConnectDuration = 0L
-        val timerTask = object : TimerTask() {
-            override fun run() {
-                vpnConnectDuration += 1
-                when (vpnConnectDuration) {
-                    in 0 until 60 -> {
-                        FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_LESS_THAN_1MIN)
-                    }
-                    in 60 until 30 * 60 -> {
-                        FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_1_30MIN)
-                    }
-                    in 30 * 60 until 60 * 60 -> {
-                        FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_30_60MIN)
-                    }
-                }
-                // Hour
-                val hour = vpnConnectDuration / (60 * 60)
-                val hourString = if (hour >= 10)
-                    hour.toString().plus(":")
-                else
-                    "0".plus(hour).plus(":")
-                val timeLeftMinute = vpnConnectDuration - hour * (60 * 60)
-                // Minute
-                val minute = timeLeftMinute / 60
-                val minuteString = if (minute >= 10)
-                    minute.toString().plus(":")
-                else
-                    "0".plus(minute).plus(":")
-                val timeLeftSecond = vpnConnectDuration - hour * (60 * 60) - minute * 60
-                // Second
-                val secondString = if (timeLeftSecond >= 10)
-                    timeLeftSecond.toString()
-                else
-                    "0".plus(timeLeftSecond)
-                mainScope { successRequest(hourString.plus(minuteString).plus(secondString)) }
-                if (vpnConnectDuration > 60 * 60) finishRequest()
-            }
-        }
-        if (timer == null) timer = Timer()
-        timer?.schedule(timerTask, 0, 1000)
+//        vpnConnectDuration = 0L
+//        val timerTask = object : TimerTask() {
+//            override fun run() {
+//                vpnConnectDuration += 1
+//                when (vpnConnectDuration) {
+//                    in 0 until 60 -> {
+//                        FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_LESS_THAN_1MIN)
+//                    }
+//                    in 60 until 30 * 60 -> {
+//                        FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_1_30MIN)
+//                    }
+//                    in 30 * 60 until 60 * 60 -> {
+//                        FireBaseManager.logEvent(FirebaseKey.VPN_USAGE_TIME_IS_30_60MIN)
+//                    }
+//                }
+//                // Hour
+//                val hour = vpnConnectDuration / (60 * 60)
+//                val hourString = if (hour >= 10)
+//                    hour.toString().plus(":")
+//                else
+//                    "0".plus(hour).plus(":")
+//                val timeLeftMinute = vpnConnectDuration - hour * (60 * 60)
+//                // Minute
+//                val minute = timeLeftMinute / 60
+//                val minuteString = if (minute >= 10)
+//                    minute.toString().plus(":")
+//                else
+//                    "0".plus(minute).plus(":")
+//                val timeLeftSecond = vpnConnectDuration - hour * (60 * 60) - minute * 60
+//                // Second
+//                val secondString = if (timeLeftSecond >= 10)
+//                    timeLeftSecond.toString()
+//                else
+//                    "0".plus(timeLeftSecond)
+//                mainScope { successRequest(hourString.plus(minuteString).plus(secondString)) }
+//                if (vpnConnectDuration > 60 * 60) finishRequest()
+//            }
+//        }
+//        if (timer == null) timer = Timer()
+//        timer?.schedule(timerTask, 0, 1000)
     }
 
     internal fun endTiming() {
-        timer?.cancel()
-        timer = null
+//        timer?.cancel()
+//        timer = null
     }
 
     internal fun showConnectedAd(activity: FragmentActivity, finishRequest: () -> Unit) {

@@ -11,7 +11,6 @@ import com.drake.brv.utils.setup
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.milk.global.R
 import com.milk.global.constant.EventKey
-import com.milk.global.constant.KvKey
 import com.milk.global.data.VpnGroup
 import com.milk.global.data.VpnNode
 import com.milk.global.databinding.ActivitySwitchNodeBinding
@@ -58,7 +57,7 @@ class SwitchNodeActivity : AbstractActivity() {
                                 FireBaseManager.logEvent(FirebaseKey.CLICK_TO_SWITCH_NODE)
                             val index = random.nextInt(nodes.size)
                             val node = nodes[index] as VpnNode
-                            LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE)
+                            LiveEventBus.get<ArrayList<String>>(EventKey.SWITCH_VPN_NODE)
                                 .post(
                                     arrayListOf(
                                         node.nodeId.toString(),
@@ -70,7 +69,7 @@ class SwitchNodeActivity : AbstractActivity() {
                         }
                         else -> {
                             FireBaseManager.logEvent(FirebaseKey.CLICK_ON_THE_AUTOMATIC_NODE)
-                            LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE)
+                            LiveEventBus.get<ArrayList<String>>(EventKey.SWITCH_VPN_NODE)
                                 .post(arrayListOf("0", "", "", "-1"))
                         }
                     }
@@ -82,7 +81,7 @@ class SwitchNodeActivity : AbstractActivity() {
                     FireBaseManager.logEvent(FirebaseKey.CLICK_ON_NORMAL_NODE)
                     if (currentConnected)
                         FireBaseManager.logEvent(FirebaseKey.CLICK_TO_SWITCH_NODE)
-                    LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE)
+                    LiveEventBus.get<ArrayList<String>>(EventKey.SWITCH_VPN_NODE)
                         .post(
                             arrayListOf(
                                 node.nodeId.toString(),
@@ -99,31 +98,15 @@ class SwitchNodeActivity : AbstractActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun initializeData() {
-        switchNodeViewModel.loadNodeNativeAd(this) {
-            switchNodeViewModel.getVpnListInfo()
-        }
-        switchNodeViewModel.loadNativeByTimer(this)
-        LiveEventBus.get<Any>(EventKey.UPDATE_SWITCH_LIST_AD)
-            .observe(this) {
-                binding.rvNode.adapter?.notifyDataSetChanged()
-            }
+        switchNodeViewModel.getVpnListInfo()
     }
 
     override fun onMultipleClick(view: View) {
         super.onMultipleClick(view)
         when (view) {
             binding.ivBack -> finish()
-            binding.ivRefresh -> {
-                switchNodeViewModel.loadNodeNativeAd(this) {
-                    switchNodeViewModel.getVpnListInfo()
-                }
-            }
+            binding.ivRefresh -> switchNodeViewModel.getVpnListInfo()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        switchNodeViewModel.destroy()
     }
 
     companion object {

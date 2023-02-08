@@ -12,13 +12,10 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import com.freetech.vpn.logic.VpnStateService
-import com.jeremyliao.liveeventbus.LiveEventBus
-import com.milk.simple.ktx.ioScope
-import com.milk.global.constant.KvKey
-import com.milk.global.ui.act.BackStackActivity
 import com.milk.global.ui.act.MainActivity
 import com.milk.global.ui.type.VpnStatus
 import com.milk.global.ui.vm.VpnViewModel
+import com.milk.simple.ktx.ioScope
 
 class VpnProxy(private val activity: MainActivity) {
     private var vpnService: VpnStateService? = null
@@ -90,26 +87,19 @@ class VpnProxy(private val activity: MainActivity) {
                 activity.unbindService(vpnServiceConnection)
             }
         })
-        vpnViewModel.vpnStartConnect.observe(activity) {
+        vpnViewModel.startConnectVpnNode.observe(activity) {
             vpnService?.disconnect()
             connecting()
-        }
-        LiveEventBus.get<ArrayList<String>>(KvKey.SWITCH_VPN_NODE).observe(activity) {
-            BackStackActivity.create(activity)
-            vpnViewModel.endTiming()
-            vpnViewModel.currentImageUrl = it[1]
-            vpnViewModel.currentName = it[2]
-            vpnViewModel.currentPing = it[3].toLong()
-            vpnViewModel.getVpnInfo(it[0].toLong(), true)
         }
     }
 
     fun openVpn() {
         val prepare = VpnService.prepare(activity)
-        if (prepare == null)
+        if (prepare == null) {
             vpnViewModel.getVpnInfo()
-        else
+        } else {
             activityResult.launch(prepare)
+        }
     }
 
     fun closeVpn() {

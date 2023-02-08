@@ -8,6 +8,8 @@ class ConnectingDialog(activity: FragmentActivity) :
     SimpleDialog<DialogConnectingBinding>(activity) {
 
     init {
+        setCancelable(false)
+        setCanceledOnTouchOutside(false)
         binding.connectingLottieView.setAnimation("connecting.json")
         binding.connectingLottieView.playAnimation()
     }

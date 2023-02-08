@@ -77,18 +77,25 @@ class MainActivity : AbstractActivity() {
         }
         vpnViewModel.connectionState.collectLatest(this) {
             when (it) {
-                VpnStatus.NotConnect,
-                VpnStatus.Connecting -> {
+                VpnStatus.DisConnect -> {
+                    disconnectDialog.dismiss()
                     vpnDisconnect()
                 }
+                VpnStatus.Connecting -> {
+                    vpnDisconnect(false)
+                }
                 VpnStatus.Connected -> {
+                    connectingDialog.dismiss()
                     vpnConnected()
                 }
                 VpnStatus.Failure -> {
                     connectingDialog.dismiss()
                     disconnectDialog.dismiss()
-                    FireBaseManager.logEvent(FirebaseKey.CONNECT_FAILED)
                     failureDialog.show()
+                    vpnDisconnect(false)
+                    FireBaseManager.logEvent(FirebaseKey.CONNECT_FAILED)
+                }
+                VpnStatus.Default -> {
                     vpnDisconnect(false)
                 }
             }
@@ -136,7 +143,7 @@ class MainActivity : AbstractActivity() {
             vpnViewModel.showConnectedAd(this) {
                 ResultActivity.create(
                     this,
-                    isConnected,
+                    true,
                     vpnViewModel.currentImageUrl,
                     vpnViewModel.currentName,
                     vpnViewModel.currentPing
@@ -146,7 +153,7 @@ class MainActivity : AbstractActivity() {
             DataRepository.loadDisconnectNativeAd(this) {
                 ResultActivity.create(
                     this,
-                    isConnected,
+                    false,
                     vpnViewModel.currentImageUrl,
                     vpnViewModel.currentName,
                     vpnViewModel.currentPing

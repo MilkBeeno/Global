@@ -8,6 +8,8 @@ class DisConnectDialog(activity: FragmentActivity) :
     SimpleDialog<DialogDisconnectBinding>(activity) {
 
     init {
+        setCancelable(false)
+        setCanceledOnTouchOutside(false)
         binding.disconnectLottieView.setAnimation("disconnect.json")
         binding.disconnectLottieView.playAnimation()
     }

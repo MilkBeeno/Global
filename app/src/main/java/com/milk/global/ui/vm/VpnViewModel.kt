@@ -7,8 +7,6 @@ import com.anythink.interstitial.api.ATInterstitial
 import com.anythink.nativead.api.ATNative
 import com.freetech.vpn.data.VpnProfile
 import com.freetech.vpn.data.VpnType
-import com.milk.simple.ktx.ioScope
-import com.milk.simple.ktx.mainScope
 import com.milk.global.ad.AdConfig
 import com.milk.global.ad.AdLoadStatus
 import com.milk.global.ad.TopOnManager
@@ -20,6 +18,8 @@ import com.milk.global.repository.DataRepository
 import com.milk.global.repository.VpnRepository
 import com.milk.global.ui.type.VpnStatus
 import com.milk.global.util.MilkTimer
+import com.milk.simple.ktx.ioScope
+import com.milk.simple.ktx.mainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.*
 
@@ -33,7 +33,7 @@ class VpnViewModel : ViewModel() {
 
     /** 是否连接 VPN 的状态和连接 VPN 的状态 */
     internal val vpnStartConnect = MutableLiveData<Boolean>()
-    internal val connectionState = MutableStateFlow(VpnStatus.NotConnect)
+    internal val connectionState = MutableStateFlow(VpnStatus.Default)
 
     /** 当前连接的节点 ID 和是否是连接成功 */
     internal var currentNodeId: Long = 0

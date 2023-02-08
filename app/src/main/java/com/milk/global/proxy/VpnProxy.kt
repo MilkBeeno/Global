@@ -44,7 +44,7 @@ class VpnProxy(private val activity: MainActivity) {
                         VpnStateService.State.CONNECTED ->
                             vpnViewModel.connectionState.emit(VpnStatus.Connected)
                         VpnStateService.State.DISCONNECTING ->
-                            vpnViewModel.connectionState.emit(VpnStatus.NotConnect)
+                            vpnViewModel.connectionState.emit(VpnStatus.DisConnect)
                         else -> Unit
                     }
                 else -> vpnViewModel.connectionState.emit(VpnStatus.Failure)

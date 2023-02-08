@@ -1,3 +1,3 @@
 package com.milk.global.ui.type
 
-enum class VpnStatus { NotConnect, Connecting, Connected, Failure }
+enum class VpnStatus { DisConnect, Connecting, Connected, Failure, Default }

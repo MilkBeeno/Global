@@ -1,4 +1,8 @@
 <resources>
+    <!-- Facebook 推广相关 -->
+    <string name="facebook_app_id">911156690023455</string>
+    <string name="facebook_client_token">e1cad8f2a28ef81b3d92aaf4c2ec7a07</string>
+    <string name="fb_login_protocol_scheme">fb911156690023455</string>
     <string name="app_name">Global Master -Private</string>
     <!--启动页面翻译-->
     <string name="launch_tip"><![CDATA[FREE & FAST]]></string>
@@ -30,9 +34,5 @@
     <string name="dialog_open_notification_confirm">Confirm</string>
     <string name="main_connect_now">Connect now</string>
     <string name="main_disconnect_now">Disconnect now</string>
-    <!-- 推广相关 -->
-    <string name="facebook_app_id">911156690023455</string>
-    <string name="facebook_client_token">4ee3673156911a8af2d69c3cad824782</string>
-    <string name="fb_login_protocol_scheme">fb778004923247759</string>
     <string name="common_wait">Please wait</string>
 </resources>

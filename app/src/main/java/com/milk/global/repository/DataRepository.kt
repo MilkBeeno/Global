@@ -8,6 +8,7 @@ import com.milk.global.ad.AdConfig
 import com.milk.global.ad.TopOnManager
 import com.milk.global.constant.AdCodeKey
 import com.milk.global.constant.KvKey
+import com.milk.global.data.VpnGroup
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
 import com.milk.simple.ktx.ioScope
@@ -16,6 +17,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 
 object DataRepository {
+    /** 保存在内存中的 VPN 列表数据、保证快速获取 VPN 列表 */
+    val vpnListData = arrayListOf<VpnGroup>()
+
     internal val connectSuccessAd = MutableStateFlow<Pair<String, NativeAd?>>(Pair("", null))
     internal val disconnectAd = MutableStateFlow<Pair<String, NativeAd?>>(Pair("", null))
     internal val shareAppUrl = MutableStateFlow("")

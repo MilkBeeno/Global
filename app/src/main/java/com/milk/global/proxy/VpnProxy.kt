@@ -37,7 +37,7 @@ class VpnProxy(private val activity: MainActivity) {
                 when (vpnService?.state) {
                     VpnStateService.State.DISABLED -> {
                         if (isConnecting) {
-                            Logger.d("连接 VPN 第六步：vpn 连接超时，断开连接 ", "VPN")
+                            Logger.d("连接 VPN 第六步：vpn 连接超时，断开连接 ", "代理VPN")
                             isConnecting = false
                         } else {
                             vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, true)
@@ -46,20 +46,18 @@ class VpnProxy(private val activity: MainActivity) {
                     VpnStateService.State.CONNECTED -> {
                         isConnecting = false
                         vpnStateChangedRequest?.invoke(VpnState.CONNECTED, true)
-                        Logger.d("连接 VPN 第五步：vpn 连接成功 ", "VPN")
+                        Logger.d("连接 VPN 第五步：vpn 连接成功 ", "代理VPN")
                     }
                     VpnStateService.State.CONNECTING -> {
-                        Logger.d("连接 VPN 第四步：正在连接 vpn ", "VPN")
-                    }
-                    VpnStateService.State.DISCONNECTING -> {
-
+                        isConnecting = true
+                        Logger.d("连接 VPN 第四步：正在连接 vpn ", "代理VPN")
                     }
                     else -> Unit
                 }
             else -> {
                 isConnecting = false
                 vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, false)
-                Logger.d("连接 VPN 第四步：vpn 连接发生错误 ", "VPN")
+                Logger.d("连接 VPN 第四步：vpn 连接发生错误 ", "代理VPN")
             }
         }
     }
@@ -107,15 +105,15 @@ class VpnProxy(private val activity: MainActivity) {
         val prepare = VpnService.prepare(activity)
         if (prepare == null) {
             vpnOpenedRequest?.invoke()
-            Logger.d("连接 VPN 第一步：vpn 已打开", "VPN")
+            Logger.d("连接 VPN 第一步：vpn 已打开", "代理VPN")
         } else {
             activityResult.launch(prepare)
-            Logger.d("连接 VPN 第一步：去打开 vpn", "VPN")
+            Logger.d("连接 VPN 第一步：去打开 vpn", "代理VPN")
         }
     }
 
     fun connectVpn(vpnProfile: VpnProfile, isConnected: Boolean) {
-        Logger.d("连接 VPN 第二步：进行 vpn 的连接", "VPN")
+        Logger.d("连接 VPN 第二步：进行 vpn 的连接", "代理VPN")
         if (isConnecting) {
             return
         }
@@ -127,14 +125,14 @@ class VpnProxy(private val activity: MainActivity) {
             .setOnFinishedListener {
                 if (isConnecting) {
                     vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, false)
-                    Logger.d("连接 VPN 第五步：vpn 连接超时 ", "VPN")
+                    Logger.d("连接 VPN 第五步：vpn 连接超时 ", "代理VPN")
                     vpnService?.disconnect()
                 }
             }
             .build()
             .start()
         if (isConnected) {
-            Logger.d("连接 VPN 第三步：原已连接 vpn 先关闭当前 vpn", "VPN")
+            Logger.d("连接 VPN 第三步：原已连接 vpn 先关闭当前 vpn", "代理VPN")
             vpnService?.disconnect()
         }
         val profileInfo = Bundle()
@@ -145,7 +143,7 @@ class VpnProxy(private val activity: MainActivity) {
 
     fun closeVpn() {
         vpnService?.disconnect()
-        Logger.d("断开 VPN 第一步：vpn 开始断开 ", "VPN")
+        Logger.d("断开 VPN 第一步：vpn 开始断开 ", "代理VPN")
     }
 
     companion object {

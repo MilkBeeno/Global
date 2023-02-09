@@ -11,6 +11,7 @@ import com.milk.global.friebase.FirebaseKey
 import com.milk.global.util.MilkTimer
 
 class BackStackViewModel : ViewModel() {
+    private var isShowingAd: Boolean = false
     private var adIsLoadSuccess: Boolean = false
 
     internal fun loadLaunchAd(
@@ -18,12 +19,15 @@ class BackStackViewModel : ViewModel() {
         viewGroup: ViewGroup,
         finishRequest: () -> Unit
     ) {
+        if (isShowingAd) return
+        isShowingAd = true
         val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.LAUNCH_OPEN_AD_KEY)
         val timer = MilkTimer.Builder()
             .setMillisInFuture(10000)
             .setOnFinishedListener {
                 if (!adIsLoadSuccess) {
                     finishRequest()
+                    isShowingAd = false
                 }
                 adIsLoadSuccess = false
             }
@@ -50,6 +54,7 @@ class BackStackViewModel : ViewModel() {
                 },
                 finishedRequest = {
                     finishRequest()
+                    isShowingAd = false
                 },
                 clickRequest = {
                     FireBaseManager.logEvent(FirebaseKey.click_ad_3)
@@ -58,11 +63,14 @@ class BackStackViewModel : ViewModel() {
     }
 
     internal fun loadBackStackAd(activity: FragmentActivity, finishRequest: () -> Unit) {
+        if (isShowingAd) return
+        isShowingAd = true
         val timer = MilkTimer.Builder()
             .setMillisInFuture(10000)
             .setOnFinishedListener {
                 if (!adIsLoadSuccess) {
                     finishRequest()
+                    isShowingAd = false
                 }
                 adIsLoadSuccess = false
             }
@@ -88,7 +96,8 @@ class BackStackViewModel : ViewModel() {
                     FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_2)
                 },
                 finishedRequest = {
-                    timer.finish()
+                    finishRequest()
+                    isShowingAd = false
                 },
                 clickRequest = {
                     FireBaseManager.logEvent(FirebaseKey.click_ad_2)

@@ -71,11 +71,9 @@ class MainActivity : AbstractActivity() {
             if (success) {
                 when (vpnState) {
                     VpnState.DISCONNECT -> {
-                        disconnectDialog.dismiss()
                         vpnDisconnect()
                     }
                     VpnState.CONNECTED -> {
-                        connectingDialog.dismiss()
                         vpnConnected()
                     }
                     else -> Unit
@@ -122,6 +120,9 @@ class MainActivity : AbstractActivity() {
         binding.tvConnect.setTextColor(color(R.color.white))
         if (showResult && vpnViewModel.vpnIsConnected) {
             vpnConnectResult(false)
+        } else {
+            connectingDialog.dismiss()
+            disconnectDialog.dismiss()
         }
     }
 
@@ -155,6 +156,8 @@ class MainActivity : AbstractActivity() {
             }
         }
         vpnViewModel.showConnectedAd(this) {
+            connectingDialog.dismiss()
+            disconnectDialog.dismiss()
             ResultActivity.create(
                 this,
                 isConnected,

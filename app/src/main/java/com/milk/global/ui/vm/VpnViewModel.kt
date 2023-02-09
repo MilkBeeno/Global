@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 class VpnViewModel : ViewModel() {
     private val vpnRepository by lazy { VpnRepository() }
 
-    private var adIsLoadSuccess: Boolean = false
+    private var isShowingAd: Boolean = false
     internal var mainNativeAd = MutableSharedFlow<ATNative>()
     private val adUnitId by lazy { AdConfig.getAdvertiseUnitId(AdCodeKey.MAIN_NATIVE_AD_KEY) }
 
@@ -80,17 +80,18 @@ class VpnViewModel : ViewModel() {
     }
 
     internal fun showConnectedAd(activity: FragmentActivity, finishRequest: () -> Unit) {
+        if (isShowingAd) return
+        isShowingAd = true
         val timer = MilkTimer.Builder()
             .setMillisInFuture(10000)
             .setOnFinishedListener {
-                if (!adIsLoadSuccess) {
-                    finishRequest()
-                }
-                adIsLoadSuccess = false
+                finishRequest()
+                isShowingAd = false
             }
             .build().apply { start() }
 
-        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.INTERSTITIAL_AD_KEY)
+        val unitId =
+            AdConfig.getAdvertiseUnitId(AdCodeKey.INTERSTITIAL_AD_KEY)
         if (unitId.isNotBlank()) {
             FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_4)
             TopOnManager.loadInsertAd(
@@ -106,11 +107,10 @@ class VpnViewModel : ViewModel() {
                     FireBaseManager.logEvent(FirebaseKey.Ad_show_failed_4, it)
                 },
                 showSuccessRequest = {
-                    adIsLoadSuccess = true
                     FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_4)
                 },
                 finishedRequest = {
-                    finishRequest()
+                    timer.finish()
                 },
                 clickRequest = {
                     FireBaseManager.logEvent(FirebaseKey.click_ad_4)

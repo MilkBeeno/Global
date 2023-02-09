@@ -27,16 +27,16 @@ class BackStackActivity : AbstractActivity() {
 
     private fun initializeObserver() {
         val isLaunched = intent.getBooleanExtra(IS_APP_LAUNCH_AD, false)
-        if (isLaunched) {
-            backStackViewModel.loadLaunchAd(
-                activity = this,
-                viewGroup = binding.root,
-                finishRequest = {
+        backStackViewModel.loadLaunchAd(
+            activity = this,
+            viewGroup = binding.root,
+            finishRequest = {
+                if (isLaunched) {
                     MainActivity.create(this)
-                    finish()
                 }
-            )
-        } else backStackViewModel.loadBackStackAd(this) { finish() }
+                finish()
+            }
+        )
     }
 
     override fun onInterceptKeyDownEvent(): Boolean = true

@@ -14,9 +14,11 @@ import com.freetech.vpn.data.VpnProfile
 import com.freetech.vpn.logic.VpnStateService
 import com.milk.global.ui.act.MainActivity
 import com.milk.global.ui.type.VpnState
+import com.milk.global.util.MilkTimer
 
 class VpnProxy(private val activity: MainActivity) {
     private var vpnService: VpnStateService? = null
+    private var isConnecting: Boolean = false
 
     private var vpnOpenedRequest: (() -> Unit)? = null
     private var vpnStateChangedRequest: ((VpnState, Boolean) -> Unit)? = null
@@ -33,12 +35,17 @@ class VpnProxy(private val activity: MainActivity) {
             VpnStateService.ErrorState.NO_ERROR ->
                 when (vpnService?.state) {
                     VpnStateService.State.DISABLED -> {
-                        vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, true)
+                        if (isConnecting) {
+                            isConnecting = false
+                        } else {
+                            vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, true)
+                        }
                     }
                     VpnStateService.State.CONNECTING -> {
                         vpnStateChangedRequest?.invoke(VpnState.CONNECTING, true)
                     }
                     VpnStateService.State.CONNECTED -> {
+                        isConnecting = false
                         vpnStateChangedRequest?.invoke(VpnState.CONNECTED, true)
                     }
                     VpnStateService.State.DISCONNECTING -> {
@@ -47,6 +54,7 @@ class VpnProxy(private val activity: MainActivity) {
                     else -> Unit
                 }
             else -> {
+                isConnecting = false
                 vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, false)
             }
         }
@@ -100,8 +108,26 @@ class VpnProxy(private val activity: MainActivity) {
         }
     }
 
-    fun connectVpn(vpnProfile: VpnProfile) {
-        vpnService?.disconnect()
+    fun connectVpn(vpnProfile: VpnProfile, isConnected: Boolean) {
+        if (isConnecting) {
+            return
+        }
+        isConnecting = true
+        // 设置默认一分钟未连上为超时操作
+        MilkTimer.Builder()
+            .setCountDownInterval(1000)
+            .setMillisInFuture(1 * 60 * 1000)
+            .setOnFinishedListener {
+                if (isConnecting) {
+                    vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, false)
+                    vpnService?.disconnect()
+                }
+            }
+            .build()
+            .start()
+        if (isConnected) {
+            vpnService?.disconnect()
+        }
         val profileInfo = Bundle()
         profileInfo.putSerializable(PROFILE, vpnProfile)
         profileInfo.putInt(G_ID, vpnProfile.id.toInt())

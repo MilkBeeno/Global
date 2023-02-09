@@ -17,6 +17,7 @@ import com.milk.global.repository.DataRepository
 import com.milk.global.repository.VpnRepository
 import com.milk.global.util.MilkTimer
 import com.milk.simple.ktx.ioScope
+import com.milk.simple.ktx.withMain
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 class VpnViewModel : ViewModel() {
@@ -65,7 +66,7 @@ class VpnViewModel : ViewModel() {
             val response = vpnRepository.getVpnInfo(vpnNodeId)
             val result = response.data
             if (response.code == 2000 && result != null) {
-                vpnProfileRequest(getVpnProfile(result))
+                withMain { vpnProfileRequest(getVpnProfile(result)) }
             }
         }
     }

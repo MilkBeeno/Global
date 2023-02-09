@@ -61,7 +61,7 @@ class MainActivity : AbstractActivity() {
         vpnProxy.setVpnOpenedListener {
             connectingDialog.show()
             vpnViewModel.getVpnProfileInfo {
-                vpnProxy.connectVpn(it)
+                vpnProxy.connectVpn(it, vpnViewModel.vpnIsConnected)
             }
         }
     }
@@ -74,16 +74,11 @@ class MainActivity : AbstractActivity() {
                         disconnectDialog.dismiss()
                         vpnDisconnect()
                     }
-                    VpnState.CONNECTING -> {
-                        vpnDisconnect(false)
-                    }
                     VpnState.CONNECTED -> {
                         connectingDialog.dismiss()
                         vpnConnected()
                     }
-                    VpnState.DISCOUNTING -> {
-                        vpnDisconnect(false)
-                    }
+                    else -> Unit
                 }
             } else {
                 connectingDialog.dismiss()
@@ -113,6 +108,7 @@ class MainActivity : AbstractActivity() {
                 vpnViewModel.vpnImageUrl = it[1]
                 vpnViewModel.vpnName = it[2]
                 vpnViewModel.vpnPing = it[3].toLong()
+                updateConnectInfo()
                 vpnProxy.tryOpenVpn()
             }
     }
@@ -180,7 +176,7 @@ class MainActivity : AbstractActivity() {
     }
 
     private fun updateConnectInfo() {
-        if (vpnViewModel.vpnNodeId.toLong() > 0) {
+        if (vpnViewModel.vpnNodeId > 0) {
             ImageLoader.Builder()
                 .request(vpnViewModel.vpnImageUrl)
                 .target(binding.ivNetwork)

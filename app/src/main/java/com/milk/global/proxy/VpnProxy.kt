@@ -41,15 +41,9 @@ class VpnProxy(private val activity: MainActivity) {
                             vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, true)
                         }
                     }
-                    VpnStateService.State.CONNECTING -> {
-                        vpnStateChangedRequest?.invoke(VpnState.CONNECTING, true)
-                    }
                     VpnStateService.State.CONNECTED -> {
                         isConnecting = false
                         vpnStateChangedRequest?.invoke(VpnState.CONNECTED, true)
-                    }
-                    VpnStateService.State.DISCONNECTING -> {
-                        vpnStateChangedRequest?.invoke(VpnState.DISCOUNTING, true)
                     }
                     else -> Unit
                 }

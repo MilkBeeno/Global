@@ -2,18 +2,15 @@ package com.milk.global.ui.vm
 
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
-import com.anythink.interstitial.api.ATInterstitial
 import com.anythink.nativead.api.ATNative
 import com.freetech.vpn.data.VpnProfile
 import com.freetech.vpn.data.VpnType
 import com.milk.global.ad.AdConfig
-import com.milk.global.ad.AdLoadStatus
 import com.milk.global.ad.TopOnManager
 import com.milk.global.constant.AdCodeKey
 import com.milk.global.data.VpnModel
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
-import com.milk.global.repository.DataRepository
 import com.milk.global.repository.VpnRepository
 import com.milk.global.util.MilkTimer
 import com.milk.simple.ktx.ioScope
@@ -23,6 +20,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 class VpnViewModel : ViewModel() {
     private val vpnRepository by lazy { VpnRepository() }
 
+    private var adIsLoadSuccess: Boolean = false
     internal var mainNativeAd = MutableSharedFlow<ATNative>()
     private val adUnitId by lazy { AdConfig.getAdvertiseUnitId(AdCodeKey.MAIN_NATIVE_AD_KEY) }
 
@@ -32,8 +30,6 @@ class VpnViewModel : ViewModel() {
     internal var vpnName: String = ""
     internal var vpnImageUrl: String = ""
     internal var vpnIsConnected: Boolean = false
-
-    private var adLoadStatus: AdLoadStatus = AdLoadStatus.Loading
 
     internal fun loadNativeAdByTimer(activity: FragmentActivity) {
         MilkTimer.Builder()
@@ -84,38 +80,33 @@ class VpnViewModel : ViewModel() {
     }
 
     internal fun showConnectedAd(activity: FragmentActivity, finishRequest: () -> Unit) {
-        DataRepository.loadConnectedNativeAd(activity)
-        var aTInterstitial: ATInterstitial? = null
-        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.INTERSTITIAL_AD_KEY)
         val timer = MilkTimer.Builder()
             .setMillisInFuture(10000)
             .setOnFinishedListener {
-                if (adLoadStatus == AdLoadStatus.Success)
-                    aTInterstitial?.show(activity)
-                else
+                if (!adIsLoadSuccess) {
                     finishRequest()
+                }
+                adIsLoadSuccess = false
             }
-            .build()
-        timer.start()
+            .build().apply { start() }
+
+        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.INTERSTITIAL_AD_KEY)
         if (unitId.isNotBlank()) {
-            adLoadStatus = AdLoadStatus.Loading
             FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_4)
-            aTInterstitial = TopOnManager.loadInterstitial(
+            TopOnManager.loadInsertAd(
                 activity = activity,
                 adUnitId = unitId,
                 loadFailureRequest = {
                     FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_4, it)
-                    adLoadStatus = AdLoadStatus.Failure
                 },
                 loadSuccessRequest = {
                     FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_4)
-                    adLoadStatus = AdLoadStatus.Success
-                    timer.finish()
                 },
                 showFailureRequest = {
                     FireBaseManager.logEvent(FirebaseKey.Ad_show_failed_4, it)
                 },
                 showSuccessRequest = {
+                    adIsLoadSuccess = true
                     FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_4)
                 },
                 finishedRequest = {
@@ -124,6 +115,6 @@ class VpnViewModel : ViewModel() {
                 clickRequest = {
                     FireBaseManager.logEvent(FirebaseKey.click_ad_4)
                 })
-        } else adLoadStatus = AdLoadStatus.Failure
+        } else timer.finish()
     }
 }

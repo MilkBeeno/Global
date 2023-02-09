@@ -153,25 +153,15 @@ class MainActivity : AbstractActivity() {
                     FireBaseManager.logEvent(FirebaseKey.CONNECTION_SUCCESSFUL_FOR_MORE_THAN_15S)
                 }
             }
-            vpnViewModel.showConnectedAd(this) {
-                ResultActivity.create(
-                    this,
-                    true,
-                    vpnViewModel.vpnImageUrl,
-                    vpnViewModel.vpnName,
-                    vpnViewModel.vpnPing
-                )
-            }
-        } else {
-            DataRepository.loadDisconnectNativeAd(this) {
-                ResultActivity.create(
-                    this,
-                    false,
-                    vpnViewModel.vpnImageUrl,
-                    vpnViewModel.vpnName,
-                    vpnViewModel.vpnPing
-                )
-            }
+        }
+        vpnViewModel.showConnectedAd(this) {
+            ResultActivity.create(
+                this,
+                isConnected,
+                vpnViewModel.vpnImageUrl,
+                vpnViewModel.vpnName,
+                vpnViewModel.vpnPing
+            )
         }
     }
 

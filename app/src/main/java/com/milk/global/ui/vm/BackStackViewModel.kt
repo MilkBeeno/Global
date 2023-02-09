@@ -3,10 +3,7 @@ package com.milk.global.ui.vm
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
-import com.anythink.interstitial.api.ATInterstitial
-import com.anythink.splashad.api.ATSplashAd
 import com.milk.global.ad.AdConfig
-import com.milk.global.ad.AdLoadStatus
 import com.milk.global.ad.TopOnManager
 import com.milk.global.constant.AdCodeKey
 import com.milk.global.friebase.FireBaseManager
@@ -14,99 +11,88 @@ import com.milk.global.friebase.FirebaseKey
 import com.milk.global.util.MilkTimer
 
 class BackStackViewModel : ViewModel() {
-    private var adLoadStatus: AdLoadStatus = AdLoadStatus.Loading
+    private var adIsLoadSuccess: Boolean = false
 
     internal fun loadLaunchAd(
         activity: FragmentActivity,
         viewGroup: ViewGroup,
         finishRequest: () -> Unit
     ) {
-        var splashAd: ATSplashAd? = null
         val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.LAUNCH_OPEN_AD_KEY)
         val timer = MilkTimer.Builder()
             .setMillisInFuture(10000)
             .setOnFinishedListener {
-                if (adLoadStatus == AdLoadStatus.Success) {
-                    splashAd?.show(activity, viewGroup)
-                } else {
+                if (!adIsLoadSuccess) {
                     finishRequest()
                 }
+                adIsLoadSuccess = false
             }
-            .build()
-        timer.start()
+            .build().apply { start() }
+
         if (unitId.isNotBlank()) {
-            adLoadStatus = AdLoadStatus.Loading
             FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_3)
-            splashAd = TopOnManager.loadOpenAd(
+            TopOnManager.loadOpenAd(
                 activity = activity,
+                viewGroup = viewGroup,
                 adUnitId = unitId,
                 loadFailureRequest = {
                     FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_3, it)
-                    adLoadStatus = AdLoadStatus.Failure
                 },
                 loadSuccessRequest = {
                     FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_3)
-                    adLoadStatus = AdLoadStatus.Success
-                    timer.finish()
                 },
                 showFailureRequest = {
                     FireBaseManager.logEvent(FirebaseKey.Ad_show_failed_3, it)
                 },
                 showSuccessRequest = {
+                    adIsLoadSuccess = true
                     FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_3)
                 },
                 finishedRequest = {
-                    adLoadStatus = AdLoadStatus.Loading
                     finishRequest()
                 },
                 clickRequest = {
                     FireBaseManager.logEvent(FirebaseKey.click_ad_3)
                 })
-        } else adLoadStatus = AdLoadStatus.Failure
+        } else timer.finish()
     }
 
     internal fun loadBackStackAd(activity: FragmentActivity, finishRequest: () -> Unit) {
-        var aTInterstitial: ATInterstitial? = null
-        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.INTERSTITIAL_AD_KEY)
         val timer = MilkTimer.Builder()
             .setMillisInFuture(10000)
             .setOnFinishedListener {
-                if (adLoadStatus == AdLoadStatus.Success)
-                    aTInterstitial?.show(activity)
-                else
+                if (!adIsLoadSuccess) {
                     finishRequest()
+                }
+                adIsLoadSuccess = false
             }
-            .build()
-        timer.start()
+            .build().apply { start() }
+
+        val unitId = AdConfig.getAdvertiseUnitId(AdCodeKey.INTERSTITIAL_AD_KEY)
         if (unitId.isNotBlank()) {
-            adLoadStatus = AdLoadStatus.Loading
             FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_2)
-            aTInterstitial = TopOnManager.loadInterstitial(
+            TopOnManager.loadInsertAd(
                 activity = activity,
                 adUnitId = unitId,
                 loadFailureRequest = {
                     FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_2, it)
-                    adLoadStatus = AdLoadStatus.Failure
-                    timer.finish()
                 },
                 loadSuccessRequest = {
                     FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_2)
-                    adLoadStatus = AdLoadStatus.Success
-                    timer.finish()
                 },
                 showFailureRequest = {
                     FireBaseManager.logEvent(FirebaseKey.Ad_show_failed_2, it)
                 },
                 showSuccessRequest = {
+                    adIsLoadSuccess = true
                     FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_2)
                 },
                 finishedRequest = {
-                    adLoadStatus = AdLoadStatus.Loading
-                    finishRequest()
+                    timer.finish()
                 },
                 clickRequest = {
                     FireBaseManager.logEvent(FirebaseKey.click_ad_2)
                 })
-        } else adLoadStatus = AdLoadStatus.Failure
+        } else timer.finish()
     }
 }

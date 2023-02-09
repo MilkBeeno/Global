@@ -1,6 +1,7 @@
 package com.milk.global.ad
 
 import android.app.Application
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import com.anythink.core.api.*
 import com.anythink.interstitial.api.ATInterstitial
@@ -11,8 +12,8 @@ import com.anythink.network.facebook.FacebookATInitConfig
 import com.anythink.splashad.api.ATSplashAd
 import com.anythink.splashad.api.ATSplashAdExtraInfo
 import com.anythink.splashad.api.ATSplashAdListener
-import com.milk.simple.log.Logger
 import com.milk.global.BuildConfig
+import com.milk.simple.log.Logger
 
 /**
  * TopOn 广告聚合平台管理、目前只添加 Facebook 广告接入
@@ -44,6 +45,7 @@ object TopOnManager {
     /** 加载插页广告 */
     internal fun loadOpenAd(
         activity: FragmentActivity,
+        viewGroup: ViewGroup,
         adUnitId: String,
         loadFailureRequest: (String) -> Unit = {},
         loadSuccessRequest: () -> Unit = {},
@@ -51,19 +53,22 @@ object TopOnManager {
         showSuccessRequest: () -> Unit = {},
         finishedRequest: () -> Unit = {},
         clickRequest: () -> Unit = {}
-    ): ATSplashAd {
-        val splashAd = ATSplashAd(activity, adUnitId, object : ATSplashAdListener {
+    ) {
+        var splashAd: ATSplashAd? = null
+        splashAd = ATSplashAd(activity, adUnitId, object : ATSplashAdListener {
             override fun onAdLoaded(p0: Boolean) {
                 loadSuccessRequest()
+                splashAd?.show(activity, viewGroup)
             }
 
             override fun onAdLoadTimeout() {
                 loadFailureRequest("加载广告超时了")
+                finishedRequest()
             }
 
             override fun onNoAdError(p0: AdError?) {
                 showFailureRequest(p0?.desc.toString())
-
+                finishedRequest()
             }
 
             override fun onAdShow(p0: ATAdInfo?) {
@@ -80,11 +85,10 @@ object TopOnManager {
             }
         })
         splashAd.loadAd()
-        return splashAd
     }
 
     /** 加载插页广告 */
-    internal fun loadInterstitial(
+    internal fun loadInsertAd(
         activity: FragmentActivity,
         adUnitId: String,
         loadFailureRequest: (String) -> Unit = {},
@@ -93,16 +97,18 @@ object TopOnManager {
         showSuccessRequest: () -> Unit = {},
         finishedRequest: () -> Unit = {},
         clickRequest: () -> Unit = {}
-    ): ATInterstitial {
+    ) {
         val interstitialAd = ATInterstitial(activity, adUnitId)
         interstitialAd.setAdListener(object : ATInterstitialListener {
             override fun onInterstitialAdLoaded() {
                 loadSuccessRequest()
+                interstitialAd.show(activity)
             }
 
             override fun onInterstitialAdLoadFail(p0: AdError?) {
                 // 注意：禁止在此回调中执行广告的加载方法进行重试，否则会引起很多无用请求且可能会导致应用卡顿
                 loadFailureRequest(p0?.desc.toString())
+                finishedRequest()
             }
 
             override fun onInterstitialAdClicked(p0: ATAdInfo?) {
@@ -129,10 +135,10 @@ object TopOnManager {
 
             override fun onInterstitialAdVideoError(p0: AdError?) {
                 showFailureRequest(p0?.desc.toString())
+                finishedRequest()
             }
         })
         interstitialAd.load()
-        return interstitialAd
     }
 
     /** 加载原生广告 */

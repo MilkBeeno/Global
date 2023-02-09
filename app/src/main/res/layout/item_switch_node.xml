@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="13dp"
-            android:textColor="@color/FFC5C8E4"
+            android:textColor="@color/FF333333"
             android:textSize="14sp"
             tools:text="US New York 001" />
 

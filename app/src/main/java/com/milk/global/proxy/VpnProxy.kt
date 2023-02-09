@@ -14,35 +14,40 @@ import com.freetech.vpn.data.VpnProfile
 import com.freetech.vpn.logic.VpnStateService
 import com.milk.global.ui.act.MainActivity
 import com.milk.global.ui.type.VpnState
-import com.milk.simple.ktx.ioScope
 
 class VpnProxy(private val activity: MainActivity) {
     private var vpnService: VpnStateService? = null
 
+    private var vpnOpenedRequest: (() -> Unit)? = null
     private var vpnStateChangedRequest: ((VpnState, Boolean) -> Unit)? = null
 
+    private val result = ActivityResultContracts.StartActivityForResult()
+    private val activityResult = activity.registerForActivityResult(result) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            vpnOpenedRequest?.invoke()
+        }
+    }
+
     private val vpnStateListener = VpnStateService.VpnStateListener {
-        ioScope {
-            when (vpnService?.errorState) {
-                VpnStateService.ErrorState.NO_ERROR ->
-                    when (vpnService?.state) {
-                        VpnStateService.State.DISABLED -> {
-                            vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, true)
-                        }
-                        VpnStateService.State.CONNECTING -> {
-                            vpnStateChangedRequest?.invoke(VpnState.CONNECTING, true)
-                        }
-                        VpnStateService.State.CONNECTED -> {
-                            vpnStateChangedRequest?.invoke(VpnState.CONNECTED, true)
-                        }
-                        VpnStateService.State.DISCONNECTING -> {
-                            vpnStateChangedRequest?.invoke(VpnState.DISCOUNTING, true)
-                        }
-                        else -> Unit
+        when (vpnService?.errorState) {
+            VpnStateService.ErrorState.NO_ERROR ->
+                when (vpnService?.state) {
+                    VpnStateService.State.DISABLED -> {
+                        vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, true)
                     }
-                else -> {
-                    vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, false)
+                    VpnStateService.State.CONNECTING -> {
+                        vpnStateChangedRequest?.invoke(VpnState.CONNECTING, true)
+                    }
+                    VpnStateService.State.CONNECTED -> {
+                        vpnStateChangedRequest?.invoke(VpnState.CONNECTED, true)
+                    }
+                    VpnStateService.State.DISCONNECTING -> {
+                        vpnStateChangedRequest?.invoke(VpnState.DISCOUNTING, true)
+                    }
+                    else -> Unit
                 }
+            else -> {
+                vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, false)
             }
         }
     }
@@ -78,26 +83,29 @@ class VpnProxy(private val activity: MainActivity) {
         })
     }
 
+    fun setVpnOpenedListener(vpnOpenedRequest: () -> Unit) {
+        this.vpnOpenedRequest = vpnOpenedRequest
+    }
+
     fun setVpnStateChangedListener(vpnStateChangedRequest: (VpnState, Boolean) -> Unit) {
         this.vpnStateChangedRequest = vpnStateChangedRequest
     }
 
-    fun openVpn(vpnOpenedListener: () -> Unit, connectVpnListener: () -> VpnProfile) {
+    fun tryOpenVpn() {
         val prepare = VpnService.prepare(activity)
         if (prepare == null) {
-            val vpnProfile = connectVpnListener()
-            val profileInfo = Bundle()
-            profileInfo.putSerializable(PROFILE, vpnProfile)
-            profileInfo.putInt(G_ID, vpnProfile.id.toInt())
-            vpnService?.connect(profileInfo, true)
+            vpnOpenedRequest?.invoke()
         } else {
-            val result = ActivityResultContracts.StartActivityForResult()
-            activity.registerForActivityResult(result) {
-                if (it.resultCode == Activity.RESULT_OK) {
-                    openVpn(vpnOpenedListener, connectVpnListener)
-                }
-            }.launch(prepare)
+            activityResult.launch(prepare)
         }
+    }
+
+    fun connectVpn(vpnProfile: VpnProfile) {
+        vpnService?.disconnect()
+        val profileInfo = Bundle()
+        profileInfo.putSerializable(PROFILE, vpnProfile)
+        profileInfo.putInt(G_ID, vpnProfile.id.toInt())
+        vpnService?.connect(profileInfo, true)
     }
 
     fun closeVpn() {

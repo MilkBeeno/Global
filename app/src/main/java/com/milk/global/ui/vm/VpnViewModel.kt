@@ -26,11 +26,11 @@ class VpnViewModel : ViewModel() {
     private val adUnitId by lazy { AdConfig.getAdvertiseUnitId(AdCodeKey.MAIN_NATIVE_AD_KEY) }
 
     // 当前连接的节点 ID 和是否是连接成功
-    internal var currentNodeId: Long = 0
-    internal var currentConnected: Boolean = false
-    internal var currentImageUrl: String = ""
-    internal var currentName: String = ""
-    internal var currentPing: Long = 0
+    internal var vpnNodeId: Long = 0
+    internal var vpnPing: Long = 0
+    internal var vpnName: String = ""
+    internal var vpnImageUrl: String = ""
+    internal var vpnIsConnected: Boolean = false
 
     private var adLoadStatus: AdLoadStatus = AdLoadStatus.Loading
 
@@ -60,21 +60,9 @@ class VpnViewModel : ViewModel() {
         }
     }
 
-    internal fun getVpnProfileInfo(
-        nodeId: Long = 0,
-        switchNode: Boolean = false,
-        vpnProfileRequest: (VpnProfile) -> Unit
-    ) {
+    internal fun getVpnProfileInfo(vpnProfileRequest: (VpnProfile) -> Unit) {
         ioScope {
-            if (nodeId <= 0) {
-                if (currentNodeId <= 0 || switchNode) {
-                    currentNodeId = 0
-                }
-            } else {
-                currentNodeId = nodeId
-            }
-            // get new data from service every time.
-            val response = vpnRepository.getVpnInfo(currentNodeId)
+            val response = vpnRepository.getVpnInfo(vpnNodeId)
             val result = response.data
             if (response.code == 2000 && result != null) {
                 vpnProfileRequest(getVpnProfile(result))

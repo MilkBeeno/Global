@@ -51,34 +51,48 @@ class MainActivity : AbstractActivity() {
         binding.tvConnect.setOnClickListener(this)
         binding.llNetwork.setOnClickListener(this)
         binding.ivConnect.setOnClickListener(this)
-        vpnProxy.setVpnStateChangedListener { v, b -> vpnStateChanged(v, b) }
-        vpnDisconnect()
+
+        openVpnListener()
+        vpnStateChangedListener()
+        vpnDisconnect(false)
     }
 
-    private fun vpnStateChanged(vpnState: VpnState, success: Boolean) {
-        if (success) {
-            when (vpnState) {
-                VpnState.DISCONNECT -> {
-                    disconnectDialog.dismiss()
-                    vpnDisconnect()
-                }
-                VpnState.CONNECTING -> {
-                    vpnDisconnect(false)
-                }
-                VpnState.CONNECTED -> {
-                    connectingDialog.dismiss()
-                    vpnConnected()
-                }
-                VpnState.DISCOUNTING -> {
-                    vpnDisconnect(false)
-                }
+    private fun openVpnListener() {
+        vpnProxy.setVpnOpenedListener {
+            connectingDialog.show()
+            vpnViewModel.getVpnProfileInfo {
+                vpnProxy.connectVpn(it)
             }
-        } else {
-            connectingDialog.dismiss()
-            disconnectDialog.dismiss()
-            connectFailureDialog.show()
-            vpnDisconnect(false)
-            FireBaseManager.logEvent(FirebaseKey.CONNECT_FAILED)
+        }
+    }
+
+    private fun vpnStateChangedListener() {
+        vpnProxy.setVpnStateChangedListener { vpnState, success ->
+            if (success) {
+                when (vpnState) {
+                    VpnState.DISCONNECT -> {
+                        disconnectDialog.dismiss()
+                        vpnDisconnect()
+                    }
+                    VpnState.CONNECTING -> {
+                        vpnDisconnect(false)
+                    }
+                    VpnState.CONNECTED -> {
+                        connectingDialog.dismiss()
+                        vpnConnected()
+                    }
+                    VpnState.DISCOUNTING -> {
+                        vpnDisconnect(false)
+                    }
+                }
+            } else {
+                connectingDialog.dismiss()
+                disconnectDialog.dismiss()
+                connectFailureDialog.show()
+                vpnDisconnect(false)
+                FireBaseManager.logEvent(FirebaseKey.CONNECT_FAILED)
+            }
+            vpnViewModel.vpnIsConnected = success && vpnState == VpnState.CONNECTED
         }
     }
 
@@ -88,19 +102,19 @@ class MainActivity : AbstractActivity() {
         // 原生广告
         vpnViewModel.mainNativeAd.collectLatest(this) {
             binding.nativeView.visible()
-            binding.nativeView.showNativeAd(AdType.Main, it.nativeAd)
-        }
-        // 切换 VPN 节点
-        LiveEventBus.get<ArrayList<String>>(EventKey.SWITCH_VPN_NODE).observe(this) {
-            connectingDialog.show()
-            vpnViewModel.currentImageUrl = it[1]
-            vpnViewModel.currentName = it[2]
-            vpnViewModel.currentPing = it[3].toLong()
-
-            vpnViewModel.getVpnProfileInfo(it[0].toLong(), true) { vpnProfile ->
-
+            if (it.nativeAd != null) {
+                binding.nativeView.showNativeAd(AdType.Main, it.nativeAd)
             }
         }
+        // 切换 VPN 节点
+        LiveEventBus.get<ArrayList<String>>(EventKey.SWITCH_VPN_NODE)
+            .observe(this) {
+                vpnViewModel.vpnNodeId = it[0].toLong()
+                vpnViewModel.vpnImageUrl = it[1]
+                vpnViewModel.vpnName = it[2]
+                vpnViewModel.vpnPing = it[3].toLong()
+                vpnProxy.tryOpenVpn()
+            }
     }
 
     private fun vpnDisconnect(showResult: Boolean = true) {
@@ -110,7 +124,9 @@ class MainActivity : AbstractActivity() {
         binding.tvConnect.text = string(R.string.main_disconnect)
         binding.tvConnect.setBackgroundResource(R.drawable.shape_main_disconnect)
         binding.tvConnect.setTextColor(color(R.color.white))
-        if (showResult) vpnConnectResult(false)
+        if (showResult && vpnViewModel.vpnIsConnected) {
+            vpnConnectResult(false)
+        }
     }
 
     private fun vpnConnected() {
@@ -145,9 +161,9 @@ class MainActivity : AbstractActivity() {
                 ResultActivity.create(
                     this,
                     true,
-                    vpnViewModel.currentImageUrl,
-                    vpnViewModel.currentName,
-                    vpnViewModel.currentPing
+                    vpnViewModel.vpnImageUrl,
+                    vpnViewModel.vpnName,
+                    vpnViewModel.vpnPing
                 )
             }
         } else {
@@ -155,21 +171,21 @@ class MainActivity : AbstractActivity() {
                 ResultActivity.create(
                     this,
                     false,
-                    vpnViewModel.currentImageUrl,
-                    vpnViewModel.currentName,
-                    vpnViewModel.currentPing
+                    vpnViewModel.vpnImageUrl,
+                    vpnViewModel.vpnName,
+                    vpnViewModel.vpnPing
                 )
             }
         }
     }
 
     private fun updateConnectInfo() {
-        if (vpnViewModel.currentNodeId > 0) {
+        if (vpnViewModel.vpnNodeId.toLong() > 0) {
             ImageLoader.Builder()
-                .request(vpnViewModel.currentImageUrl)
+                .request(vpnViewModel.vpnImageUrl)
                 .target(binding.ivNetwork)
                 .build()
-            binding.tvNetwork.text = vpnViewModel.currentName
+            binding.tvNetwork.text = vpnViewModel.vpnName
         } else {
             binding.ivNetwork.setImageResource(R.drawable.main_network)
             binding.tvNetwork.text = string(R.string.common_auto_select)
@@ -195,23 +211,20 @@ class MainActivity : AbstractActivity() {
                 currentTime = System.currentTimeMillis()
                 SwitchNodeActivity.create(
                     this,
-                    vpnViewModel.currentNodeId,
-                    vpnViewModel.currentConnected
+                    vpnViewModel.vpnNodeId,
+                    vpnViewModel.vpnIsConnected
                 )
                 FireBaseManager.logEvent(FirebaseKey.CLICK_ON_THE_NODE_LIST_ENTRY)
             }
             binding.ivConnect,
             binding.tvConnect -> {
-                if (vpnViewModel.currentConnected) {
+                if (vpnViewModel.vpnIsConnected) {
                     disconnectDialog.show()
                     binding.tvConnect.postDelayed({
                         vpnProxy.closeVpn()
                     }, 2000)
                 } else {
-                        connectingDialog.show()
-                    vpnViewModel.getVpnProfileInfo {
-                        vpnProxy.openVpn()
-                    }
+                    vpnProxy.tryOpenVpn()
                     FireBaseManager.logEvent(FirebaseKey.CLICK_TO_CONNECT_NODE)
                 }
             }

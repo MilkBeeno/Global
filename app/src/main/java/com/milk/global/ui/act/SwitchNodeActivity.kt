@@ -70,7 +70,7 @@ class SwitchNodeActivity : AbstractActivity() {
                         else -> {
                             FireBaseManager.logEvent(FirebaseKey.CLICK_ON_THE_AUTOMATIC_NODE)
                             LiveEventBus.get<ArrayList<String>>(EventKey.SWITCH_VPN_NODE)
-                                .post(arrayListOf("0", "", "", "-1"))
+                                .post(arrayListOf("0", "", "", "0"))
                         }
                     }
                     finish()

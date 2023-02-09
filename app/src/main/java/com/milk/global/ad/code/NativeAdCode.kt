@@ -4,7 +4,7 @@ import com.milk.global.BuildConfig
 
 class NativeAdCode : AdCode {
     override fun debug(): String {
-        return ""
+        return "ca-app-pub-3940256099942544/2247696110"
     }
 
     override fun release(): String {

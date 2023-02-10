@@ -98,14 +98,15 @@ class SwitchNodeActivity : AbstractActivity() {
     }
 
     private fun loadNativeAd() {
+        FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_1)
         binding.nativeView.setLoadFailureRequest {
-
+            FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_1)
         }
         binding.nativeView.setLoadSuccessRequest {
-
+            FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_1)
         }
         binding.nativeView.setClickRequest {
-
+            FireBaseManager.logEvent(FirebaseKey.click_ad_1)
         }
         binding.nativeView.loadNativeAd()
     }

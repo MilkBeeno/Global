@@ -77,7 +77,7 @@
                     android:id="@+id/cta"
                     android:layout_width="wrap_content"
                     android:layout_height="29dp"
-                    android:background="@drawable/shape_native_medium_cta_background"
+                    android:background="@drawable/shape_native_ad_view_cta_background"
                     android:gravity="center"
                     android:lines="1"
                     android:paddingStart="10dp"

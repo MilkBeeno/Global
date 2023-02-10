@@ -19,7 +19,10 @@ import com.milk.global.ui.dialog.DisConnectDialog
 import com.milk.global.ui.dialog.FailureDialog
 import com.milk.global.ui.type.VpnState
 import com.milk.global.ui.vm.VpnViewModel
-import com.milk.simple.ktx.*
+import com.milk.simple.ktx.color
+import com.milk.simple.ktx.immersiveStatusBar
+import com.milk.simple.ktx.statusBarPadding
+import com.milk.simple.ktx.string
 
 class MainActivity : AbstractActivity() {
     private val vpnViewModel by viewModels<VpnViewModel>()
@@ -38,6 +41,7 @@ class MainActivity : AbstractActivity() {
         setContentView(binding.root)
         FireBaseManager.logEvent(FirebaseKey.ENTER_MAIN_PAGE)
         initializeView()
+        loadNativeAd()
         initializeObserver()
     }
 
@@ -88,17 +92,21 @@ class MainActivity : AbstractActivity() {
         }
     }
 
-    private fun initializeObserver() {
-        vpnViewModel.loadMainNativeAd(this)
-        vpnViewModel.loadNativeAdByTimer(this)
-        // 原生广告
-        vpnViewModel.mainNativeAd.collectLatest(this) {
-            binding.nativeView.visible()
-//            if (it.nativeAd != null) {
-//                binding.nativeView.showNativeAd(AdType.Main, it.nativeAd)
-//            }
+    private fun loadNativeAd() {
+        FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request)
+        binding.nativeView.setLoadFailureRequest {
+            FireBaseManager.logEvent(FirebaseKey.Ad_request_failed)
         }
-        // 切换 VPN 节点
+        binding.nativeView.setLoadSuccessRequest {
+            FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded)
+        }
+        binding.nativeView.setClickRequest {
+            FireBaseManager.logEvent(FirebaseKey.click_ad)
+        }
+        binding.nativeView.loadNativeAd()
+    }
+
+    private fun initializeObserver() {
         LiveEventBus.get<ArrayList<String>>(EventKey.SWITCH_VPN_NODE)
             .observe(this) {
                 vpnViewModel.vpnNodeId = it[0].toLong()

@@ -18,10 +18,12 @@ class SwitchNodeViewModel : ViewModel() {
     var currentNodeId: Long = 0L
     var currentConnected: Boolean = false
 
-    fun getVpnListInfo() {
+    fun getVpnListInfo(isRefresh: Boolean = false) {
         ioScope {
-            if (DataRepository.vpnListData.isNotEmpty()) {
-                vpnGroups.emit(DataRepository.vpnListData)
+            if (DataRepository.vpnListData.isNotEmpty() && !isRefresh) {
+                val data = arrayListOf<VpnGroup>()
+                DataRepository.vpnListData.forEach { data.add(it) }
+                vpnGroups.emit(data)
             } else {
                 val response = vpnRepository.getVpnListInfo()
                 val result = response.data

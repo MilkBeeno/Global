@@ -120,7 +120,9 @@ class SwitchNodeActivity : AbstractActivity() {
         super.onMultipleClick(view)
         when (view) {
             binding.ivBack -> finish()
-            binding.ivRefresh -> switchNodeViewModel.getVpnListInfo()
+            binding.ivRefresh -> {
+                switchNodeViewModel.getVpnListInfo(true)
+            }
         }
     }
 

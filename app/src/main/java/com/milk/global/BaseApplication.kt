@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
-import com.milk.global.ad.TopOnManager
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.media.LoaderConfig
 import com.milk.global.ui.act.BackStackActivity
@@ -26,17 +25,17 @@ class BaseApplication : Application() {
     }
 
     private fun initialize() {
-        initializeAdmob(current)
+        // 保证在LaunchActivity#onCreate()前能够初始化完成
+        KvManger.initialize(current)
+        Logger.initialize(BuildConfig.DEBUG)
         ioScope {
+            initializeAdmob(current)
+            LoaderConfig.initialize(current)
+            FireBaseManager.initialize(current)
             BackStack.backToForegroundMonitor(current) {
                 if (it !is LaunchActivity && it !is BackStackActivity)
                     BackStackActivity.create(current)
             }
-            Logger.initialize(BuildConfig.DEBUG)
-            KvManger.initialize(current)
-            LoaderConfig.initialize(current)
-            TopOnManager.initialize(current)
-            FireBaseManager.initialize(current)
         }
     }
 

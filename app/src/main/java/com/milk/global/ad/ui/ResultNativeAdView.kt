@@ -23,7 +23,7 @@ class ResultNativeAdView : NativeAdView {
     init {
         val inflater =
             context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        inflater.inflate(R.layout.layout_native_medium_template_view, this)
+        inflater.inflate(R.layout.native_ad_view_result, this)
     }
 
     fun setLoadFailureRequest(request: (String) -> Unit) {

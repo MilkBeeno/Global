@@ -126,13 +126,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
-    <com.milk.global.ad.ui.AdView
+    <com.milk.global.ad.ui.MediumTemplateView
         android:id="@+id/nativeView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="19dp"
-        android:background="@drawable/shape_result_ad_background"
-        android:visibility="gone" />
+        android:layout_height="wrap_content" />
 </androidx.appcompat.widget.LinearLayoutCompat>

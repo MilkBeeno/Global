@@ -3,22 +3,22 @@ package com.milk.global.ui.act
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
-import com.milk.simple.ktx.*
 import com.milk.global.R
-import com.milk.global.ad.ui.AdType
 import com.milk.global.databinding.ActivityResultBinding
+import com.milk.global.friebase.FireBaseManager
+import com.milk.global.friebase.FirebaseKey
 import com.milk.global.media.ImageLoader
-import com.milk.global.repository.DataRepository
-import com.milk.global.ui.vm.ResultViewModel
+import com.milk.simple.ktx.color
+import com.milk.simple.ktx.gone
+import com.milk.simple.ktx.string
+import com.milk.simple.ktx.visible
 
 class ResultActivity : AbstractActivity() {
     private val binding by lazy { ActivityResultBinding.inflate(layoutInflater) }
-    private val resultViewModel by viewModels<ResultViewModel>()
-    private val isConnected by lazy { intent.getBooleanExtra(IS_CONNECTED, false) }
     private val vpnImage by lazy { intent.getStringExtra(VPN_IMAGE).toString() }
     private val vpnName by lazy { intent.getStringExtra(VPN_NAME).toString() }
     private val vpnPing by lazy { intent.getLongExtra(VPN_PING, 0) }
+    private val isConnected by lazy { intent.getBooleanExtra(IS_CONNECTED, false) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,23 +32,7 @@ class ResultActivity : AbstractActivity() {
             binding.ivResult.setBackgroundResource(R.drawable.result_connected)
             binding.tvResult.text = string(R.string.result_connected)
             binding.tvResult.setTextColor(color(R.color.FF0DC2FF))
-            resultViewModel.loadNativeSuccess(this)
-            DataRepository.connectSuccessAd.collectLatest(this) {
-                val native = it.second
-                if (native != null) {
-                    binding.nativeView.visible()
-                    binding.nativeView.showNativeAd(AdType.Connected, native)
-                }
-            }
         } else {
-            resultViewModel.loadNativeFailure(this)
-            DataRepository.disconnectAd.collectLatest(this) {
-                val native = it.second
-                if (native != null) {
-                    binding.nativeView.visible()
-                    binding.nativeView.showNativeAd(AdType.DisConnect, native)
-                }
-            }
             binding.ivResult.setBackgroundResource(R.drawable.result_disconnect)
             binding.tvResult.text = string(R.string.result_failure)
             binding.tvResult.setTextColor(color(R.color.FFFEB72A))
@@ -69,11 +53,34 @@ class ResultActivity : AbstractActivity() {
             binding.tvPing.gone()
             binding.tvPingTag.gone()
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        resultViewModel.destroy()
+        // 原生广告展示和统计事件
+        if (isConnected) {
+            FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_5)
+        } else {
+            FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_6)
+        }
+        binding.nativeView.setLoadFailureRequest {
+            if (isConnected) {
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_5)
+            } else {
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_6, it)
+            }
+        }
+        binding.nativeView.setLoadSuccessRequest {
+            if (isConnected) {
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_5)
+            } else {
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_6)
+            }
+        }
+        binding.nativeView.setClickRequest {
+            if (isConnected) {
+                FireBaseManager.logEvent(FirebaseKey.click_ad_5)
+            } else {
+                FireBaseManager.logEvent(FirebaseKey.click_ad_6)
+            }
+        }
+        binding.nativeView.loadNativeAd()
     }
 
     companion object {

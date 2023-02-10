@@ -1,8 +1,8 @@
-package com.milk.global.ad.code
+package com.milk.global.ad.unitId
 
 import com.milk.global.BuildConfig
 
-class NativeAdCode : AdCode {
+class NativeAdUnitId : AdUnitId {
     override fun debug(): String {
         return "ca-app-pub-3940256099942544/2247696110"
     }
@@ -12,6 +12,10 @@ class NativeAdCode : AdCode {
     }
 
     companion object {
-        val value = if (BuildConfig.DEBUG) NativeAdCode().debug() else NativeAdCode().release()
+        val value = if (BuildConfig.DEBUG) {
+            NativeAdUnitId().debug()
+        } else {
+            NativeAdUnitId().release()
+        }
     }
 }

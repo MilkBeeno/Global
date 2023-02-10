@@ -33,7 +33,7 @@ class LaunchActivity : AbstractActivity() {
         } else {
             FireBaseManager.logEvent(FirebaseKey.ENTER_THE_STARTUP_PAGE)
             binding.root.gone()
-            BackStackActivity.create(context = this, isAppLaunchAd = true)
+            BackStackActivity.create(context = this, fromStartPage = true)
             finish()
         }
         // getHasKey()

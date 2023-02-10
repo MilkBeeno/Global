@@ -3,20 +3,24 @@ package com.milk.global.ui.act
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
+import com.milk.global.ad.AppOpenAd
 import com.milk.global.databinding.ActivityBackStackBinding
-import com.milk.global.ui.vm.BackStackViewModel
+import com.milk.global.friebase.FireBaseManager
+import com.milk.global.friebase.FirebaseKey
+import com.milk.global.util.MilkTimer
 import com.milk.simple.ktx.immersiveStatusBar
 
 class BackStackActivity : AbstractActivity() {
+    private val appOpenAd by lazy { AppOpenAd() }
     private val binding by lazy { ActivityBackStackBinding.inflate(layoutInflater) }
-    private val backStackViewModel by viewModels<BackStackViewModel>()
+    private val fromStartPage by lazy { intent.getBooleanExtra(FROM_START_PAGE, false) }
+    private var timer: MilkTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         initializeView()
-        initializeObserver()
+        loadAppOpenAd()
     }
 
     private fun initializeView() {
@@ -25,28 +29,61 @@ class BackStackActivity : AbstractActivity() {
         binding.lineLottieView.playAnimation()
     }
 
-    private fun initializeObserver() {
-        val isLaunched = intent.getBooleanExtra(IS_APP_LAUNCH_AD, false)
-        backStackViewModel.loadLaunchAd(
-            activity = this,
-            viewGroup = binding.root,
-            finishRequest = {
-                if (isLaunched) {
-                    MainActivity.create(this)
-                }
-                finish()
+    private fun loadAppOpenAd() {
+        timer = MilkTimer.Builder()
+            .setMillisInFuture(12000)
+            .setOnFinishedListener { next() }
+            .build()
+        timer?.start()
+
+        FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_3)
+        appOpenAd.load(
+            context = this,
+            failure = {
+                timer?.finish()
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_3, it)
+            },
+            success = {
+                showAppOpenAd()
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_3)
             }
         )
+    }
+
+    private fun showAppOpenAd() {
+        appOpenAd.show(
+            activity = this,
+            failure = {
+                timer?.finish()
+                FireBaseManager.logEvent(FirebaseKey.Ad_show_failed_3, it)
+            },
+            success = {
+                FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_3)
+            },
+            click = {
+                FireBaseManager.logEvent(FirebaseKey.click_ad_3)
+            },
+            close = {
+                timer?.finish()
+            }
+        )
+    }
+
+    private fun next() {
+        if (fromStartPage) {
+            MainActivity.create(this)
+        }
+        finish()
     }
 
     override fun onInterceptKeyDownEvent(): Boolean = true
 
     companion object {
-        private const val IS_APP_LAUNCH_AD = "IS_APP_LAUNCH_AD"
-        fun create(context: Context, isAppLaunchAd: Boolean = false) {
+        private const val FROM_START_PAGE = "FROM_START_PAGE"
+        fun create(context: Context, fromStartPage: Boolean = false) {
             val intent = Intent(context, BackStackActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            intent.putExtra(IS_APP_LAUNCH_AD, isAppLaunchAd)
+            intent.putExtra(FROM_START_PAGE, fromStartPage)
             context.startActivity(intent)
         }
     }

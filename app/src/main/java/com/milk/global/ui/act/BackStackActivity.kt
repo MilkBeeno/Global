@@ -14,7 +14,7 @@ class BackStackActivity : AbstractActivity() {
     private val appOpenAd by lazy { AppOpenAd() }
     private val binding by lazy { ActivityBackStackBinding.inflate(layoutInflater) }
     private val fromStartPage by lazy { intent.getBooleanExtra(FROM_START_PAGE, false) }
-    private var timer: MilkTimer? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,17 +30,21 @@ class BackStackActivity : AbstractActivity() {
     }
 
     private fun loadAppOpenAd() {
-        timer = MilkTimer.Builder()
+        MilkTimer.Builder()
             .setMillisInFuture(12000)
-            .setOnFinishedListener { next() }
+            .setOnFinishedListener {
+                if (!appOpenAd.isShowingAd()) {
+                    next()
+                }
+            }
             .build()
-        timer?.start()
+            .start()
 
         FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_3)
         appOpenAd.load(
             context = this,
             failure = {
-                timer?.finish()
+                next()
                 FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_3, it)
             },
             success = {
@@ -54,7 +58,7 @@ class BackStackActivity : AbstractActivity() {
         appOpenAd.show(
             activity = this,
             failure = {
-                timer?.finish()
+                next()
                 FireBaseManager.logEvent(FirebaseKey.Ad_show_failed_3, it)
             },
             success = {
@@ -64,7 +68,7 @@ class BackStackActivity : AbstractActivity() {
                 FireBaseManager.logEvent(FirebaseKey.click_ad_3)
             },
             close = {
-                timer?.finish()
+                next()
             }
         )
     }

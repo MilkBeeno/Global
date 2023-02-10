@@ -1,11 +1,13 @@
 package com.milk.global.ui.vm
 
+import android.app.Activity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import com.anythink.nativead.api.ATNative
 import com.freetech.vpn.data.VpnProfile
 import com.freetech.vpn.data.VpnType
 import com.milk.global.ad.AdConfig
+import com.milk.global.ad.InterstitialAd
 import com.milk.global.ad.TopOnManager
 import com.milk.global.constant.AdCodeKey
 import com.milk.global.data.VpnModel
@@ -18,9 +20,10 @@ import com.milk.simple.ktx.withMain
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 class VpnViewModel : ViewModel() {
+    private val interstitialAd by lazy { InterstitialAd() }
+
     private val vpnRepository by lazy { VpnRepository() }
 
-    private var isShowingAd: Boolean = false
     internal var mainNativeAd = MutableSharedFlow<ATNative>()
     private val adUnitId by lazy { AdConfig.getAdvertiseUnitId(AdCodeKey.MAIN_NATIVE_AD_KEY) }
 
@@ -79,42 +82,47 @@ class VpnViewModel : ViewModel() {
         return vpnProfile
     }
 
-    internal fun showConnectedAd(activity: FragmentActivity, finishRequest: () -> Unit) {
-        if (isShowingAd) return
-        isShowingAd = true
-        val timer = MilkTimer.Builder()
-            .setMillisInFuture(10000)
+    internal fun loadInterstitialAd(activity: Activity, finishRequest: () -> Unit) {
+        MilkTimer.Builder()
+            .setMillisInFuture(12000)
             .setOnFinishedListener {
-                finishRequest()
-                isShowingAd = false
+                if (!interstitialAd.isShowingAd()) {
+                    finishRequest()
+                }
             }
-            .build().apply { start() }
+            .build()
+            .start()
 
-        val unitId =
-            AdConfig.getAdvertiseUnitId(AdCodeKey.INTERSTITIAL_AD_KEY)
-        if (unitId.isNotBlank()) {
-            FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_4)
-            TopOnManager.loadInsertAd(
-                activity = activity,
-                adUnitId = unitId,
-                loadFailureRequest = {
-                    FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_4, it)
-                },
-                loadSuccessRequest = {
-                    FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_4)
-                },
-                showFailureRequest = {
-                    FireBaseManager.logEvent(FirebaseKey.Ad_show_failed_4, it)
-                },
-                showSuccessRequest = {
-                    FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_4)
-                },
-                finishedRequest = {
-                    timer.finish()
-                },
-                clickRequest = {
-                    FireBaseManager.logEvent(FirebaseKey.click_ad_4)
-                })
-        } else timer.finish()
+        FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_4)
+        interstitialAd.load(
+            context = activity,
+            failure = {
+                finishRequest()
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_4, it)
+            },
+            success = {
+                showAppOpenAd(activity, finishRequest)
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_4)
+            }
+        )
+    }
+
+    private fun showAppOpenAd(activity: Activity, finishRequest: () -> Unit) {
+        interstitialAd.show(
+            activity = activity,
+            failure = {
+                finishRequest()
+                FireBaseManager.logEvent(FirebaseKey.Ad_show_failed_4, it)
+            },
+            success = {
+                FireBaseManager.logEvent(FirebaseKey.The_ad_show_success_4)
+            },
+            click = {
+                FireBaseManager.logEvent(FirebaseKey.click_ad_4)
+            },
+            close = {
+                finishRequest()
+            }
+        )
     }
 }

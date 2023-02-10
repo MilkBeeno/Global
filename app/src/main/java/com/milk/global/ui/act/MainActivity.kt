@@ -7,7 +7,6 @@ import android.view.View
 import androidx.activity.viewModels
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.milk.global.R
-import com.milk.global.ad.ui.AdType
 import com.milk.global.constant.EventKey
 import com.milk.global.databinding.ActivityMainBinding
 import com.milk.global.friebase.FireBaseManager
@@ -95,9 +94,9 @@ class MainActivity : AbstractActivity() {
         // 原生广告
         vpnViewModel.mainNativeAd.collectLatest(this) {
             binding.nativeView.visible()
-            if (it.nativeAd != null) {
-                binding.nativeView.showNativeAd(AdType.Main, it.nativeAd)
-            }
+//            if (it.nativeAd != null) {
+//                binding.nativeView.showNativeAd(AdType.Main, it.nativeAd)
+//            }
         }
         // 切换 VPN 节点
         LiveEventBus.get<ArrayList<String>>(EventKey.SWITCH_VPN_NODE)
@@ -155,7 +154,7 @@ class MainActivity : AbstractActivity() {
                 }
             }
         }
-        vpnViewModel.showConnectedAd(this) {
+        vpnViewModel.loadInterstitialAd(this) {
             connectingDialog.dismiss()
             disconnectDialog.dismiss()
             ResultActivity.create(
@@ -211,7 +210,7 @@ class MainActivity : AbstractActivity() {
                     disconnectDialog.show()
                     binding.tvConnect.postDelayed({
                         vpnProxy.closeVpn()
-                    }, 2000)
+                    }, 4000)
                 } else {
                     vpnProxy.tryOpenVpn()
                     FireBaseManager.logEvent(FirebaseKey.CLICK_TO_CONNECT_NODE)

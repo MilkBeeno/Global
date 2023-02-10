@@ -9,10 +9,9 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.milk.global.ad.unitId.AppOpenAdUnitId
 import com.milk.simple.log.Logger
-import java.util.*
 
 class AppOpenAd {
-    private var loadTime: Long = 0
+    private val tag = "AppOpenAd"
     private var isLoadingAd: Boolean = false
     private var isShowingAd: Boolean = false
     private var appOpenAd: AppOpenAd? = null
@@ -28,15 +27,14 @@ class AppOpenAd {
             override fun onAdLoaded(ad: AppOpenAd) {
                 appOpenAd = ad
                 isLoadingAd = false
-                loadTime = Date().time
                 success()
-                Logger.d("Ad was loaded.", this::class.java.name)
+                Logger.d("AppOpenAd：Ad was loaded.", tag)
             }
 
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                 isLoadingAd = false
                 failure(loadAdError.message)
-                Logger.d(loadAdError.message, this::class.java.name)
+                Logger.d("AppOpenAd：${loadAdError.message}", tag)
             }
         }
         AppOpenAd.load(context, AppOpenAdUnitId.value, request, callback)
@@ -50,7 +48,7 @@ class AppOpenAd {
         close: () -> Unit = {}
     ) {
         if (isShowingAd) {
-            Logger.d("The app open ad is already showing.", this::class.java.name)
+            Logger.d("AppOpenAd：The app open ad is already showing.", tag)
             return
         }
 
@@ -59,30 +57,30 @@ class AppOpenAd {
                 close()
                 appOpenAd = null
                 isShowingAd = false
-                Logger.d("Ad dismissed fullscreen content.", this::class.java.name)
+                Logger.d("AppOpenAd：Ad dismissed fullscreen content.", tag)
             }
 
             override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                 appOpenAd = null
                 isShowingAd = false
                 failure(adError.message)
-                Logger.d(adError.message, this::class.java.name)
+                Logger.d("AppOpenAd：${adError.message}", tag)
             }
 
             override fun onAdShowedFullScreenContent() {
-                appOpenAd = null
-                isShowingAd = false
                 success()
-                Logger.d("Ad showed fullscreen content.", this::class.java.name)
+                Logger.d("AppOpenAd：Ad showed fullscreen content.", tag)
             }
 
             override fun onAdClicked() {
                 super.onAdClicked()
                 click()
-                Logger.d("Click ad content.", this::class.java.name)
+                Logger.d("AppOpenAd：Click ad content.", tag)
             }
         }
         isShowingAd = true
         appOpenAd?.show(activity)
     }
+
+    fun isShowingAd() = isShowingAd
 }

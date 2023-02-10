@@ -23,7 +23,7 @@ abstract class NativeAdView : FrameLayout {
     protected var ratingBar: RatingBar? = null
     private var tertiaryView: TextView? = null
     private var iconView: ShapeableImageView? = null
-    private var mediaView: MediaView? = null
+    protected var mediaView: MediaView? = null
     private var callToActionView: TextView? = null
     private var background: ConstraintLayout? = null
 

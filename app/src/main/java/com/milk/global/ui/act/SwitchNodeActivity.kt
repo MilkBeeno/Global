@@ -31,6 +31,7 @@ class SwitchNodeActivity : AbstractActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         initializeView()
+        loadNativeAd()
         initializeData()
     }
 
@@ -94,6 +95,19 @@ class SwitchNodeActivity : AbstractActivity() {
                 }
             }.models = it
         }
+    }
+
+    private fun loadNativeAd() {
+        binding.nativeView.setLoadFailureRequest {
+
+        }
+        binding.nativeView.setLoadSuccessRequest {
+
+        }
+        binding.nativeView.setClickRequest {
+
+        }
+        binding.nativeView.loadNativeAd()
     }
 
     @SuppressLint("NotifyDataSetChanged")

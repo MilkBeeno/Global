@@ -44,6 +44,11 @@
             android:src="@drawable/common_refresh" />
     </FrameLayout>
 
+    <com.milk.global.ad.ui.SwitchNodeNativeAdView
+        android:id="@+id/nativeView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvNode"
         android:layout_width="match_parent"

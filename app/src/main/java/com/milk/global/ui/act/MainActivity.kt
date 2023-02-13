@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.app.NotificationManagerCompat
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.milk.global.R
 import com.milk.global.constant.EventKey
@@ -19,6 +20,7 @@ import com.milk.global.ui.dialog.DisConnectDialog
 import com.milk.global.ui.dialog.FailureDialog
 import com.milk.global.ui.type.VpnState
 import com.milk.global.ui.vm.VpnViewModel
+import com.milk.global.util.Notification
 import com.milk.simple.ktx.color
 import com.milk.simple.ktx.immersiveStatusBar
 import com.milk.simple.ktx.statusBarPadding
@@ -141,6 +143,14 @@ class MainActivity : AbstractActivity() {
         binding.tvConnect.setBackgroundResource(R.drawable.shape_main_connected)
         binding.tvConnect.setTextColor(color(R.color.FF0C9AFF))
         vpnConnectResult(true)
+        // 发送通知
+        val enabled = NotificationManagerCompat
+            .from(this@MainActivity).areNotificationsEnabled()
+        if (enabled) {
+            Notification.showConnectedNotification(
+                this@MainActivity,
+                vpnViewModel.vpnName.ifBlank { "United States" })
+        }
     }
 
     /** 连接结果就是 1.加载广告 2.显示结果页面 */

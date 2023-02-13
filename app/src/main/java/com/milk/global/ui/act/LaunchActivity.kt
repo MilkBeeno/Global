@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Base64
 import android.view.View
+import androidx.core.app.NotificationManagerCompat
 import com.milk.global.R
 import com.milk.global.ad.AdConfig
 import com.milk.global.constant.KvKey
@@ -12,6 +13,8 @@ import com.milk.global.databinding.ActivityLaunchBinding
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
 import com.milk.global.repository.DataRepository
+import com.milk.global.ui.dialog.OpenNotificationDialog
+import com.milk.global.util.Notification
 import com.milk.simple.ktx.*
 import com.milk.simple.log.Logger
 import com.milk.simple.mdr.KvManger
@@ -19,6 +22,7 @@ import java.security.MessageDigest
 
 class LaunchActivity : AbstractActivity() {
     private val binding by lazy { ActivityLaunchBinding.inflate(layoutInflater) }
+    private val openNotificationDialog by lazy { OpenNotificationDialog(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +34,7 @@ class LaunchActivity : AbstractActivity() {
             binding.root.visible()
             KvManger.put(KvKey.FIRST_ENTER, false)
             initializeView()
+            openNotification()
         } else {
             FireBaseManager.logEvent(FirebaseKey.ENTER_THE_STARTUP_PAGE)
             binding.root.gone()
@@ -51,6 +56,16 @@ class LaunchActivity : AbstractActivity() {
                     WebActivity.create(this, url)
                 })
         )
+    }
+
+    private fun openNotification() {
+        val enable = NotificationManagerCompat.from(this).areNotificationsEnabled()
+        if (!enable) {
+            openNotificationDialog.show()
+            openNotificationDialog.setConfirm {
+                Notification.obtainNotification(this)
+            }
+        }
     }
 
     override fun onMultipleClick(view: View) {

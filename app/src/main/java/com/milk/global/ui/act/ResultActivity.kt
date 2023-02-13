@@ -8,10 +8,9 @@ import com.milk.global.databinding.ActivityResultBinding
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
 import com.milk.global.media.ImageLoader
-import com.milk.simple.ktx.color
-import com.milk.simple.ktx.gone
+import com.milk.simple.ktx.immersiveStatusBar
+import com.milk.simple.ktx.statusBarPadding
 import com.milk.simple.ktx.string
-import com.milk.simple.ktx.visible
 
 class ResultActivity : AbstractActivity() {
     private val binding by lazy { ActivityResultBinding.inflate(layoutInflater) }
@@ -27,32 +26,29 @@ class ResultActivity : AbstractActivity() {
     }
 
     private fun initializeView() {
+        immersiveStatusBar()
+        binding.ivBack.statusBarPadding()
         binding.ivBack.setOnClickListener { finish() }
         if (isConnected) {
-            binding.ivResult.setBackgroundResource(R.drawable.result_connected)
+            binding.ivBackground.setBackgroundResource(R.drawable.result_success_background)
+            binding.ivResult.setBackgroundResource(R.drawable.result_link_success)
             binding.tvResult.text = string(R.string.result_connected)
-            binding.tvResult.setTextColor(color(R.color.FF0DC2FF))
         } else {
-            binding.ivResult.setBackgroundResource(R.drawable.result_disconnect)
+            binding.ivBackground.setBackgroundResource(R.drawable.result_failure_background)
+            binding.ivResult.setBackgroundResource(R.drawable.result_link_failure)
             binding.tvResult.text = string(R.string.result_failure)
-            binding.tvResult.setTextColor(color(R.color.FFFEB72A))
         }
-        if (vpnImage.isNotBlank())
+        if (vpnImage.isNotBlank()) {
             ImageLoader.Builder()
                 .request(vpnImage)
                 .target(binding.ivNetwork)
                 .build()
-        else binding.ivNetwork.setImageResource(R.drawable.main_network)
+        } else {
+            binding.ivNetwork.setImageResource(R.drawable.main_network)
+        }
         binding.tvNetwork.text =
             vpnName.ifBlank { string(R.string.common_auto_select) }
-        if (vpnPing > 0) {
-            binding.tvPing.visible()
-            binding.tvPingTag.visible()
-            binding.tvPing.text = vpnPing.toString().plus("ms")
-        } else {
-            binding.tvPing.gone()
-            binding.tvPingTag.gone()
-        }
+        binding.tvPing.text = vpnPing.toString().plus("ms")
         // 原生广告展示和统计事件
         if (isConnected) {
             FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_5)

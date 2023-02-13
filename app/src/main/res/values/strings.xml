@@ -3,7 +3,7 @@
     <string name="facebook_app_id">911156690023455</string>
     <string name="facebook_client_token">e1cad8f2a28ef81b3d92aaf4c2ec7a07</string>
     <string name="fb_login_protocol_scheme">fb911156690023455</string>
-    <string name="app_name">Global Master -Private</string>
+    <string name="app_name">Duo Global Master - Private</string>
     <!--启动页面翻译-->
     <string name="launch_tip"><![CDATA[FREE & FAST]]></string>
     <string name="launch_start">Start</string>

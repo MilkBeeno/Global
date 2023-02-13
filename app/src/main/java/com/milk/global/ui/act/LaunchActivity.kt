@@ -7,12 +7,11 @@ import android.util.Base64
 import android.view.View
 import androidx.core.app.NotificationManagerCompat
 import com.milk.global.R
-import com.milk.global.ad.AdConfig
 import com.milk.global.constant.KvKey
 import com.milk.global.databinding.ActivityLaunchBinding
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
-import com.milk.global.repository.DataRepository
+import com.milk.global.repository.AppRepository
 import com.milk.global.ui.dialog.OpenNotificationDialog
 import com.milk.global.util.Notification
 import com.milk.simple.ktx.*
@@ -27,8 +26,7 @@ class LaunchActivity : AbstractActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        AdConfig.initialize()
-        DataRepository.appConfig()
+        AppRepository.getConfig()
         val isFirst = KvManger.getBoolean(KvKey.FIRST_ENTER, true)
         if (isFirst) {
             binding.root.visible()

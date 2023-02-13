@@ -53,12 +53,12 @@ import com.freetech.vpn.logic.VpnStateService.ErrorState;
 import com.freetech.vpn.logic.VpnStateService.State;
 import com.freetech.vpn.logic.imc.ImcState;
 import com.freetech.vpn.logic.imc.RemediationInstruction;
-import com.freetech.vpn.utils.VpnWhiteList;
 import com.freetech.vpn.utils.Constants;
 import com.freetech.vpn.utils.IPRange;
 import com.freetech.vpn.utils.IPRangeSet;
 import com.freetech.vpn.utils.IPUtils;
 import com.freetech.vpn.utils.SettingsWriter;
+import com.freetech.vpn.utils.VpnWhiteList;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

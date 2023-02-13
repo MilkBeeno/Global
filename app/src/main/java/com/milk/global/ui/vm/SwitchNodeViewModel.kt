@@ -3,7 +3,6 @@ package com.milk.global.ui.vm
 import androidx.lifecycle.ViewModel
 import com.milk.global.data.VpnGroup
 import com.milk.global.data.VpnNode
-import com.milk.global.repository.DataRepository
 import com.milk.global.repository.VpnRepository
 import com.milk.simple.ktx.ioScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,21 +10,19 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 class SwitchNodeViewModel : ViewModel() {
-    private val vpnRepository by lazy { VpnRepository() }
     var vpnGroups = MutableStateFlow(arrayListOf<VpnGroup>())
 
-    /** 是否连接 VPN 的状态和连接 VPN 的状态 */
     var currentNodeId: Long = 0L
     var currentConnected: Boolean = false
 
     fun getVpnListInfo(isRefresh: Boolean = false) {
         ioScope {
-            if (DataRepository.vpnListData.isNotEmpty() && !isRefresh) {
+            if (VpnRepository.vpnListData.isNotEmpty() && !isRefresh) {
                 val data = arrayListOf<VpnGroup>()
-                DataRepository.vpnListData.forEach { data.add(it) }
+                VpnRepository.vpnListData.forEach { data.add(it) }
                 vpnGroups.emit(data)
             } else {
-                val response = vpnRepository.getVpnListInfo()
+                val response = VpnRepository.getVpnListInfo()
                 val result = response.data
                 if (response.code == 2000 && result != null) {
                     val groups = arrayListOf<VpnGroup>()
@@ -60,8 +57,8 @@ class SwitchNodeViewModel : ViewModel() {
                             groups.add(group)
                         }
                     }
-                    DataRepository.vpnListData.clear()
-                    DataRepository.vpnListData.addAll(groups)
+                    VpnRepository.vpnListData.clear()
+                    VpnRepository.vpnListData.addAll(groups)
                     vpnGroups.emit(groups)
                 }
             }

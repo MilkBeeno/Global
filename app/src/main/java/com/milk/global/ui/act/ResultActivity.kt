@@ -8,6 +8,7 @@ import com.milk.global.databinding.ActivityResultBinding
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
 import com.milk.global.media.ImageLoader
+import com.milk.global.repository.AppRepository
 import com.milk.simple.ktx.immersiveStatusBar
 import com.milk.simple.ktx.statusBarPadding
 import com.milk.simple.ktx.string
@@ -50,11 +51,6 @@ class ResultActivity : AbstractActivity() {
             vpnName.ifBlank { string(R.string.common_auto_select) }
         binding.tvPing.text = vpnPing.toString().plus("ms")
         // 原生广告展示和统计事件
-        if (isConnected) {
-            FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_5)
-        } else {
-            FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_6)
-        }
         binding.nativeView.setLoadFailureRequest {
             if (isConnected) {
                 FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_5)
@@ -76,7 +72,16 @@ class ResultActivity : AbstractActivity() {
                 FireBaseManager.logEvent(FirebaseKey.click_ad_6)
             }
         }
-        binding.nativeView.loadNativeAd()
+        when {
+            isConnected && AppRepository.showConnectedNativeAd -> {
+                binding.nativeView.loadNativeAd()
+                FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_5)
+            }
+            !isConnected && AppRepository.showDisconnectNativeAd -> {
+                binding.nativeView.loadNativeAd()
+                FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_6)
+            }
+        }
     }
 
     companion object {

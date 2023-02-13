@@ -8,7 +8,7 @@ class NativeAdUnitId : AdUnitId {
     }
 
     override fun release(): String {
-        return ""
+        return "ca-app-pub-9835209825468303/4891416756"
     }
 
     companion object {

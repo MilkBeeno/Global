@@ -1,3 +1,9 @@
 package com.milk.global.data.body
 
-data class AppConfigBody(val appId:String)
+import com.milk.global.BuildConfig
+
+data class AppConfigBody(
+    var appId: String = BuildConfig.AD_APP_ID,
+    var channel: String = BuildConfig.AD_APP_CHANNEL,
+    var pkgVersion: String = BuildConfig.AD_APP_VERSION
+)

@@ -7,6 +7,7 @@ import com.milk.global.ad.AppOpenAd
 import com.milk.global.databinding.ActivityBackStackBinding
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
+import com.milk.global.repository.AppRepository
 import com.milk.global.util.MilkTimer
 import com.milk.simple.ktx.immersiveStatusBar
 
@@ -40,18 +41,20 @@ class BackStackActivity : AbstractActivity() {
             .build()
             .start()
 
-        FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_3)
-        appOpenAd.load(
-            context = this,
-            failure = {
-                next()
-                FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_3, it)
-            },
-            success = {
-                showAppOpenAd()
-                FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_3)
-            }
-        )
+        if (AppRepository.showOpenAd) {
+            FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_3)
+            appOpenAd.load(
+                context = this,
+                failure = {
+                    next()
+                    FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_3, it)
+                },
+                success = {
+                    showAppOpenAd()
+                    FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_3)
+                }
+            )
+        }
     }
 
     private fun showAppOpenAd() {

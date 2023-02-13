@@ -15,7 +15,6 @@ import com.milk.simple.ktx.withMain
 
 class VpnViewModel : ViewModel() {
     private val interstitialAd by lazy { InterstitialAd() }
-    private val vpnRepository by lazy { VpnRepository() }
 
     // 当前连接的节点 ID 和是否是连接成功
     internal var vpnNodeId: Long = 0
@@ -26,7 +25,7 @@ class VpnViewModel : ViewModel() {
 
     internal fun getVpnProfileInfo(vpnProfileRequest: (VpnProfile) -> Unit) {
         ioScope {
-            val response = vpnRepository.getVpnInfo(vpnNodeId)
+            val response = VpnRepository.getVpnInfo(vpnNodeId)
             val result = response.data
             if (response.code == 2000 && result != null) {
                 withMain { vpnProfileRequest(getVpnProfile(result)) }

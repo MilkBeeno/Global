@@ -16,6 +16,7 @@ import com.milk.global.data.VpnNode
 import com.milk.global.databinding.ActivitySwitchNodeBinding
 import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
+import com.milk.global.repository.AppRepository
 import com.milk.global.ui.vm.SwitchNodeViewModel
 import com.milk.simple.ktx.collectLatest
 import java.util.*
@@ -98,17 +99,19 @@ class SwitchNodeActivity : AbstractActivity() {
     }
 
     private fun loadNativeAd() {
-        FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_1)
-        binding.nativeView.setLoadFailureRequest {
-            FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_1)
+        if (AppRepository.showSwitchNativeAd) {
+            FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request_1)
+            binding.nativeView.setLoadFailureRequest {
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_failed_1)
+            }
+            binding.nativeView.setLoadSuccessRequest {
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_1)
+            }
+            binding.nativeView.setClickRequest {
+                FireBaseManager.logEvent(FirebaseKey.click_ad_1)
+            }
+            binding.nativeView.loadNativeAd()
         }
-        binding.nativeView.setLoadSuccessRequest {
-            FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded_1)
-        }
-        binding.nativeView.setClickRequest {
-            FireBaseManager.logEvent(FirebaseKey.click_ad_1)
-        }
-        binding.nativeView.loadNativeAd()
     }
 
     @SuppressLint("NotifyDataSetChanged")

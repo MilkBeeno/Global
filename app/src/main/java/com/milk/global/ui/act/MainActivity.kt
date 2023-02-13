@@ -14,7 +14,7 @@ import com.milk.global.friebase.FireBaseManager
 import com.milk.global.friebase.FirebaseKey
 import com.milk.global.media.ImageLoader
 import com.milk.global.proxy.VpnProxy
-import com.milk.global.repository.DataRepository
+import com.milk.global.repository.AppRepository
 import com.milk.global.ui.dialog.ConnectingDialog
 import com.milk.global.ui.dialog.DisConnectDialog
 import com.milk.global.ui.dialog.FailureDialog
@@ -95,17 +95,19 @@ class MainActivity : AbstractActivity() {
     }
 
     private fun loadNativeAd() {
-        FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request)
-        binding.nativeView.setLoadFailureRequest {
-            FireBaseManager.logEvent(FirebaseKey.Ad_request_failed)
+        if (AppRepository.showMainNativeAd) {
+            FireBaseManager.logEvent(FirebaseKey.Make_an_ad_request)
+            binding.nativeView.setLoadFailureRequest {
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_failed)
+            }
+            binding.nativeView.setLoadSuccessRequest {
+                FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded)
+            }
+            binding.nativeView.setClickRequest {
+                FireBaseManager.logEvent(FirebaseKey.click_ad)
+            }
+            binding.nativeView.loadNativeAd()
         }
-        binding.nativeView.setLoadSuccessRequest {
-            FireBaseManager.logEvent(FirebaseKey.Ad_request_succeeded)
-        }
-        binding.nativeView.setClickRequest {
-            FireBaseManager.logEvent(FirebaseKey.click_ad)
-        }
-        binding.nativeView.loadNativeAd()
     }
 
     private fun initializeObserver() {
@@ -172,6 +174,17 @@ class MainActivity : AbstractActivity() {
                 }
             }
         }
+        when {
+            isConnected && AppRepository.showConnectedInsertAd -> {
+                showInsertAd(true)
+            }
+            !isConnected && AppRepository.showDisconnectInsertAd -> {
+                showInsertAd(false)
+            }
+        }
+    }
+
+    private fun showInsertAd(isConnected: Boolean) {
         vpnViewModel.loadInterstitialAd(this) {
             connectingDialog.dismiss()
             disconnectDialog.dismiss()
@@ -208,7 +221,7 @@ class MainActivity : AbstractActivity() {
             binding.ivShare -> {
                 val intent = Intent()
                 intent.action = Intent.ACTION_SEND
-                intent.putExtra(Intent.EXTRA_TEXT, DataRepository.shareAppUrl.value)
+                intent.putExtra(Intent.EXTRA_TEXT, AppRepository.shareAppUrl)
                 intent.type = "text/plain"
                 startActivity(intent)
                 FireBaseManager.logEvent(FirebaseKey.CLICK_THE_SHARE)

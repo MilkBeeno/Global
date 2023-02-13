@@ -8,7 +8,7 @@ class AppOpenAdUnitId : AdUnitId {
     }
 
     override fun release(): String {
-        return ""
+        return "ca-app-pub-9835209825468303/3578335083"
     }
 
     companion object {

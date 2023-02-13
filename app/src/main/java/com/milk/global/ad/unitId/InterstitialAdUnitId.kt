@@ -8,7 +8,7 @@ class InterstitialAdUnitId : AdUnitId {
     }
 
     override fun release(): String {
-        return ""
+        return "ca-app-pub-9835209825468303/3490705171"
     }
 
     companion object {

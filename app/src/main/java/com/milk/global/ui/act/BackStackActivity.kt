@@ -34,7 +34,7 @@ class BackStackActivity : AbstractActivity() {
         MilkTimer.Builder()
             .setMillisInFuture(12000)
             .setOnFinishedListener {
-                if (!appOpenAd.isShowingAd()) {
+                if (!appOpenAd.isClosedAd()) {
                     next()
                 }
             }

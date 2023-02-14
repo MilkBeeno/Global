@@ -66,7 +66,13 @@ class MainActivity : AbstractActivity() {
         vpnProxy.setVpnOpenedListener {
             connectingDialog.show()
             vpnViewModel.getVpnProfileInfo {
-                vpnProxy.connectVpn(it, vpnViewModel.vpnIsConnected)
+                if (it == null) {
+                    binding.ivConnect.postDelayed({
+                        vpnConnectFailure()
+                    }, 4000)
+                } else {
+                    vpnProxy.connectVpn(it, vpnViewModel.vpnIsConnected)
+                }
             }
         }
     }
@@ -84,11 +90,7 @@ class MainActivity : AbstractActivity() {
                     else -> Unit
                 }
             } else {
-                connectingDialog.dismiss()
-                disconnectDialog.dismiss()
-                connectFailureDialog.show()
-                vpnDisconnect(false)
-                FireBaseManager.logEvent(FirebaseKey.CONNECT_FAILED)
+                vpnConnectFailure()
             }
             vpnViewModel.vpnIsConnected = success && vpnState == VpnState.CONNECTED
         }
@@ -153,6 +155,14 @@ class MainActivity : AbstractActivity() {
                 this@MainActivity,
                 vpnViewModel.vpnName.ifBlank { "United States" })
         }
+    }
+
+    private fun vpnConnectFailure() {
+        connectingDialog.dismiss()
+        disconnectDialog.dismiss()
+        connectFailureDialog.show()
+        vpnDisconnect(false)
+        FireBaseManager.logEvent(FirebaseKey.CONNECT_FAILED)
     }
 
     /** 连接结果就是 1.加载广告 2.显示结果页面 */

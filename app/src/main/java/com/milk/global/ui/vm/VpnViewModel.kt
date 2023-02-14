@@ -23,12 +23,14 @@ class VpnViewModel : ViewModel() {
     internal var vpnImageUrl: String = ""
     internal var vpnIsConnected: Boolean = false
 
-    internal fun getVpnProfileInfo(vpnProfileRequest: (VpnProfile) -> Unit) {
+    internal fun getVpnProfileInfo(vpnProfileRequest: (VpnProfile?) -> Unit) {
         ioScope {
             val response = VpnRepository.getVpnInfo(vpnNodeId)
             val result = response.data
-            if (response.code == 2000 && result != null) {
-                withMain { vpnProfileRequest(getVpnProfile(result)) }
+            withMain {
+                if (response.code == 2000 && result != null) {
+                    vpnProfileRequest(getVpnProfile(result))
+                } else vpnProfileRequest(null)
             }
         }
     }

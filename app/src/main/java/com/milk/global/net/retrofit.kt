@@ -6,7 +6,7 @@ suspend fun <T> retrofit(action: suspend () -> ApiResponse<T>): ApiResponse<T> {
     return try {
         val response = action()
         when (response.code) {
-            200 -> {
+            2000 -> {
                 response.success = true
             }
             else -> response.success = false

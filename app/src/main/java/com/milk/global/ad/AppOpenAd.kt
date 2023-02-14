@@ -14,7 +14,7 @@ class AppOpenAd {
     private val tag = "AppOpenAd"
     private var isLoadingAd: Boolean = false
     private var isShowingAd: Boolean = false
-    private var isClosedAd: Boolean = false
+    private var showSuccessful: Boolean = false
     private var appOpenAd: AppOpenAd? = null
 
     fun load(context: Context, failure: (String) -> Unit = {}, success: () -> Unit = {}) {
@@ -58,7 +58,6 @@ class AppOpenAd {
                 close()
                 appOpenAd = null
                 isShowingAd = false
-                isClosedAd = true
                 Logger.d("AppOpenAd：Ad dismissed fullscreen content.", tag)
             }
 
@@ -71,6 +70,7 @@ class AppOpenAd {
 
             override fun onAdShowedFullScreenContent() {
                 success()
+                showSuccessful = true
                 Logger.d("AppOpenAd：Ad showed fullscreen content.", tag)
             }
 
@@ -81,9 +81,9 @@ class AppOpenAd {
             }
         }
         isShowingAd = true
-        isClosedAd = false
+        showSuccessful = false
         appOpenAd?.show(activity)
     }
 
-    fun isClosedAd() = isClosedAd
+    fun isShowSuccessfulAd() = showSuccessful
 }

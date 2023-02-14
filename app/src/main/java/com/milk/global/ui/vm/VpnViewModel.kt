@@ -49,7 +49,7 @@ class VpnViewModel : ViewModel() {
         MilkTimer.Builder()
             .setMillisInFuture(12000)
             .setOnFinishedListener {
-                if (!interstitialAd.isClosedAd()) {
+                if (!interstitialAd.isShowSuccessfulAd()) {
                     finishRequest()
                 }
             }

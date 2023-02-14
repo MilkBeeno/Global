@@ -15,7 +15,7 @@ class InterstitialAd {
     private val tag = "InterstitialAd"
     private var isLoadingAd: Boolean = false
     private var isShowingAd: Boolean = false
-    private var isClosedAd: Boolean = false
+    private var showSuccessful: Boolean = false
     private var interstitialAd: InterstitialAd? = null
 
     fun load(context: Context, failure: (String) -> Unit = {}, success: () -> Unit = {}) {
@@ -61,7 +61,6 @@ class InterstitialAd {
                 override fun onAdDismissedFullScreenContent() {
                     close()
                     isShowingAd = false
-                    isClosedAd = true
                     interstitialAd = null
                     Logger.d("InterstitialAd：Ad dismissed fullscreen content.", tag)
                 }
@@ -75,6 +74,7 @@ class InterstitialAd {
 
                 override fun onAdShowedFullScreenContent() {
                     success()
+                    showSuccessful = true
                     Logger.d("InterstitialAd：Ad showed fullscreen content.", tag)
                 }
 
@@ -85,9 +85,9 @@ class InterstitialAd {
                 }
             }
         isShowingAd = true
-        isClosedAd = false
+        showSuccessful = false
         interstitialAd?.show(activity)
     }
 
-    fun isClosedAd() = isClosedAd
+    fun isShowSuccessfulAd() = showSuccessful
 }

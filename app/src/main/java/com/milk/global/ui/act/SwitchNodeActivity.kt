@@ -124,7 +124,7 @@ class SwitchNodeActivity : AbstractActivity() {
         when (view) {
             binding.ivBack -> finish()
             binding.ivRefresh -> {
-                switchNodeViewModel.getVpnListInfo(true)
+                switchNodeViewModel.getVpnListInfo()
             }
         }
     }

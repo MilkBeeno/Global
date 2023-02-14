@@ -15,52 +15,44 @@ class SwitchNodeViewModel : ViewModel() {
     var currentNodeId: Long = 0L
     var currentConnected: Boolean = false
 
-    fun getVpnListInfo(isRefresh: Boolean = false) {
+    fun getVpnListInfo() {
         ioScope {
-            if (VpnRepository.vpnListData.isNotEmpty() && !isRefresh) {
-                val data = arrayListOf<VpnGroup>()
-                VpnRepository.vpnListData.forEach { data.add(it) }
-                vpnGroups.emit(data)
-            } else {
-                val response = VpnRepository.getVpnListInfo()
-                val result = response.data
-                if (response.code == 2000 && result != null) {
-                    val groups = arrayListOf<VpnGroup>()
-                    groups.add(VpnGroup().apply {
-                        if (currentNodeId <= 0)
-                            isSelect = currentConnected
-                        isAutoSelectItem = true
-                    })
-                    val map = result.groupBy { it.areaCode }
-                    map.forEach {
-                        val vpnListModels = it.value
-                        if (vpnListModels.isNotEmpty()) {
-                            val group = VpnGroup()
-                            group.areaImage = vpnListModels[0].areaImage
-                            group.areaName = vpnListModels[0].areaName
-                            val nodes = arrayListOf<VpnNode>()
-                            vpnListModels.forEachIndexed { index, vpnListModel ->
-                                val node = VpnNode()
-                                node.nodeId = vpnListModel.nodeId
-                                node.areaImage = vpnListModel.areaImage
-                                node.areaName = vpnListModel.areaName
-                                ioScope { node.ping = ping(vpnListModel.nodeDns) }
-                                node.isSelect = vpnListModel.nodeId == currentNodeId
-                                node.itemSize = vpnListModels.size
-                                node.position = index
-                                // 有一个匹配上表示已经连接过
-                                if (vpnListModel.nodeId == currentNodeId)
-                                    group.isSelect = true
-                                nodes.add(node)
-                            }
-                            group.itemSublist = nodes
-                            groups.add(group)
+            val response = VpnRepository.getVpnListInfo()
+            val result = response.data
+            if (response.code == 2000 && result != null) {
+                val groups = arrayListOf<VpnGroup>()
+                groups.add(VpnGroup().apply {
+                    if (currentNodeId <= 0)
+                        isSelect = currentConnected
+                    isAutoSelectItem = true
+                })
+                val map = result.groupBy { it.areaCode }
+                map.forEach {
+                    val vpnListModels = it.value
+                    if (vpnListModels.isNotEmpty()) {
+                        val group = VpnGroup()
+                        group.areaImage = vpnListModels[0].areaImage
+                        group.areaName = vpnListModels[0].areaName
+                        val nodes = arrayListOf<VpnNode>()
+                        vpnListModels.forEachIndexed { index, vpnListModel ->
+                            val node = VpnNode()
+                            node.nodeId = vpnListModel.nodeId
+                            node.areaImage = vpnListModel.areaImage
+                            node.areaName = vpnListModel.areaName
+                            ioScope { node.ping = ping(vpnListModel.nodeDns) }
+                            node.isSelect = vpnListModel.nodeId == currentNodeId
+                            node.itemSize = vpnListModels.size
+                            node.position = index
+                            // 有一个匹配上表示已经连接过
+                            if (vpnListModel.nodeId == currentNodeId)
+                                group.isSelect = true
+                            nodes.add(node)
                         }
+                        group.itemSublist = nodes
+                        groups.add(group)
                     }
-                    VpnRepository.vpnListData.clear()
-                    VpnRepository.vpnListData.addAll(groups)
-                    vpnGroups.emit(groups)
                 }
+                vpnGroups.emit(groups)
             }
         }
     }

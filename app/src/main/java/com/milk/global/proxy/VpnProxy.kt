@@ -121,7 +121,7 @@ class VpnProxy(private val activity: MainActivity) {
         // 设置默认一分钟未连上为超时操作
         MilkTimer.Builder()
             .setCountDownInterval(1000)
-            .setMillisInFuture(1 * 60 * 1000)
+            .setMillisInFuture(15 * 1000)
             .setOnFinishedListener {
                 if (isConnecting) {
                     vpnStateChangedRequest?.invoke(VpnState.DISCONNECT, false)

@@ -22,8 +22,7 @@ class SwitchNodeViewModel : ViewModel() {
             if (response.code == 2000 && result != null) {
                 val groups = arrayListOf<VpnGroup>()
                 groups.add(VpnGroup().apply {
-                    if (currentNodeId <= 0)
-                        isSelect = currentConnected
+                    isSelect = currentNodeId <= 0
                     isAutoSelectItem = true
                 })
                 val map = result.groupBy { it.areaCode }
@@ -44,8 +43,9 @@ class SwitchNodeViewModel : ViewModel() {
                             node.itemSize = vpnListModels.size
                             node.position = index
                             // 有一个匹配上表示已经连接过
-                            if (vpnListModel.nodeId == currentNodeId)
+                            if (vpnListModel.nodeId == currentNodeId) {
                                 group.isSelect = true
+                            }
                             nodes.add(node)
                         }
                         group.itemSublist = nodes

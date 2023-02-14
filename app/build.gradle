@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         // 测试服包名 com.milk.global 正式服包名 com.milk.simpleglobal
-        applicationId "com.milk.global"
+        applicationId "com.milk.simpleglobal"
         minSdk 21
         targetSdk 32
         versionCode 100

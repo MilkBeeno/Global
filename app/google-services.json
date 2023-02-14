@@ -1,38 +1,39 @@
 {
   "project_info": {
-    "project_number": "21787791337",
-    "project_id": "smart-private-and-fast",
-    "storage_bucket": "smart-private-and-fast.appspot.com"
+    "project_number": "635180268610",
+    "project_id": "duo-global-master--private",
+    "storage_bucket": "duo-global-master--private.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:21787791337:android:b75ac9fe155b0029a5c578",
+        "mobilesdk_app_id": "1:635180268610:android:b47c2d36cf8831da6941db",
         "android_client_info": {
           "package_name": "com.milk.simpleglobal"
         }
       },
       "oauth_client": [
         {
-          "client_id": "21787791337-d5i29mdqafls8vfk3q6seriv6kjcri1i.apps.googleusercontent.com",
+          "client_id": "635180268610-5sv7k2rr9fqnqgsciieuvasci3r02ier.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCvTtj9kFD_xuUhy4j-bA-gviKGI_euDB0"
+          "current_key": "AIzaSyCUVEy4Rlbbr2OW3dpDM1MggY8YZrVqnf8"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "21787791337-d5i29mdqafls8vfk3q6seriv6kjcri1i.apps.googleusercontent.com",
+              "client_id": "635180268610-5sv7k2rr9fqnqgsciieuvasci3r02ier.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-9835209825468303~4531194807"
     }
   ],
   "configuration_version": "1"

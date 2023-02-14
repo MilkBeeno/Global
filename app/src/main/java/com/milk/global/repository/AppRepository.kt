@@ -5,16 +5,73 @@ import com.milk.global.data.body.AppConfigBody
 import com.milk.global.net.api.ApiService
 import com.milk.global.net.retrofit
 import com.milk.simple.ktx.ioScope
+import com.milk.simple.mdr.KvManger
 
 object AppRepository {
     var shareAppUrl = ""
     var showOpenAd: Boolean = true
+        set(value) {
+            KvManger.put("showOpenAd", value)
+            field = value
+        }
+        get() {
+            field = KvManger.getBoolean("showOpenAd")
+            return field
+        }
     var showMainNativeAd: Boolean = true
+        set(value) {
+            KvManger.put("showMainNativeAd", value)
+            field = value
+        }
+        get() {
+            field = KvManger.getBoolean("showMainNativeAd")
+            return field
+        }
     var showConnectedInsertAd: Boolean = true
+        set(value) {
+            KvManger.put("showConnectedInsertAd", value)
+            field = value
+        }
+        get() {
+            field = KvManger.getBoolean("showConnectedInsertAd")
+            return field
+        }
     var showConnectedNativeAd: Boolean = true
+        set(value) {
+            KvManger.put("showConnectedNativeAd", value)
+            field = value
+        }
+        get() {
+            field = KvManger.getBoolean("showConnectedNativeAd")
+            return field
+        }
     var showDisconnectInsertAd: Boolean = true
+        set(value) {
+            KvManger.put("showDisconnectInsertAd", value)
+            field = value
+        }
+        get() {
+            field = KvManger.getBoolean("showDisconnectInsertAd")
+            return field
+        }
     var showDisconnectNativeAd: Boolean = true
+        set(value) {
+            KvManger.put("showDisconnectNativeAd", value)
+            field = value
+        }
+        get() {
+            field = KvManger.getBoolean("showDisconnectNativeAd")
+            return field
+        }
     var showSwitchNativeAd: Boolean = true
+        set(value) {
+            KvManger.put("showSwitchNativeAd", value)
+            field = value
+        }
+        get() {
+            field = KvManger.getBoolean("showSwitchNativeAd")
+            return field
+        }
 
     fun getConfig() {
         ioScope {

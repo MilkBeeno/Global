@@ -86,13 +86,13 @@ object AppRepository {
                     parts.forEach { VpnWhiteList.vpnList.add(it) }
                 }
                 try {
-                    showOpenAd = apiResult.openAd.toInt() == 0
-                    showMainNativeAd = apiResult.mainNativeAd.toInt() == 0
-                    showConnectedInsertAd = apiResult.connectedInsertAd.toInt() == 0
-                    showConnectedNativeAd = apiResult.connectedNativeAd.toInt() == 0
-                    showDisconnectInsertAd = apiResult.disconnectInsertAd.toInt() == 0
-                    showDisconnectNativeAd = apiResult.disconnectNativeAd.toInt() == 0
-                    showSwitchNativeAd = apiResult.switchNativeAd.toInt() == 0
+                    showOpenAd = apiResult.openAd.toInt() == 1
+                    showMainNativeAd = apiResult.mainNativeAd.toInt() == 1
+                    showConnectedInsertAd = apiResult.connectedInsertAd.toInt() == 1
+                    showConnectedNativeAd = apiResult.connectedNativeAd.toInt() == 1
+                    showDisconnectInsertAd = apiResult.disconnectInsertAd.toInt() == 1
+                    showDisconnectNativeAd = apiResult.disconnectNativeAd.toInt() == 1
+                    showSwitchNativeAd = apiResult.switchNativeAd.toInt() == 1
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

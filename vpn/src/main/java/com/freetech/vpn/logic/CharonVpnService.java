@@ -1101,12 +1101,6 @@ public class CharonVpnService extends VpnService implements Runnable, VpnStateSe
                         break;
                 }
             }
-            try {
-                builder.addDisallowedApplication("com.google.android.gms");
-                builder.addDisallowedApplication("com.android.vending");
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
             // 广告翻墙
             for (String pkn : VpnWhiteList.getVpnList()) {
                 try {

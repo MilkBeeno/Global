@@ -80,11 +80,11 @@ object AppRepository {
             val apiResult = apiResponse.data
             if (apiResponse.success && apiResult != null) {
                 shareAppUrl = apiResult.share_copy
-
-                VpnWhiteList.vpnList.clear()
-                val parts = apiResult.Shield_app_bundle.split("&")
-                parts.forEach { VpnWhiteList.vpnList.add(it) }
-
+                if (apiResult.Shield_app_bundle != "0") {
+                    VpnWhiteList.vpnList.clear()
+                    val parts = apiResult.Shield_app_bundle.split("&")
+                    parts.forEach { VpnWhiteList.vpnList.add(it) }
+                }
                 try {
                     showOpenAd = apiResult.openAd.toInt() == 0
                     showMainNativeAd = apiResult.mainNativeAd.toInt() == 0

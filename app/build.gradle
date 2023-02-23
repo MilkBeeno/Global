@@ -63,8 +63,6 @@ dependencies {
     implementation 'com.github.MilkBeeno:Library:1.2.9'
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'com.google.android.material:material:1.6.1'
-    // 屏幕适配方案
-    implementation "com.github.JessYanCoding:AndroidAutoSize:v1.2.1"
     // lottie 动画依赖库
     implementation "com.airbnb.android:lottie:5.2.0"
     implementation project(path: ':vpn')

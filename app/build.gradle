@@ -83,7 +83,7 @@ dependencies {
     implementation 'io.github.jeremyliao:live-event-bus-x:1.8.0'
     // firebase 统计功能
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
-    implementation("com.google.firebase:firebase-analytics:21.1.0")
+    implementation("com.google.firebase:firebase-analytics:21.2.0")
     // Anythink (Necessary) 聚合广告- TopOn 平台依赖
     // implementation "com.anythink.sdk:core:5.9.98"
     // implementation "com.anythink.sdk:nativead:5.9.98"

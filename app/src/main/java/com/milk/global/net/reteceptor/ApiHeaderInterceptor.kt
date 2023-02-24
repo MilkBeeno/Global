@@ -1,6 +1,6 @@
 package com.milk.global.net.reteceptor
 
-import com.milk.simple.BuildConfig
+import com.milk.global.BuildConfig
 import okhttp3.FormBody
 import okhttp3.Interceptor
 import okhttp3.Request

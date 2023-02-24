@@ -30,8 +30,8 @@ object ApiClient {
                 .connectTimeout(5, TimeUnit.SECONDS)
                 .readTimeout(8, TimeUnit.SECONDS)
                 .writeTimeout(8, TimeUnit.SECONDS)
-                .addInterceptor(ApiLogInterceptor())
                 .addInterceptor(ApiHeaderInterceptor())
+                .addInterceptor(ApiLogInterceptor())
                 .build()
         }
 

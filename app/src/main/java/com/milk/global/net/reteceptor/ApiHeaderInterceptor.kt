@@ -1,6 +1,6 @@
 package com.milk.global.net.reteceptor
 
-import com.milk.global.BuildConfig
+import com.milk.simple.BuildConfig
 import okhttp3.FormBody
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -22,9 +22,11 @@ class ApiHeaderInterceptor : Interceptor {
             val sortParams = sortParam(params)
             finalUrl = finalUrl.plus(sortParams)
             requestBuilder.url(finalUrl)
+            val packageName =
+                if (BuildConfig.DEBUG) "com.milk.global" else "com.milk.simpleglobal"
             headerBuilder
                 .add("H007", "1")
-                .add("H006", "com.milk.simplesmart")
+                .add("H006", packageName)
                 .add("Content-Type", "application/json")
         }
         requestBuilder.headers(headerBuilder.build())

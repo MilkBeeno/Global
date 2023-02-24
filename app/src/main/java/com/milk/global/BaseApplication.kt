@@ -28,8 +28,8 @@ class BaseApplication : Application() {
         // 保证在LaunchActivity#onCreate()前能够初始化完成
         KvManger.initialize(current)
         Logger.initialize(BuildConfig.DEBUG)
+        initializeAdmob(current)
         ioScope {
-            initializeAdmob(current)
             LoaderConfig.initialize(current)
             FireBaseManager.initialize(current)
             BackStack.backToForegroundMonitor(current) {

@@ -12,8 +12,8 @@ android {
         applicationId "com.milk.simpleglobal"
         minSdk 21
         targetSdk 32
-        versionCode 100
-        versionName "1.0.0"
+        versionCode 101
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -84,19 +84,11 @@ dependencies {
     // firebase 统计功能
     implementation platform('com.google.firebase:firebase-bom:30.1.0')
     implementation("com.google.firebase:firebase-analytics:21.2.0")
-    // Anythink (Necessary) 聚合广告- TopOn 平台依赖
-    // implementation "com.anythink.sdk:core:5.9.98"
-    // implementation "com.anythink.sdk:nativead:5.9.98"
-    // implementation "com.anythink.sdk:banner:5.9.98"
-    // implementation "com.anythink.sdk:interstitial:5.9.98"
-    // implementation "com.anythink.sdk:rewardedvideo:5.9.98"
-    // implementation "com.anythink.sdk:splash:5.9.98"
-    // Facebook 聚合广告- Facebook 广告依赖
+    // facebook 聚合广告- Facebook 广告依赖
     implementation "com.anythink.sdk:adapter-facebook:5.9.96"
     implementation "com.facebook.android:audience-network-sdk:6.11.0"
     implementation "androidx.annotation:annotation:1.4.0"
-    // Admob 聚合广告- Admob 广告依赖
-    // implementation "com.anythink.sdk:adapter-admob:5.9.98"
+    // admob 广告依赖
     implementation "com.google.android.gms:play-services-ads:21.5.0"
     // facebook 推广
     implementation "com.facebook.android:facebook-android-sdk:14.0.0"

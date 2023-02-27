@@ -1,39 +1,38 @@
 {
   "project_info": {
-    "project_number": "635180268610",
-    "project_id": "duo-global-master--private",
-    "storage_bucket": "duo-global-master--private.appspot.com"
+    "project_number": "62899467719",
+    "project_id": "duo-global-master---private",
+    "storage_bucket": "duo-global-master---private.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:635180268610:android:b47c2d36cf8831da6941db",
+        "mobilesdk_app_id": "1:62899467719:android:792754d52fcad3897255e2",
         "android_client_info": {
           "package_name": "com.milk.simpleglobal"
         }
       },
       "oauth_client": [
         {
-          "client_id": "635180268610-5sv7k2rr9fqnqgsciieuvasci3r02ier.apps.googleusercontent.com",
+          "client_id": "62899467719-racttomclgc4duiolu0jjre7il95l6ru.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCUVEy4Rlbbr2OW3dpDM1MggY8YZrVqnf8"
+          "current_key": "AIzaSyCgkFhZuVNKZHllPuAO8ih1Uv98llAGJPQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "635180268610-5sv7k2rr9fqnqgsciieuvasci3r02ier.apps.googleusercontent.com",
+              "client_id": "62899467719-racttomclgc4duiolu0jjre7il95l6ru.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
         }
-      },
-      "admob_app_id": "ca-app-pub-9835209825468303~4531194807"
+      }
     }
   ],
   "configuration_version": "1"

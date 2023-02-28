@@ -62,7 +62,9 @@ abstract class SimpleDialog<T : ViewBinding>(val activity: FragmentActivity) {
 
     open fun show() {
         createDialog()
-        dialog?.show()
+        if (!activity.isDestroyed && !activity.isFinishing) {
+            dialog?.show()
+        }
     }
 
     open fun dismiss() {
